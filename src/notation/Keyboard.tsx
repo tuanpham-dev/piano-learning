@@ -196,9 +196,11 @@ export function Keyboard({ low, high, highlight, focus, showNames, kid, labels, 
               className={`absolute top-0 flex flex-col items-center justify-end gap-1 pb-1.5 ${k.black ? 'rounded-b-md shadow-md' : 'border border-line rounded-b-md'} ${mark === 'wrong' && isHeld ? 'anim-wobble' : ''}`}
               style={style}
             >
-              {label && <span className="text-[10px] font-mono leading-none" style={{ color: k.black ? 'var(--color-key-white)' : 'var(--color-key-ink-muted)' }}>
+              {label && (
+                <span className="text-[10px] font-mono leading-none" style={{ color: k.black ? 'var(--color-key-white)' : 'var(--color-key-ink-muted)' }}>
                   {label}
-                </span>}
+                </span>
+              )}
               {showKidDot && (
                 <span
                   className="grid place-items-center rounded-full font-extrabold leading-none"
@@ -214,7 +216,12 @@ export function Keyboard({ low, high, highlight, focus, showNames, kid, labels, 
                 </span>
               )}
               {showAdultName && (
-                <span className={`text-[10px] leading-none ${letter === 'C' ? 'font-semibold' : ''}`} style={{ color: letter === 'C' ? 'var(--color-key-ink)' : 'var(--color-key-ink-muted)' }}>{letter === 'C' ? prettyName(k.midi) : letter}</span>
+                <span
+                  className={`text-[10px] leading-none ${letter === 'C' ? 'font-semibold' : ''}`}
+                  style={{ color: letter === 'C' ? 'var(--color-key-ink)' : 'var(--color-key-ink-muted)' }}
+                >
+                  {letter === 'C' ? prettyName(k.midi) : letter}
+                </span>
               )}
               {k.midi === focusKey && hasFocus && <span className="absolute inset-x-1 top-1 h-1.5 rounded bg-accent" />}
             </div>

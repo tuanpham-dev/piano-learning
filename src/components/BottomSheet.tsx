@@ -11,7 +11,10 @@ interface Props {
 export function BottomSheet({ summary, label, children }: Props) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="sticky bottom-0 z-20 -mx-[max(16px,env(safe-area-inset-left,0px))] border-t-2 border-line bg-panel" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+    <div
+      className="sticky bottom-0 z-20 -mx-[max(16px,env(safe-area-inset-left,0px))] border-t-2 border-line bg-panel"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+    >
       <button
         type="button"
         aria-expanded={open}

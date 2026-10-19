@@ -148,7 +148,12 @@ export function InputPanel(props: Props) {
   const narrow = useNarrow()
   const inputs = useProgress((s) => s.settings.inputs)
   if (!kid && narrow && !props.inline) {
-    const on = [inputs.screen && t('inputs.screen'), inputs.qwerty && t('inputs.qwerty'), inputs.midi && t('inputs.midi'), props.micAllowed && inputs.mic && t('inputs.mic')].filter(Boolean)
+    const on = [
+      inputs.screen && t('inputs.screen'),
+      inputs.qwerty && t('inputs.qwerty'),
+      inputs.midi && t('inputs.midi'),
+      props.micAllowed && inputs.mic && t('inputs.mic'),
+    ].filter(Boolean)
     return (
       <BottomSheet label={t('inputs.title')} summary={on.join(' · ')}>
         <PanelBody {...props} />
@@ -168,7 +173,12 @@ export function InputPanel(props: Props) {
   }
   return (
     <div className="relative">
-      <button type="button" className="inline-flex items-center gap-2 rounded-full bg-panel px-5 min-h-[var(--touch)] font-extrabold" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+      <button
+        type="button"
+        className="inline-flex items-center gap-2 rounded-full bg-panel px-5 min-h-[var(--touch)] font-extrabold"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
         <Icon name="piano" /> {tm('inputs.piano')}
       </button>
       {open && (

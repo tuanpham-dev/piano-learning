@@ -377,7 +377,10 @@ function PlayAlongScreen({ song }: { song: Song }) {
       {kid ? (
         <div className="py-2">{inputPanel}</div>
       ) : narrow ? (
-        <BottomSheet label={t('play.settings')} summary={`${mode === 'wait' ? t('play.wait') : t('play.perform')} · ${tempo}% · ${hands === 'LR' ? t('play.both') : hands === 'R' ? t('play.right') : t('play.left')}`}>
+        <BottomSheet
+          label={t('play.settings')}
+          summary={`${mode === 'wait' ? t('play.wait') : t('play.perform')} · ${tempo}% · ${hands === 'LR' ? t('play.both') : hands === 'R' ? t('play.right') : t('play.left')}`}
+        >
           {settingsRow}
           <div className="-mx-[max(16px,env(safe-area-inset-left,0px))]">{inputPanel}</div>
         </BottomSheet>

@@ -86,7 +86,11 @@ function KidBar({ title, back, actions }: { title: string; back?: string; action
         )}
         <h1 className="flex-1 text-xl font-extrabold truncate">{title}</h1>
         {actions}
-        <Link to="/progress" className="grid place-items-center min-h-[var(--touch)] min-w-[var(--touch)] px-2 text-lg font-extrabold whitespace-nowrap tabular" aria-label={`${stars} stars`}>
+        <Link
+          to="/progress"
+          className="grid place-items-center min-h-[var(--touch)] min-w-[var(--touch)] px-2 text-lg font-extrabold whitespace-nowrap tabular"
+          aria-label={`${stars} stars`}
+        >
           <span className="inline-flex items-center gap-1">
             <span className="text-nE">
               <Icon name="star" size={22} />

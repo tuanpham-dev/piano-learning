@@ -50,10 +50,7 @@ function now(): number {
 export function usePlayAlong(opts: PlayAlongOptions) {
   const { song, hands, mode, tempoPct, bars, loop } = opts
   const barsKey = bars ? `${bars[0]}-${bars[1]}` : 'all'
-  const engine = useMemo(
-    () => new PlayAlong({ song, hands, mode, tempoPct, bars, loop }),
-    [song, hands, mode, tempoPct, barsKey, loop],
-  )
+  const engine = useMemo(() => new PlayAlong({ song, hands, mode, tempoPct, bars, loop }), [song, hands, mode, tempoPct, barsKey, loop])
   const engineRef = useRef(engine)
   engineRef.current = engine
   if (import.meta.env.DEV) (window as unknown as { __pa: PlayAlong }).__pa = engine
