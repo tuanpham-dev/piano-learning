@@ -1,0 +1,67 @@
+const URL = 'http://127.0.0.1:5317'
+const store = (page) => page.evaluate(() => { const s = window.__dev.useProgress.getState(); return { drills: s.drills, rounds: s.drillRounds } })
+export default async ({ page, shot, log }) => {
+  await page.goto(URL)
+  await page.click("text=I'm an adult"); await page.click("text=Let's play")
+  await page.goto(URL + '/settings')
+  for (let i = 0; i < 5; i++) await page.click('text=Version 1.0.0')
+  // A17: bass clef, 20 notes, answer each correctly by reading the staff target from the page state
+  await page.goto(URL + '/drills')
+  await page.click('#dr-clef >> text=Bass')
+  await page.click('text=Start round')
+  for (let i = 0; i < 20; i++) {
+    await page.waitForFunction(() => document.querySelector('[role=img][aria-label]')?.getAttribute('aria-label') && /Play this note/.test(document.body.innerText), null, { timeout: 5000 })
+    const label = await page.locator('main [role=img][aria-label]').first().getAttribute('aria-label')
+    const names = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B']
+    const m = /^([A-G]♯?)(-?\d)$/.exec(label)
+    const midi = (Number(m[2]) + 1) * 12 + names.indexOf(m[1])
+    const answer = i < 16 ? midi : midi + 1 // 4 wrong on purpose
+    await page.evaluate((x) => { window.__dev.emitNote('on', x, 'virtual'); window.__dev.emitNote('off', x, 'virtual') }, answer)
+    if (i === 3) await shot('p4-drill-feedback')
+    await page.waitForTimeout(i < 16 ? 750 : 1600)
+  }
+  await page.waitForSelector('[data-testid=round-summary]')
+  log('A17 summary:', (await page.locator('[data-testid=round-summary]').innerText()).replace(/\n/g, ' | '))
+  log('A17 store bass:', JSON.stringify((await store(page)).drills.bass))
+  await shot('p4-drill-summary')
+  // A18: ear training
+  await page.goto(URL + '/ear')
+  await page.click('#ear-type >> text=Interval')
+  await page.click('text=Start round')
+  await page.waitForTimeout(300)
+  // answer by pressing the two keys (from the dev handle reading current question via highlighted root + choice id)
+  const q = await page.evaluate(() => document.querySelector('[data-choice].ring-4') ? null : null)
+  // Answer first question via button choice: find the correct by trying the dev path: press keys for the interval
+  // Interval: highlighted root key is 'show'; we can't know the top note from the DOM, so answer via buttons and read feedback
+  await page.locator('[data-choice]').first().click()
+  await page.waitForTimeout(200)
+  log('A18 interval feedback:', await page.locator('main [aria-live=polite]').first().innerText())
+  await shot('p4-ear')
+  await page.goto(URL + '/reference')
+  await page.click('[data-root="F#"]')
+  await page.selectOption('#ref-type', 'min7')
+  log('A21 F# min7:', await page.locator('[data-testid=ref-title]').innerText(), '|', await page.locator('[data-testid=ref-notes]').innerText(), '| keys lit:', await page.evaluate(() => [...document.querySelectorAll('[data-midi]')].filter((k) => /accent/.test(k.style.background)).map((k) => k.dataset.midi).join(',')))
+  await page.evaluate(() => (window.__notes = []))
+  await page.click('text=Play chord'); await page.waitForTimeout(200)
+  log('A21 played:', await page.evaluate(() => window.__notes.map((n) => n.midi).join(',')))
+  await page.click('[data-root="D"]')
+  await page.click('#ref-kind >> text=Scales')
+  await page.selectOption('#ref-type', 'blues')
+  log('A21 D blues:', await page.locator('[data-testid=ref-notes]').innerText(), '| keys lit:', await page.evaluate(() => [...document.querySelectorAll('[data-midi]')].filter((k) => /accent/.test(k.style.background)).length))
+  await page.evaluate(() => (window.__notes = []))
+  await page.click('text=Play scale'); await page.waitForTimeout(300)
+  log('A21 scale run:', await page.evaluate(() => window.__notes.map((n) => n.midi).join(',')))
+  await shot('p4-reference')
+  // A19 rhythm at 80
+  await page.goto(URL + '/rhythm')
+  await page.click('text=Virtual MIDI')
+  await page.click('[data-script="rhythm-exact"]')
+  await page.waitForSelector('[data-testid=round-summary]', { timeout: 20000 })
+  log('A19 exact:', (await page.locator('[data-testid=round-summary]').innerText()).replace(/\n/g, ' | '))
+  await shot('p4-rhythm-exact')
+  await page.click('[data-script="rhythm-late"]')
+  await page.waitForTimeout(500)
+  await page.waitForSelector('[data-testid=round-summary]', { timeout: 20000 })
+  log('A19 late:', (await page.locator('[data-testid=round-summary]').innerText()).replace(/\n/g, ' | '))
+  log('store rhythm & rounds:', JSON.stringify(await store(page)))
+}

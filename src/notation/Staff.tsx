@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   Accidental,
+  BarNote,
   Annotation,
   AnnotationVerticalJustify,
   Beam,
@@ -305,13 +306,13 @@ export function RhythmStaff({ items, timeSig, kid = false, className = '' }: { i
     try {
       const th = theme()
       const scale = kid ? 1.7 : 1.4
-      const h = 110 * scale
+      const h = 100 * scale
       const renderer = new Renderer(el, Renderer.Backends.SVG)
       renderer.resize(width, h)
       const ctx = renderer.getContext() as RenderContext
       ctx.scale(scale, scale)
       const W = width / scale
-      const stave = new Stave(4, 10, W - 8, { num_lines: 1, spacing_between_lines_px: 10 } as never)
+      const stave = new Stave(4, 0, W - 8)
       stave.addClef('percussion').addTimeSignature(timeSigString(timeSig))
       stave.setStyle({ fillStyle: th.fg, strokeStyle: th.fg })
       stave.setContext(ctx).draw()
@@ -324,8 +325,16 @@ export function RhythmStaff({ items, timeSig, kid = false, className = '' }: { i
         return n
       })
       const total = items.reduce((a, b) => a + b.beats, 0)
+      const barLen = (timeSig[0] * 4) / timeSig[1]
+      const tickables: (StaveNote | BarNote)[] = []
+      let acc = 0
+      notes.forEach((n, i) => {
+        tickables.push(n)
+        acc += items[i]!.beats
+        if (Math.abs(acc % barLen) < 1e-6 && acc < total - 1e-6) tickables.push(new BarNote())
+      })
       const voice = new Voice({ num_beats: total * (timeSig[1] / 4), beat_value: timeSig[1] }).setMode(Voice.Mode.SOFT)
-      voice.addTickables(notes)
+      voice.addTickables(tickables)
       new Formatter().joinVoices([voice]).format([voice], Math.max(40, W - stave.getNoteStartX() - 16))
       const beams = Beam.generateBeams(notes.filter((n) => !n.isRest()), { groups: Beam.getDefaultBeamGroups(timeSigString(timeSig)), stem_direction: 1 })
       voice.draw(ctx, stave)

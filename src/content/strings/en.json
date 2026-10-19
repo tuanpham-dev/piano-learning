@@ -118,6 +118,33 @@
     "lessonRun": {
       "passed": "You did it! New island unlocked!",
       "failed": "Almost! Let's try again."
+    },
+    "drills": {
+      "prompt": "Which key is this? Press it!",
+      "right": "Yes! That's {{note}}!",
+      "wrong": "Almost! It's {{note}}.",
+      "start": "Start",
+      "done": "You named {{n}} notes!"
+    },
+    "ear": {
+      "promptInterval": "Listen! Which jump is it?",
+      "promptChord": "Happy or sad sound?",
+      "promptMelody": "Listen, then play it back!",
+      "start": "Start",
+      "right": "You found it!",
+      "wrong": "Good try! Listen again.",
+      "done": "Great listening!",
+      "q": {
+        "maj": "Happy",
+        "min": "Sad"
+      }
+    },
+    "rhythm": {
+      "go": "Clap now!",
+      "tapPad": "Tap the drum!",
+      "start": "Start",
+      "done": "Great beat!",
+      "idle": "Listen to 1-2-3-4, then tap!"
     }
   },
   "inputs": {
@@ -148,7 +175,9 @@
     "metronome": "Metronome",
     "bpm": "{{bpm}} BPM",
     "noteNames": "Note names",
-    "range": "Range"
+    "range": "Range",
+    "playing": "Playing",
+    "chord": "Chord"
   },
   "vmidi": {
     "title": "Virtual MIDI",
@@ -263,5 +292,104 @@
     "add": "Add to library",
     "summary": "{{bpm}} BPM · {{sig}}",
     "added": "Added “{{title}}” to the library."
+  },
+  "drills": {
+    "clef": "Clef",
+    "treble": "Treble",
+    "bass": "Bass",
+    "both": "Both",
+    "range": "Range",
+    "octaves": "{{n}} oct",
+    "accidentals": "Sharps & flats",
+    "round": "Notes per round",
+    "start": "Start round",
+    "stop": "Stop",
+    "progress": "Note {{n}} / {{total}}",
+    "correct": "Correct {{n}}",
+    "avg": "Avg {{s}} s",
+    "prompt": "Play this note.",
+    "right": "Correct!",
+    "wrong": "That was {{played}}. This note is {{target}}.",
+    "summary": "{{correct}} of {{total}} correct · {{pct}}% · average {{s}} s",
+    "clefStats": "Treble {{t}} · Bass {{b}}",
+    "idle": "Pick your settings, then start a round."
+  },
+  "ear": {
+    "type": "Exercise",
+    "interval": "Interval",
+    "chord": "Chord quality",
+    "melody": "Melody playback",
+    "playAgain": "Play again",
+    "start": "Start round",
+    "progress": "Question {{n}} / {{total}}",
+    "promptInterval": "Name the interval, or play both notes.",
+    "promptChord": "Is this chord major, minor, diminished or augmented?",
+    "promptMelody": "Play the melody back, starting on the lit key.",
+    "right": "Correct!",
+    "wrong": "Not quite. The answer was {{answer}}.",
+    "summary": "{{correct}} of {{total}} correct · {{pct}}%",
+    "idle": "Choose an exercise and start. Each round has 10 questions.",
+    "i": {
+      "P1": "Unison",
+      "m2": "Minor 2nd",
+      "M2": "Major 2nd",
+      "m3": "Minor 3rd",
+      "M3": "Major 3rd",
+      "P4": "Perfect 4th",
+      "TT": "Tritone",
+      "P5": "Perfect 5th",
+      "m6": "Minor 6th",
+      "M6": "Major 6th",
+      "m7": "Minor 7th",
+      "M7": "Major 7th",
+      "P8": "Octave"
+    },
+    "q": {
+      "maj": "Major",
+      "min": "Minor",
+      "dim": "Diminished",
+      "aug": "Augmented"
+    }
+  },
+  "rhythm": {
+    "tempo": "Tempo",
+    "level": "Level {{n}}",
+    "start": "Start",
+    "again": "New pattern",
+    "retry": "Try again",
+    "listen": "Hear it",
+    "countIn": "Count-in… {{n}}",
+    "go": "Tap now!",
+    "tapPad": "Tap here · any key · space bar",
+    "summary": "{{pct}}% on the beat · {{timing}}",
+    "idle": "Listen to the count-in, then tap the rhythm."
+  },
+  "reference": {
+    "root": "Root",
+    "chords": "Chords",
+    "scales": "Scales",
+    "type": "Type",
+    "playChord": "Play chord",
+    "arpeggio": "Arpeggio",
+    "playScale": "Play scale",
+    "c": {
+      "maj": "Major",
+      "min": "Minor",
+      "dim": "Diminished",
+      "aug": "Augmented",
+      "7": "Dominant 7",
+      "maj7": "Major 7",
+      "min7": "Minor 7",
+      "sus2": "Sus 2",
+      "sus4": "Sus 4"
+    },
+    "s": {
+      "major": "Major",
+      "naturalMinor": "Natural minor",
+      "harmonicMinor": "Harmonic minor",
+      "pentatonicMajor": "Major pentatonic",
+      "pentatonicMinor": "Minor pentatonic",
+      "blues": "Blues"
+    }
   }
 }

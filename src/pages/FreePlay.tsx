@@ -12,6 +12,9 @@ import { usePracticeClock } from '../hooks/usePracticeClock'
 import { useMetronome } from '../audio/metronome'
 import { Mascot } from '../components/Mascot'
 import { Segmented } from '../components/Segmented'
+import { identifyChord } from '../engine/chords-scales'
+import { prettyName } from '../engine/notes'
+import { colorForMidi, inkForMidi } from '../notation/note-colors'
 
 const RANGES = { full: [21, 108], mid: [36, 96], small: [48, 84] } as const
 type RangeKey = keyof typeof RANGES
@@ -79,7 +82,7 @@ export function FreePlayPage() {
           />
           <MetronomeControls />
         </div>
-        <div className="flex-1 min-h-6" />
+        <HeldDisplay kid={kid} />
         <Keyboard
           low={lo}
           high={hi}
@@ -101,5 +104,42 @@ export function FreePlayPage() {
         )}
       </div>
     </Page>
+  )
+}
+
+/** Big readout of the notes being held and the chord they make. */
+function HeldDisplay({ kid }: { kid: boolean }) {
+  const { t } = useT()
+  const [held, setHeld] = useState<number[]>([])
+  useEffect(() => bus.subscribe((e) => e.kind !== 'tap' && setHeld([...bus.heldNotes()].sort((a, b) => a - b))), [])
+  const chord = identifyChord(held)
+  return (
+    <div className="flex-1 min-h-28 grid place-items-center content-center gap-3 text-center" aria-live="polite" data-testid="held">
+      {held.length > 0 && (
+        <>
+          <div className="flex flex-wrap justify-center gap-2">
+            {held.map((m) =>
+              kid ? (
+                <span key={m} className="grid place-items-center rounded-full size-16 text-3xl font-extrabold" style={{ background: colorForMidi(m), color: inkForMidi(m) }}>
+                  {prettyName(m, { octave: false })}
+                </span>
+              ) : (
+                <span key={m} className="rounded-md bg-panel px-3 py-1 text-2xl font-semibold tabular">
+                  {prettyName(m)}
+                </span>
+              ),
+            )}
+          </div>
+          {chord && (
+            <div className="text-lg">
+              <span className="text-muted">{t('free.chord')}: </span>
+              <strong>
+                {chord.root.replace('#', '♯').replace(/^([A-G])b/, '$1♭')} {t(`reference.c.${chord.type}`)}
+              </strong>
+            </div>
+          )}
+        </>
+      )}
+    </div>
   )
 }

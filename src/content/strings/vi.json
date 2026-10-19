@@ -118,6 +118,33 @@
     "lessonRun": {
       "passed": "Em làm được rồi! Mở khóa đảo mới!",
       "failed": "Gần được rồi! Mình thử lại nhé."
+    },
+    "drills": {
+      "prompt": "Phím nào đây? Bấm thử nhé!",
+      "right": "Đúng rồi! Đó là {{note}}!",
+      "wrong": "Gần đúng! Đó là {{note}}.",
+      "start": "Bắt đầu",
+      "done": "Em đã đọc {{n}} nốt!"
+    },
+    "ear": {
+      "promptInterval": "Nghe nào! Bước nhảy nào đây?",
+      "promptChord": "Âm thanh vui hay buồn?",
+      "promptMelody": "Nghe rồi chơi lại nhé!",
+      "start": "Bắt đầu",
+      "right": "Em tìm ra rồi!",
+      "wrong": "Cố lên! Nghe lại nhé.",
+      "done": "Em nghe giỏi lắm!",
+      "q": {
+        "maj": "Vui",
+        "min": "Buồn"
+      }
+    },
+    "rhythm": {
+      "go": "Vỗ ngay!",
+      "tapPad": "Gõ vào trống nào!",
+      "start": "Bắt đầu",
+      "done": "Nhịp rất hay!",
+      "idle": "Nghe 1-2-3-4, rồi gõ theo!"
     }
   },
   "inputs": {
@@ -148,7 +175,9 @@
     "metronome": "Máy đếm nhịp",
     "bpm": "{{bpm}} BPM",
     "noteNames": "Tên nốt",
-    "range": "Âm vực"
+    "range": "Âm vực",
+    "playing": "Đang chơi",
+    "chord": "Hợp âm"
   },
   "vmidi": {
     "title": "MIDI ảo",
@@ -263,5 +292,104 @@
     "add": "Thêm vào thư viện",
     "summary": "{{bpm}} BPM · {{sig}}",
     "added": "Đã thêm “{{title}}” vào thư viện."
+  },
+  "drills": {
+    "clef": "Khóa nhạc",
+    "treble": "Khóa Sol",
+    "bass": "Khóa Fa",
+    "both": "Cả hai",
+    "range": "Âm vực",
+    "octaves": "{{n}} quãng 8",
+    "accidentals": "Thăng & giáng",
+    "round": "Số nốt mỗi lượt",
+    "start": "Bắt đầu lượt",
+    "stop": "Dừng",
+    "progress": "Nốt {{n}} / {{total}}",
+    "correct": "Đúng {{n}}",
+    "avg": "TB {{s}} giây",
+    "prompt": "Hãy chơi nốt này.",
+    "right": "Chính xác!",
+    "wrong": "Bạn chơi {{played}}. Nốt này là {{target}}.",
+    "summary": "Đúng {{correct}} / {{total}} · {{pct}}% · trung bình {{s}} giây",
+    "clefStats": "Khóa Sol {{t}} · Khóa Fa {{b}}",
+    "idle": "Chọn cài đặt rồi bắt đầu một lượt."
+  },
+  "ear": {
+    "type": "Bài tập",
+    "interval": "Quãng",
+    "chord": "Tính chất hợp âm",
+    "melody": "Nhắc lại giai điệu",
+    "playAgain": "Nghe lại",
+    "start": "Bắt đầu lượt",
+    "progress": "Câu {{n}} / {{total}}",
+    "promptInterval": "Gọi tên quãng, hoặc chơi cả hai nốt.",
+    "promptChord": "Hợp âm này là trưởng, thứ, giảm hay tăng?",
+    "promptMelody": "Chơi lại giai điệu, bắt đầu từ phím sáng.",
+    "right": "Chính xác!",
+    "wrong": "Chưa đúng. Đáp án là {{answer}}.",
+    "summary": "Đúng {{correct}} / {{total}} · {{pct}}%",
+    "idle": "Chọn bài tập rồi bắt đầu. Mỗi lượt có 10 câu.",
+    "i": {
+      "P1": "Đồng âm",
+      "m2": "Quãng 2 thứ",
+      "M2": "Quãng 2 trưởng",
+      "m3": "Quãng 3 thứ",
+      "M3": "Quãng 3 trưởng",
+      "P4": "Quãng 4 đúng",
+      "TT": "Quãng 3 cung",
+      "P5": "Quãng 5 đúng",
+      "m6": "Quãng 6 thứ",
+      "M6": "Quãng 6 trưởng",
+      "m7": "Quãng 7 thứ",
+      "M7": "Quãng 7 trưởng",
+      "P8": "Quãng 8"
+    },
+    "q": {
+      "maj": "Trưởng",
+      "min": "Thứ",
+      "dim": "Giảm",
+      "aug": "Tăng"
+    }
+  },
+  "rhythm": {
+    "tempo": "Nhịp độ",
+    "level": "Cấp {{n}}",
+    "start": "Bắt đầu",
+    "again": "Mẫu mới",
+    "retry": "Thử lại",
+    "listen": "Nghe mẫu",
+    "countIn": "Đếm vào… {{n}}",
+    "go": "Gõ ngay!",
+    "tapPad": "Chạm vào đây · phím bất kỳ · phím cách",
+    "summary": "{{pct}}% đúng phách · {{timing}}",
+    "idle": "Nghe phần đếm vào, rồi gõ theo tiết tấu."
+  },
+  "reference": {
+    "root": "Nốt gốc",
+    "chords": "Hợp âm",
+    "scales": "Gam",
+    "type": "Loại",
+    "playChord": "Chơi hợp âm",
+    "arpeggio": "Rải hợp âm",
+    "playScale": "Chơi gam",
+    "c": {
+      "maj": "Trưởng",
+      "min": "Thứ",
+      "dim": "Giảm",
+      "aug": "Tăng",
+      "7": "Át 7",
+      "maj7": "Trưởng 7",
+      "min7": "Thứ 7",
+      "sus2": "Sus 2",
+      "sus4": "Sus 4"
+    },
+    "s": {
+      "major": "Trưởng",
+      "naturalMinor": "Thứ tự nhiên",
+      "harmonicMinor": "Thứ hòa âm",
+      "pentatonicMajor": "Ngũ cung trưởng",
+      "pentatonicMinor": "Ngũ cung thứ",
+      "blues": "Blues"
+    }
   }
 }
