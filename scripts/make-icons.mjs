@@ -1,4 +1,4 @@
-// Draws the app icons — Do the note (red C) on a mint tile with a navy outline — as PNGs in public/icons/.
+// Draws the app icons — Miu the cat's face with a red bow tie on a mint tile — as PNGs in public/icons/.
 // Pure Node: shapes are signed-distance tests sampled 4×4 per pixel, so no image library is needed.
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { deflateSync } from 'node:zlib'
@@ -52,46 +52,50 @@ function png(size, pixel) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw, { level: 9 })), chunk('IEND', Buffer.alloc(0))])
 }
 
-// ---------- shapes in Do's 120-unit space (same geometry as Mascot.tsx) ----------
-const rot = (x, y, cx, cy, deg) => {
-  const a = (deg * Math.PI) / 180
-  const dx = x - cx
-  const dy = y - cy
-  return [cx + dx * Math.cos(a) - dy * Math.sin(a), cy + dx * Math.sin(a) + dy * Math.cos(a)]
-}
+// ---------- Miu's face in a 120-unit space (same geometry as Mascot.tsx, head only) ----------
+const FUR = [245, 185, 66]
+const LIGHT = [252, 217, 138]
+const DARK = [224, 154, 38]
+const PINK = [240, 138, 156]
 const inEllipse = (x, y, cx, cy, rx, ry, grow = 0) => ((x - cx) / (rx + grow)) ** 2 + ((y - cy) / (ry + grow)) ** 2 <= 1
-const inHead = (x, y, grow = 0) => {
-  const [u, v] = rot(x, y, 52, 84, 18)
-  return inEllipse(u, v, 52, 84, 33, 25, grow)
+const sign = (p1, p2, p3) => (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1])
+const inTri = (x, y, a, b, c) => {
+  const p = [x, y]
+  const d1 = sign(p, a, b), d2 = sign(p, b, c), d3 = sign(p, c, a)
+  return !((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))
 }
-const inStem = (x, y, grow = 0) => x >= 78 - grow && x <= 84 + grow && y >= 10 - grow && y <= 76
-// Flag: a thick curve from the stem top sweeping right and down.
-const flagPts = Array.from({ length: 40 }, (_, i) => {
-  const t = i / 39
-  const p0 = [82, 12], p1 = [106, 18], p2 = [99, 50]
-  return [(1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0], (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1], 4.2 - 1.8 * t]
-})
-const inFlag = (x, y, grow = 0) => flagPts.some(([px, py, w]) => (x - px) ** 2 + (y - py) ** 2 <= (w + grow) ** 2)
-const inDo = (x, y, grow = 0) => inHead(x, y, grow) || inStem(x, y, grow) || inFlag(x, y, grow)
-const inSmile = (x, y) => {
-  // Two small arcs: centers (48,94) and (54,94), radius 3, lower halves, stroke 1.4.
-  for (const cx of [48, 54]) {
-    const d = Math.hypot(x - cx, y - 94)
-    if (Math.abs(d - 3) <= 1.3 && y >= 94) return true
-  }
-  return false
+const distSeg = (x, y, [ax, ay], [bx, by]) => {
+  const t = Math.max(0, Math.min(1, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / ((bx - ax) ** 2 + (by - ay) ** 2)))
+  return Math.hypot(x - (ax + t * (bx - ax)), y - (ay + t * (by - ay)))
 }
+const EAR_L = [[27, 50], [22, 8], [54, 30]]
+const EAR_R = [[93, 50], [98, 8], [66, 30]]
+const inEars = (x, y, grow = 0) =>
+  [EAR_L, EAR_R].some((t) => inTri(x, y, ...t) || (grow > 0 && Math.min(distSeg(x, y, t[0], t[1]), distSeg(x, y, t[1], t[2]), distSeg(x, y, t[2], t[0])) <= grow))
+const inHead = (x, y, grow = 0) => inEllipse(x, y, 60, 58, 40, 34, grow) || inEars(x, y, grow)
+const inBow = (x, y) => inTri(x, y, [60, 98], [42, 89], [42, 107]) || inTri(x, y, [60, 98], [78, 89], [78, 107]) || Math.hypot(x - 60, y - 98) <= 5
+const inBowOutline = (x, y) =>
+  !inBow(x, y) && (inTri(x, y, [60, 98], [39, 86], [39, 110]) || inTri(x, y, [60, 98], [81, 86], [81, 110]) || Math.hypot(x - 60, y - 98) <= 7.2)
+const arc = (x, y, cx, cy, r, w) => Math.abs(Math.hypot(x - cx, y - cy) - r) <= w && y >= cy
 
-/** Color of Do-space point (x, y), or null for background. */
-function doColor(x, y) {
-  if (inEllipse(x, y, 40, 82, 4.1, 5) || inEllipse(x, y, 62, 82, 4.1, 5)) {
-    if (Math.hypot(x - 41.6, y - 79.8) <= 1.6 || Math.hypot(x - 63.6, y - 79.8) <= 1.6) return WHITE
-    return NAVY
+/** Color of face-space point (x, y), or null for background. */
+function faceColor(x, y) {
+  if (inBow(x, y)) return RED
+  if (inBowOutline(x, y)) return NAVY
+  if (inHead(x, y)) {
+    if (inEllipse(x, y, 45, 57, 5.2, 6.4) || inEllipse(x, y, 75, 57, 5.2, 6.4)) {
+      if (Math.hypot(x - 46.8, y - 54) <= 2 || Math.hypot(x - 76.8, y - 54) <= 2) return WHITE
+      return NAVY
+    }
+    if (inTri(x, y, [55.5, 66], [64.5, 66], [60, 71.5])) return PINK
+    if (arc(x, y, 56.5, 73, 3.4, 1.35) || arc(x, y, 63.5, 73, 3.4, 1.35)) return NAVY
+    if (inTri(x, y, [30, 40], [28, 18], [45, 30]) || inTri(x, y, [90, 40], [92, 18], [75, 30])) return PINK
+    if (inEllipse(x, y, 32, 69, 6.5, 4.4) || inEllipse(x, y, 88, 69, 6.5, 4.4)) return BLUSH
+    if (inEllipse(x, y, 60, 72, 20, 13)) return LIGHT
+    for (const [a, b] of [[[52, 26], [51, 37]], [[60, 25], [60, 36]], [[68, 26], [69, 37]]]) if (distSeg(x, y, a, b) <= 1.9) return DARK
+    return FUR
   }
-  if (inSmile(x, y)) return NAVY
-  if (inEllipse(x, y, 30, 92, 5, 3.4) || inEllipse(x, y, 72, 86, 5, 3.4)) return BLUSH
-  if (inDo(x, y)) return RED
-  if (inDo(x, y, 3.2)) return NAVY // outline
+  if (inHead(x, y, 3.4)) return NAVY // outline
   return null
 }
 
@@ -114,10 +118,10 @@ function icon(size, { maskable }) {
         if (!inTile) continue
         const edge = maskable ? 1 : radius - Math.hypot(u - cu, v - cv)
         const nearEdge = !maskable && (u < 0.035 || u > 0.965 || v < 0.035 || v > 0.965 || edge < 0.035)
-        // Do's art spans roughly x 8..108, y 6..112 in its 120-unit space.
-        const X = 8 + ((u - area[0]) / span) * 102
-        const Y = 6 + ((v - area[0]) / span) * 106
-        c = nearEdge ? NAVY : (doColor(X, Y) ?? MINT)
+        // Miu's face spans roughly x 16..104, y 4..114 in its 120-unit space.
+        const X = 5 + ((u - area[0]) / span) * 110
+        const Y = 4 + ((v - area[0]) / span) * 110
+        c = nearEdge ? NAVY : (faceColor(X, Y) ?? MINT)
         r += c[0]; g += c[1]; b += c[2]; a += 255
       }
     }
