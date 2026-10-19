@@ -6,8 +6,10 @@ const URL = 'http://127.0.0.1:5317'
 const BANNER = "import { createRequire as __cr } from 'module'; const require = __cr(import.meta.url);"
 
 export default async ({ page, log }) => {
-  const mcp = await connect('mcp/dist/piano-mcp.js')
+  // Its own port, so a piano server already running for your AI client doesn't clash.
+  const mcp = await connect('mcp/dist/piano-mcp.js', { PIANO_PORT: '8768' })
   await page.goto(URL); await page.click("text=I'm an adult"); await page.click("text=Let's play")
+  await page.evaluate(() => localStorage.setItem('piano:ai-port', '8768'))
   await page.goto(URL + '/songs'); await page.click('text=New song'); await page.waitForURL(/edit\/draft/)
   await page.click('[data-testid=ai-connect]')
   await page.waitForSelector('text=Connected to the AI helper')

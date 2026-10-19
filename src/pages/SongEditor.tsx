@@ -9,7 +9,7 @@ import { beatsPerBar } from '../engine/song'
 import { checkSong, type SongWarning } from '../engine/song-check'
 import { writeSongFile, splitBars } from '../engine/song-file'
 import { downloadText, songFileName } from '../store/download'
-import { GrandStaff } from '../notation/Staff'
+import { ScoreLines } from '../components/ScoreLines'
 import { Keyboard } from '../notation/Keyboard'
 import { InputPanel } from '../components/InputPanel'
 import { Button, PrimaryButton } from '../components/PrimaryButton'
@@ -403,8 +403,15 @@ function Editor() {
           <TextView draft={even} />
         )}
 
-        <div className="overflow-hidden">
-          <GrandStaff song={song} cursorBeat={cur.bar * barLen} getCursor={getCursor} />
+        {/* The whole song; the cursor band sits on the bar being edited, or follows playback. */}
+        <div className="max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-md border border-line bg-surface p-1" data-testid="ed-score">
+          <ScoreLines
+            song={song}
+            getCursor={getCursor}
+            marked={[...new Set(warnings.map((w) => w.bar).filter((b) => b > 0))]}
+            followBar={cur.bar + 1}
+            onBarClick={(bar) => ed.setCursor({ bar: bar - 1, index: barTokens(handBars[bar - 1] ?? '').length })}
+          />
         </div>
 
         <section className="grid gap-1 text-sm" aria-live="polite" data-testid="ed-warnings">

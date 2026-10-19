@@ -1,0 +1,19 @@
+{
+  "format": "piano-learning-song",
+  "version": 1,
+  "id": "my-twinkle-twinkle-little-star-g--mvfw1tlt",
+  "title": {
+    "en": "Twinkle Twinkle Little Star (G major)",
+    "vi": "Ngôi sao lấp lánh (Sol trưởng)"
+  },
+  "composer": "Traditional",
+  "difficulty": 2,
+  "bpm": 100,
+  "timeSig": [
+    4,
+    4
+  ],
+  "keySig": "G",
+  "right": "G4q G4q D5q D5q | E5q E5q D5h | C5q C5q B4q B4q | A4q A4q G4h | D5q D5q C5q C5q | B4q B4q A4h | D5q D5q C5q C5q | B4q B4q A4h | G4q G4q D5q D5q | E5q E5q D5h | C5q C5q B4q B4q | A4q A4q G4h | G4e D5e B4e D5e G4e D5e B4e D5e | G4e E5e C5e E5e G4e D5e B4e D5e | E4e C5e A4e C5e D4e B4e G4e B4e | D4e A4e F#4e A4e G4h | D5q D5q C5q C5q | B4q B4q A4h | D5q D5q C5q C5q | B4q B4q A4h | G4e D5e B4e D5e G4e D5e B4e D5e |",
+  "left": "G2h B2h | C3h B2h | A2h G2h | D2h G2h | G2h C3h | E3h D3h | B2h C3h | G3h F#3h | G2h B2h | C3h B2h | A2h D3h | D3h [G3 B3]h | G3q G3q D4q D4q | E4q E4q D4h | C4q C4q B3q B3q | A3q A3q [G3 B3]h | G3e D4e B3e D4e G3e E4e C4e E4e | G3e D4e B3e D4e D3e A3e F#3e A3e | G3e D4e B3e D4e G3e E4e C4e E4e | G3e D4e B3e D4e D3e A3e F#3e A3e | G3q G3q D4q D4q |"
+}
