@@ -556,5 +556,15 @@
     "hint": "Bắt đầu sau một ô nhịp tiếng gõ. Nốt được làm tròn tới móc đơn; nốt dưới Đô giữa thuộc tay trái.",
     "empty": "Chưa chơi nốt nào nên không có gì được lưu.",
     "untitled": "Bản ghi {{date}}"
+  },
+  "ai": {
+    "title": "Kết nối AI",
+    "port": "Cổng",
+    "connecting": "Đang tìm trợ lý AI",
+    "connected": "Đã kết nối trợ lý AI",
+    "off": "Chưa kết nối",
+    "hint": "Cho phép trợ lý AI trên máy này (qua máy chủ MCP của Piano Learning) soạn và sửa bài trong trình soạn. Mọi thay đổi đều hoàn tác được.",
+    "stale": "Máy chủ MCP cũ hơn ứng dụng này. Hãy build lại (npm run build:mcp) rồi khởi động lại trong ứng dụng AI.",
+    "replaced": "Một thẻ khác đã nhận kết nối AI. Bấm Kết nối AI ở đây để lấy lại."
   }
 }

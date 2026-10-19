@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import { AiNavigator } from '../ai/AiControls'
 import { useTranslation } from 'react-i18next'
 import { useProgress } from '../store/progress'
 import { setLanguage } from './i18n'
@@ -22,6 +23,7 @@ export function App() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AppRoutes />
+      <AiNavigator />
       <UpdateToast />
     </BrowserRouter>
   )

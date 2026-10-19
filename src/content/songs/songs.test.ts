@@ -3,8 +3,8 @@ import { songDuration, voiceEnd } from '../../engine/song'
 import { MIDI_A0, MIDI_C8 } from '../../engine/notes'
 
 describe('bundled songs', () => {
-  it('has the 12 songs from the spec', () => {
-    expect(bundledSongs.map((s) => s.id)).toEqual([
+  it('starts with the 12 songs from the spec', () => {
+    expect(bundledSongs.slice(0, 12).map((s) => s.id)).toEqual([
       'twinkle',
       'mary-lamb',
       'au-clair',

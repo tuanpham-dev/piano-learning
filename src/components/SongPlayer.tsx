@@ -18,14 +18,14 @@ export function useSongPlayer(song: Song | null) {
   }, [])
 
   const play = useCallback(
-    (fromBeat = 0) => {
+    (fromBeat = 0, toBeat = Infinity) => {
       if (!song || !ensureRunning()) return
       stop()
       const spb = 60 / song.bpm
       const t0 = getAudioContext().currentTime + 0.12
-      const notes = notesFor(song, 'LR').filter((n) => n.startBeat >= fromBeat - 1e-6)
-      const end = Math.max(fromBeat, ...notes.map((n) => n.startBeat + n.beats))
-      for (const n of notes) scheduler.current.at(t0 + (n.startBeat - fromBeat) * spb, (t) => noteOn(n.midi, n.hand === 'R' ? 85 : 65, t, n.beats * spb))
+      const notes = notesFor(song, 'LR').filter((n) => n.startBeat >= fromBeat - 1e-6 && n.startBeat < toBeat - 1e-6)
+      const end = Math.min(toBeat, Math.max(fromBeat, ...notes.map((n) => n.startBeat + n.beats)))
+      for (const n of notes) scheduler.current.at(t0 + (n.startBeat - fromBeat) * spb, (t) => noteOn(n.midi, n.hand === 'R' ? 85 : 65, t, Math.min(n.beats, toBeat - n.startBeat) * spb))
       scheduler.current.ui(t0 + (end - fromBeat) * spb + 0.2, () => {
         run.current = null
         setPlaying(false)

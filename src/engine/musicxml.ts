@@ -129,7 +129,7 @@ export function musicXmlToSong(xml: string, opts: { id?: string; title?: string 
           maxT = Math.max(maxT, t)
         } else if (name === 'note') {
           if (child(el, 'grace')) {
-            warn(bar, 'grace', `Bar ${bar}: a grace note was left out.`)
+            warn(bar, 'grace', 'A grace note was left out.')
             continue
           }
           const d = num(child(el, 'duration')) ?? 0
@@ -140,7 +140,7 @@ export function musicXmlToSong(xml: string, opts: { id?: string; title?: string 
             t += d
             maxT = Math.max(maxT, t)
           }
-          if (child(el, 'time-modification')) warn(bar, 'tuplet', `Bar ${bar}: a triplet (or other tuplet) was written as the nearest sixteenths.`)
+          if (child(el, 'time-modification')) warn(bar, 'tuplet', 'A triplet (or other tuplet) was written as the nearest sixteenths.')
           const pitch = child(el, 'pitch')
           if (!pitch || child(el, 'rest')) continue
           const step = text(child(pitch, 'step')) ?? 'C'

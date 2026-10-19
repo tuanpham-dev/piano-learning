@@ -23,7 +23,7 @@ import { prefersReducedMotion } from '../hooks/useReducedMotion'
 /** Color for a note at (hand, start beat, midi); undefined = default ink. */
 export type NoteColorFn = (hand: Hand, start: number, midi: number) => string | undefined
 
-interface Theme {
+export interface Theme {
   fg: string
   muted: string
   accent: string
@@ -93,6 +93,106 @@ function buildBar(voice: SongVoice, bar: number, song: Song, clef: 'treble' | 'b
   return { notes, events }
 }
 
+export interface RenderOptions {
+  song: Song
+  /** First and last bar to draw (0-based, inclusive), all on one line. */
+  first: number
+  last: number
+  width: number
+  color?: NoteColorFn
+  kid?: boolean
+  showFingers?: boolean
+  hands?: 'R' | 'L' | 'LR'
+  /** Ink colors; defaults to the page theme. */
+  theme?: Theme
+}
+
+/** Draws one line of a grand staff into `el` (replacing its content). Returns the cursor points and drawn height in CSS px. */
+export function renderGrandStaff(el: HTMLDivElement, o: RenderOptions): { points: { beat: number; x: number }[]; height: number } {
+  const { song, first, last, width, color = () => undefined, kid = false, showFingers = true, hands = 'LR' } = o
+  el.innerHTML = ''
+  const bpb = beatsPerBar(song.timeSig)
+  const scale = kid ? 1.15 : 1
+  const th = o.theme ?? theme()
+  const showR = hands !== 'L'
+  const showL = hands !== 'R'
+  const staveH = 78
+  const top = 6
+  const height = (top + (showR ? staveH + 8 : 0) + (showL ? staveH : 0) + 22) * scale
+  const renderer = new Renderer(el, Renderer.Backends.SVG)
+  renderer.resize(width, height)
+  const ctx = renderer.getContext() as RenderContext
+  ctx.scale(scale, scale)
+  ctx.setFillStyle(th.fg)
+  ctx.setStrokeStyle(th.fg)
+  const W = width / scale
+  const left = 8
+  const headW = 80
+  const barW = (W - left - headW - 8) / (last - first + 1)
+  const cursorPts: { beat: number; x: number }[] = []
+  for (let b = first; b <= last; b++) {
+    const isFirst = b === first
+    const x = isFirst ? left : left + headW + barW * (b - first)
+    const w = isFirst ? headW + barW : barW
+    const yR = top
+    const yL = top + (showR ? staveH + 8 : 0)
+    const staves: { stave: Stave; clef: 'treble' | 'bass'; hand: Hand }[] = []
+    if (showR) staves.push({ stave: new Stave(x, yR, w), clef: 'treble', hand: 'R' })
+    if (showL) staves.push({ stave: new Stave(x, yL, w), clef: 'bass', hand: 'L' })
+    for (const s of staves) {
+      if (isFirst) {
+        s.stave.addClef(s.clef).addKeySignature(song.keySig)
+        if (b === 0) s.stave.addTimeSignature(timeSigString(song.timeSig))
+      }
+      s.stave.setStyle({ fillStyle: th.fg, strokeStyle: th.fg })
+      s.stave.setContext(ctx).draw()
+    }
+    if (staves.length === 2) {
+      if (isFirst) {
+        new StaveConnector(staves[0]!.stave, staves[1]!.stave).setType('brace').setContext(ctx).draw()
+        new StaveConnector(staves[0]!.stave, staves[1]!.stave).setType('singleLeft').setContext(ctx).draw()
+      }
+      new StaveConnector(staves[0]!.stave, staves[1]!.stave).setType('singleRight').setContext(ctx).draw()
+    }
+    const built = staves.map((s) => ({ ...s, ...buildBar(song.hands[s.hand], b, song, s.clef, s.hand, color, kid, showFingers && s.hand === 'R', th) }))
+    const voices = built.map((bb) => {
+      const v = new Voice({ num_beats: song.timeSig[0], beat_value: song.timeSig[1] }).setMode(Voice.Mode.SOFT)
+      v.addTickables(bb.notes)
+      Accidental.applyAccidentals([v], song.keySig)
+      return v
+    })
+    const fmt = new Formatter()
+    voices.forEach((v) => fmt.joinVoices([v]))
+    const noteStart = Math.max(...built.map((bb) => bb.stave.getNoteStartX()))
+    built.forEach((bb) => bb.stave.setNoteStartX(noteStart))
+    fmt.format(voices, Math.max(40, x + w - noteStart - 14))
+    built.forEach((bb, i) => {
+      const beams = Beam.generateBeams(
+        bb.notes.filter((n) => !n.isRest()),
+        { groups: Beam.getDefaultBeamGroups(timeSigString(song.timeSig)) },
+      )
+      voices[i]!.draw(ctx, bb.stave)
+      beams.forEach((bm) => bm.setStyle({ fillStyle: th.fg, strokeStyle: th.fg }).setContext(ctx).draw())
+      bb.events.forEach((ev, k) => {
+        if (ev.tieNext && bb.notes[k + 1]) {
+          new StaveTie({ first_note: bb.notes[k], last_note: bb.notes[k + 1], first_indices: ev.midis.map((_, j) => j), last_indices: ev.midis.map((_, j) => j) })
+            .setContext(ctx)
+            .draw()
+        }
+        const n = bb.notes[k]!
+        // Center on the notehead itself (getAbsoluteX is the note's left edge).
+        const cx = n.isRest() ? n.getAbsoluteX() + n.getGlyphWidth() / 2 : (n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2
+        cursorPts.push({ beat: ev.start, x: cx })
+      })
+    })
+    // Only the page's last bar gets an end point; elsewhere the cursor flows straight to the next bar's first note.
+    if (b === last) cursorPts.push({ beat: (b + 1) * bpb, x: x + w - 6 })
+  }
+  // Keep one point per beat (both staves share x positions), sorted.
+  cursorPts.sort((a, b) => a.beat - b.beat || a.x - b.x)
+  return { points: cursorPts.filter((p, i, arr) => i === 0 || Math.abs(p.beat - arr[i - 1]!.beat) > 1e-6), height }
+}
+
 export interface GrandStaffProps {
   song: Song
   /** Beat used to pick which page of bars is shown (changes rarely). */
@@ -129,93 +229,16 @@ export function GrandStaff({ song, cursorBeat, getCursor, color = () => undefine
   useEffect(() => {
     const el = host.current
     if (!el || !width) return
-    el.innerHTML = ''
     try {
-      const th = theme()
-      const showR = hands !== 'L'
-      const showL = hands !== 'R'
-      const staveH = 78
-      const top = 6
-      const height = (top + (showR ? staveH + 8 : 0) + (showL ? staveH : 0) + 22) * scale
-      const renderer = new Renderer(el, Renderer.Backends.SVG)
-      renderer.resize(width, height)
-      const ctx = renderer.getContext() as RenderContext
-      ctx.scale(scale, scale)
-      ctx.setFillStyle(th.fg)
-      ctx.setStrokeStyle(th.fg)
-      const W = width / scale
-      const left = 8
-      const headW = 80
-      const barW = (W - left - headW - 8) / (last - first + 1)
-      const cursorPts: { beat: number; x: number }[] = []
-      for (let b = first; b <= last; b++) {
-        const isFirst = b === first
-        const x = isFirst ? left : left + headW + barW * (b - first)
-        const w = isFirst ? headW + barW : barW
-        const yR = top
-        const yL = top + (showR ? staveH + 8 : 0)
-        const staves: { stave: Stave; clef: 'treble' | 'bass'; hand: Hand }[] = []
-        if (showR) staves.push({ stave: new Stave(x, yR, w), clef: 'treble', hand: 'R' })
-        if (showL) staves.push({ stave: new Stave(x, yL, w), clef: 'bass', hand: 'L' })
-        for (const s of staves) {
-          if (isFirst) {
-            s.stave.addClef(s.clef).addKeySignature(song.keySig)
-            if (b === 0) s.stave.addTimeSignature(timeSigString(song.timeSig))
-          }
-          s.stave.setStyle({ fillStyle: th.fg, strokeStyle: th.fg })
-          s.stave.setContext(ctx).draw()
-        }
-        if (staves.length === 2) {
-          if (isFirst) {
-            new StaveConnector(staves[0]!.stave, staves[1]!.stave).setType('brace').setContext(ctx).draw()
-            new StaveConnector(staves[0]!.stave, staves[1]!.stave).setType('singleLeft').setContext(ctx).draw()
-          }
-          new StaveConnector(staves[0]!.stave, staves[1]!.stave).setType('singleRight').setContext(ctx).draw()
-        }
-        const built = staves.map((s) => ({ ...s, ...buildBar(song.hands[s.hand], b, song, s.clef, s.hand, color, kid, showFingers && s.hand === 'R', th) }))
-        const voices = built.map((bb) => {
-          const v = new Voice({ num_beats: song.timeSig[0], beat_value: song.timeSig[1] }).setMode(Voice.Mode.SOFT)
-          v.addTickables(bb.notes)
-          Accidental.applyAccidentals([v], song.keySig)
-          return v
-        })
-        const fmt = new Formatter()
-        voices.forEach((v) => fmt.joinVoices([v]))
-        const noteStart = Math.max(...built.map((bb) => bb.stave.getNoteStartX()))
-        built.forEach((bb) => bb.stave.setNoteStartX(noteStart))
-        fmt.format(voices, Math.max(40, x + w - noteStart - 14))
-        built.forEach((bb, i) => {
-          const beams = Beam.generateBeams(
-            bb.notes.filter((n) => !n.isRest()),
-            { groups: Beam.getDefaultBeamGroups(timeSigString(song.timeSig)) },
-          )
-          voices[i]!.draw(ctx, bb.stave)
-          beams.forEach((bm) => bm.setStyle({ fillStyle: th.fg, strokeStyle: th.fg }).setContext(ctx).draw())
-          bb.events.forEach((ev, k) => {
-            if (ev.tieNext && bb.notes[k + 1]) {
-              new StaveTie({ first_note: bb.notes[k], last_note: bb.notes[k + 1], first_indices: ev.midis.map((_, j) => j), last_indices: ev.midis.map((_, j) => j) })
-                .setContext(ctx)
-                .draw()
-            }
-            const n = bb.notes[k]!
-            // Center on the notehead itself (getAbsoluteX is the note's left edge).
-            const cx = n.isRest() ? n.getAbsoluteX() + n.getGlyphWidth() / 2 : (n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2
-            cursorPts.push({ beat: ev.start, x: cx })
-          })
-        })
-        // Only the page's last bar gets an end point; elsewhere the cursor flows straight to the next bar's first note.
-        if (b === last) cursorPts.push({ beat: (b + 1) * bpb, x: x + w - 6 })
-      }
-      // Keep one point per beat (both staves share x positions), sorted.
-      cursorPts.sort((a, b) => a.beat - b.beat || a.x - b.x)
-      points.current = cursorPts.filter((p, i, arr) => i === 0 || Math.abs(p.beat - arr[i - 1]!.beat) > 1e-6)
-      if (band.current) band.current.style.height = `${height - 8}px`
+      const out = renderGrandStaff(el, { song, first, last, width, color, kid, showFingers, hands })
+      points.current = out.points
+      if (band.current) band.current.style.height = `${out.height - 8}px`
       setError(null)
     } catch (e) {
       console.error('[staff]', e)
       setError(String(e))
     }
-  }, [song, first, last, color, kid, showFingers, hands, width, scale, bpb])
+  }, [song, first, last, color, kid, showFingers, hands, width])
 
   // Cursor band: moved every frame from the live beat, so it tracks the music smoothly instead of redrawing the SVG.
   useEffect(() => {

@@ -7,6 +7,8 @@ import { applyImport, downloadExport, parseExport, resetAll, type ExportFile } f
 import { Button } from '../components/PrimaryButton'
 import { Segmented } from '../components/Segmented'
 import { VirtualMidiPanel } from '../components/VirtualMidiPanel'
+import { AiConnectButton, AiStatusLine } from '../ai/AiControls'
+import { aiPort, setAiPort, DEFAULT_PORT } from '../ai/bridge'
 
 const VERSION = '1.0.0'
 
@@ -113,6 +115,11 @@ export function SettingsPage() {
             <Toggle id="set-skip" label={t('settings.skipAhead')} checked={p.settings.skipAhead} onChange={(skipAhead) => p.updateSettings({ skipAhead })} />
           </Row>
         )}
+        {p.mode === 'adult' && (
+          <Row label={t('ai.title')}>
+            <AiSettings />
+          </Row>
+        )}
         <Row label={t('settings.data')}>
           <Button onClick={downloadExport}>{t('settings.export')}</Button>
           <Button onClick={() => fileRef.current?.click()}>{t('settings.import')}</Button>
@@ -206,5 +213,36 @@ export function Toggle({ id, checked, onChange, label }: { id: string; checked: 
     >
       <span className={`absolute top-1 h-6 w-6 rounded-full bg-bg shadow transition-all ${checked ? 'left-7' : 'left-1'}`} />
     </button>
+  )
+}
+
+/** Connect AI and its port (the MCP server's PIANO_PORT). */
+function AiSettings() {
+  const { t } = useT()
+  const [port, setPort] = useState(() => String(aiPort()))
+  return (
+    <div className="grid gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <AiConnectButton />
+        <label className="inline-flex items-center gap-2 text-sm" htmlFor="set-ai-port">
+          {t('ai.port')}
+          <input
+            id="set-ai-port"
+            inputMode="numeric"
+            className="w-24 rounded border border-line bg-bg px-2 min-h-9 tabular"
+            value={port}
+            onChange={(e) => setPort(e.target.value.replace(/\D/g, '').slice(0, 5))}
+            onBlur={() => {
+              const n = Number(port)
+              const ok = n >= 1024 && n <= 65535 ? n : DEFAULT_PORT
+              setAiPort(ok)
+              setPort(String(ok))
+            }}
+          />
+        </label>
+      </div>
+      <p className="text-sm text-muted max-w-prose">{t('ai.hint')}</p>
+      <AiStatusLine />
+    </div>
   )
 }

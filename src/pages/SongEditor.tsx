@@ -19,7 +19,8 @@ import { useSongPlayer } from '../components/SongPlayer'
 import { useWarningText } from '../components/WarningText'
 import { useInputs } from '../input/useInputs'
 import { bus } from '../input/bus'
-import { AiConnectButton, AiActivityList } from '../ai/AiControls'
+import { AiConnectButton, AiActivityList, AiStatusLine } from '../ai/AiControls'
+import { useAi } from '../ai/bridge'
 
 const LENGTHS: Length[] = ['w', 'h', 'q', 'e', 's']
 
@@ -87,6 +88,16 @@ function Editor() {
   const barText = handBars[cur.bar] ?? ''
   const tokens = barTokens(barText)
   const player = useSongPlayer(song)
+
+  // play_song from the AI: play the asked bars here, with the staff cursor following.
+  const aiPlay = useAi((s) => s.play)
+  const playRef = useRef(player.play)
+  playRef.current = player.play
+  useEffect(() => {
+    if (!aiPlay) return
+    useEditor.getState().setCursor({ bar: aiPlay.fromBar - 1, index: 0 })
+    playRef.current((aiPlay.fromBar - 1) * barLen, aiPlay.toBar * barLen)
+  }, [aiPlay, barLen])
 
   const setBarText = useCallback(
     (hand: 'R' | 'L', bar: number, text: string) => {
@@ -405,6 +416,7 @@ function Editor() {
           ))}
         </section>
 
+        <AiStatusLine />
         <AiActivityList />
         <div className="flex-1" />
         <Keyboard low={36} high={84} interactive={screen} focus={[]} height={110} />

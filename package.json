@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "samples": "node scripts/fetch-samples.mjs",
-    "icons": "node scripts/make-icons.mjs"
+    "icons": "node scripts/make-icons.mjs",
+    "build:mcp": "esbuild mcp/server.ts --bundle --platform=node --format=esm --outfile=mcp/dist/piano-mcp.js --banner:js=\"import { createRequire as __cr } from 'module'; const require = __cr(import.meta.url);\""
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

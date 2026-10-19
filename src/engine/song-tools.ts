@@ -194,6 +194,9 @@ export const TOOLS: ToolDef[] = [
 
 export const TOOL_NAMES = TOOLS.map((t) => t.name)
 
+/** Tools only the open app can run (the editor, its saved songs, sound and pictures); part of the fingerprint. */
+export const LIVE_TOOLS = ['new_song', 'open_song', 'list_songs', 'load_song', 'get_song_file', 'save_song', 'play_song', 'screenshot']
+
 export function runTool(draft: Draft, name: string, args: unknown): { draft: Draft; result: unknown } {
   const tool = TOOLS.find((t) => t.name === name)
   if (!tool) throw new Error(`Unknown tool "${name}". Tools: ${TOOL_NAMES.join(', ')}.`)

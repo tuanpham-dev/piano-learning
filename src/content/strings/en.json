@@ -556,5 +556,15 @@
     "hint": "Starts after one bar of clicks. Notes snap to eighths; notes below middle C go to the left hand.",
     "empty": "Nothing was played, so nothing was saved.",
     "untitled": "Recording {{date}}"
+  },
+  "ai": {
+    "title": "AI connection",
+    "port": "Port",
+    "connecting": "Looking for the AI helper",
+    "connected": "Connected to the AI helper",
+    "off": "Not connected",
+    "hint": "Lets an AI assistant on this computer (through the Piano Learning MCP server) build and edit songs in the editor. Each change can be undone.",
+    "stale": "The MCP server is from an older build than this app. Rebuild it (npm run build:mcp), then restart it in your AI client.",
+    "replaced": "Another tab took over the AI connection. Press Connect AI here to bring it back."
   }
 }
