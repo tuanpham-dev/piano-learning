@@ -45,9 +45,9 @@ export function WelcomePage() {
               type="button"
               onClick={() => pickMode(m)}
               aria-pressed={mode === m}
-              className={`rounded-[var(--radius)] border-2 py-5 text-lg font-semibold ${mode === m ? 'border-accent bg-accent/10' : 'border-line bg-bg'}`}
+              className={`lifted rounded-[var(--radius)] border-2 py-5 text-lg font-semibold ${mode === m ? 'border-accent bg-accent text-accent-ink' : 'border-line bg-surface'}`}
             >
-              <span className="flex justify-center text-accent mb-1">
+              <span className={`flex justify-center mb-1 ${mode === m ? '' : 'text-accent'}`}>
                 <Icon name={m === 'kid' ? 'child' : 'adult'} size={36} />
               </span>
               {t(`welcome.${m}`)}

@@ -9,8 +9,10 @@ import { Mascot } from '../components/Mascot'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { StarIcon } from '../components/Stars'
 import { usePracticeClock } from '../hooks/usePracticeClock'
+import { LETTER_COLOR, inkForLetter } from '../notation/note-colors'
+import type { Letter } from '../engine/notes'
 
-const ISLAND = ['var(--color-nC)', 'var(--color-nD)', 'var(--color-nE)', 'var(--color-nF)', 'var(--color-nG)', 'var(--color-nA)', 'var(--color-nB)']
+const ISLAND: Letter[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 
 export function LessonsPage() {
   const { kid } = useT()
@@ -90,7 +92,7 @@ function JourneyMap() {
             const done = p.lessonsDone.includes(l.id)
             const open = isUnlocked(l, lessons, p)
             const current = next?.id === l.id
-            const color = ISLAND[i % ISLAND.length]
+            const letter = ISLAND[i % ISLAND.length]!
             return (
               <li key={l.id} className="flex items-center">
                 {i > 0 && <span className="w-5 sm:w-8 border-t-4 border-dotted border-muted/50" aria-hidden />}
@@ -101,8 +103,8 @@ function JourneyMap() {
                   data-state={done ? 'done' : current ? 'current' : open ? 'open' : 'locked'}
                   onClick={() => nav(`/lessons/${l.id}`)}
                   aria-label={`${l.order}. ${L(l.title)}${done ? ' ✓' : open ? '' : ' (locked)'}`}
-                  className={`relative grid size-16 place-items-center rounded-full text-2xl font-extrabold transition-transform ${current ? 'scale-110 ring-4 ring-nE ring-offset-4 ring-offset-bg' : ''} ${open ? 'text-white shadow-md active:scale-95' : 'bg-line text-muted opacity-60'}`}
-                  style={open ? { background: color } : undefined}
+                  className={`relative grid size-16 place-items-center rounded-full text-2xl font-extrabold transition-transform ${current ? 'scale-110 ring-4 ring-nE ring-offset-4 ring-offset-bg' : ''} ${open ? 'lifted' : 'bg-surface text-muted opacity-60 border-2 border-dashed border-line'}`}
+                  style={open ? { background: LETTER_COLOR[letter], color: inkForLetter(letter) } : undefined}
                 >
                   {open ? l.order : <Icon name="lock" size={24} />}
                   {done && (

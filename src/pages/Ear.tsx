@@ -9,6 +9,8 @@ import { Segmented } from '../components/Segmented'
 import { Button, PrimaryButton } from '../components/PrimaryButton'
 import { Mascot, type MascotMood } from '../components/Mascot'
 import { RoundSummary } from '../components/RoundSummary'
+import { Bar } from '../components/Bar'
+import type { Letter } from '../engine/notes'
 import { useInputs } from '../input/useInputs'
 import { bus } from '../input/bus'
 import { checkChoice, checkPlayed, makeQuestion, type ChordQuality, type EarQuestion } from '../engine/ear'
@@ -23,7 +25,7 @@ import { useLessonRun, LessonBanner } from '../hooks/useLessonRun'
 import { useHeldDoNote } from '../store/doNote'
 
 type Phase = 'idle' | 'running' | 'done'
-const BTN_COLORS = ['var(--color-nC)', 'var(--color-nA)', 'var(--color-nF)', 'var(--color-nB)', 'var(--color-nD)', 'var(--color-nG)']
+const ANSWER_NOTES: Letter[] = ['C', 'A', 'F', 'B', 'D', 'G']
 
 export function EarPage() {
   const { t, tm, kid } = useT()
@@ -169,19 +171,31 @@ export function EarPage() {
         {import.meta.env.DEV && q && <span hidden data-testid="ear-q" data-notes={q.notes.join(',')} data-answer={q.answer} />}
         {phase === 'running' && q && q.choices.length > 0 && (
           <div className={`grid gap-2 ${kid ? 'grid-cols-2' : 'grid-cols-[repeat(auto-fill,minmax(120px,1fr))]'}`}>
-            {q.choices.map((c, i) => (
-              <button
-                key={c}
-                type="button"
-                data-choice={c}
-                disabled={!!feedback}
-                onClick={() => answer(checkChoice(q, c))}
-                className={`rounded-[var(--radius)] border min-h-[var(--touch)] px-3 ${kid ? 'border-0 text-white text-xl font-extrabold min-h-16' : 'border-line bg-bg hover:bg-panel'} ${feedback && c === q.answer ? 'ring-4 ring-ok' : ''}`}
-                style={kid ? { background: BTN_COLORS[i % BTN_COLORS.length] } : undefined}
-              >
-                {label(c)}
-              </button>
-            ))}
+            {q.choices.map((c, i) =>
+              kid ? (
+                <Bar
+                  key={c}
+                  note={ANSWER_NOTES[i % ANSWER_NOTES.length]!}
+                  label={label(c)}
+                  data={{ choice: c }}
+                  disabled={!!feedback}
+                  selected={!!feedback && c === q.answer}
+                  onClick={() => answer(checkChoice(q, c))}
+                  className="min-h-20 text-lg"
+                />
+              ) : (
+                <button
+                  key={c}
+                  type="button"
+                  data-choice={c}
+                  disabled={!!feedback}
+                  onClick={() => answer(checkChoice(q, c))}
+                  className={`lifted rounded-[var(--radius)] border border-line bg-surface hover:bg-panel min-h-[var(--touch)] px-3 ${feedback && c === q.answer ? 'ring-4 ring-ok' : ''}`}
+                >
+                  {label(c)}
+                </button>
+              ),
+            )}
           </div>
         )}
         {phase === 'done' && !(kid && lessonRun.lesson) && (

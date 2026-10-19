@@ -30,9 +30,33 @@ export function hexForMidi(midi: number): string {
   return LETTER_HEX[letterOf(midi)]
 }
 
+const NAVY = '#14213d'
+const WHITE = '#ffffff'
+
+function luminance(hex: string): number {
+  const c = hex
+    .slice(1)
+    .match(/../g)!
+    .map((h) => parseInt(h, 16) / 255)
+    .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+  return 0.2126 * c[0]! + 0.7152 * c[1]! + 0.0722 * c[2]!
+}
+
+/** WCAG contrast ratio between two hex colors. */
+export function contrastRatio(a: string, b: string): number {
+  const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p)
+  return (x! + 0.05) / (y! + 0.05)
+}
+
+/** Navy or white, whichever reads better on a note's color. */
+export function inkForLetter(letter: Letter): string {
+  const bg = LETTER_HEX[letter]
+  return contrastRatio(NAVY, bg) >= contrastRatio(WHITE, bg) ? NAVY : WHITE
+}
+
 /** Text color that reads on each Boomwhacker hue. */
 export function inkForMidi(midi: number): string {
-  return letterOf(midi) === 'E' ? '#3b2a12' : '#ffffff'
+  return inkForLetter(letterOf(midi))
 }
 
 /** Resolves a CSS custom property to its current value (for canvas drawing). */

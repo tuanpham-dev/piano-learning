@@ -175,7 +175,7 @@ export function InputPanel(props: Props) {
     <div className="relative">
       <button
         type="button"
-        className="inline-flex items-center gap-2 rounded-full bg-panel px-5 min-h-[var(--touch)] font-extrabold"
+        className="lifted inline-flex items-center gap-2 rounded-full bg-surface px-5 min-h-[var(--touch)] font-bold"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
       >

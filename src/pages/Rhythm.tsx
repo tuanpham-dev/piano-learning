@@ -240,7 +240,7 @@ export function RhythmPage() {
             e.preventDefault()
             emitNote('tap', 0, 'screen')
           }}
-          className={`grid place-items-center rounded-[var(--radius)] border-4 border-dashed select-none font-extrabold active:scale-[.98] transition-transform ${kid ? 'h-44 text-2xl border-nC bg-panel' : 'h-32 text-lg border-line bg-panel/60'}`}
+          className={`grid place-items-center rounded-[var(--radius)] border-4 border-dashed select-none font-extrabold active:scale-[.98] transition-transform ${kid ? 'lifted h-44 text-2xl bg-surface' : 'h-32 text-lg border-line bg-panel/60'}`}
           style={{ touchAction: 'none' }}
         >
           {kid ? (

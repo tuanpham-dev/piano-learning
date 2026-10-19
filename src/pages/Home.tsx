@@ -7,6 +7,8 @@ import { computeStreak } from '../engine/streak'
 import { nextLesson } from '../engine/lessons'
 import { lessons } from '../content/lessons'
 import { Mascot } from '../components/Mascot'
+import { Bar } from '../components/Bar'
+import type { Letter } from '../engine/notes'
 import { PrimaryButton } from '../components/PrimaryButton'
 
 function useHomeData() {
@@ -62,7 +64,8 @@ function AdultHome() {
   )
 }
 
-const KID_TILE_COLORS = ['var(--color-nC)', 'var(--color-nD)', 'var(--color-nF)', 'var(--color-nG)', 'var(--color-nA)', 'var(--color-nB)', 'var(--color-nE)', 'var(--color-nC)']
+/** Each mode is a xylophone bar in its own note color. */
+const KID_TILE_NOTES: Record<string, Letter> = { free: 'C', songs: 'D', drills: 'F', ear: 'G', rhythm: 'A', lessons: 'B', reference: 'E', progress: 'C' }
 
 function KidHome() {
   const { t, tm, L } = useT()
@@ -77,22 +80,12 @@ function KidHome() {
         </div>
         {next && (
           <PrimaryButton onClick={() => nav(`/lessons/${next.id}`)} className="w-full text-2xl min-h-16">
-            {t('common.start')} ▶
+            <Icon name="play" size={24} /> {t('common.start')}
           </PrimaryButton>
         )}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {MODE_ROUTES.map((r, i) => (
-            <Link
-              key={r.key}
-              to={r.to}
-              className="rounded-[var(--radius)] border-4 bg-bg p-4 grid justify-items-center gap-1 text-center font-extrabold text-lg min-h-32 content-center active:scale-95 transition-transform"
-              style={{ borderColor: KID_TILE_COLORS[i] }}
-            >
-              <span style={{ color: KID_TILE_COLORS[i] }}>
-                <Icon name={r.kidIcon} size={44} />
-              </span>
-              {tm(`modes.${r.key}`)}
-            </Link>
+          {MODE_ROUTES.map((r) => (
+            <Bar key={r.key} to={r.to} note={KID_TILE_NOTES[r.key]!} icon={r.kidIcon} iconSize={40} label={tm(`modes.${r.key}`)} className="min-h-32" />
           ))}
         </div>
         <Link to="/settings" className="justify-self-center inline-flex items-center min-h-[var(--touch)] px-4 text-sm text-muted underline underline-offset-4">

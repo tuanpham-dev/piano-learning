@@ -78,7 +78,7 @@ function KidBar({ title, back, actions }: { title: string; back?: string; action
           <button
             type="button"
             onClick={() => nav(back ?? '/')}
-            className="min-h-[var(--touch)] min-w-[var(--touch)] rounded-full bg-bg text-2xl font-extrabold"
+            className="lifted min-h-[var(--touch)] min-w-[var(--touch)] rounded-full bg-surface text-2xl font-extrabold"
             aria-label={t('common.back')}
           >
             ←

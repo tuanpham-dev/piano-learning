@@ -7,6 +7,8 @@ import { useSession } from '../store/session'
 import { useProgress } from '../store/progress'
 import type { Song } from '../engine/song'
 import { Stars } from '../components/Stars'
+import { Bar } from '../components/Bar'
+import type { Letter } from '../engine/notes'
 import { Segmented } from '../components/Segmented'
 import { Button } from '../components/PrimaryButton'
 import { usePracticeClock } from '../hooks/usePracticeClock'
@@ -28,11 +30,12 @@ function bestOf(best: Record<string, { percent: number; stars: number }> | undef
 }
 
 const DIFF_COLOR = ['', 'var(--color-nF)', 'var(--color-nD)', 'var(--color-nC)']
+const DIFF_NOTE: Record<number, Letter> = { 1: 'F', 2: 'D', 3: 'C' }
 
 type Filter = 'all' | 'bundled' | 'imported'
 
 export function LibraryPage() {
-  const { t, tm, L, kid } = useT()
+  const { t, L, kid } = useT()
   usePracticeClock('songs')
   const songs = useAllSongs()
   const songBest = useProgress((s) => s.songBest)
@@ -67,26 +70,43 @@ export function LibraryPage() {
           const finished = done.includes(s.id)
           return (
             <div key={s.id} className="relative">
-              <Link
-                to={`/songs/${s.id}`}
-                data-song={s.id}
-                className={`grid gap-1.5 rounded-[var(--radius)] border bg-bg p-4 hover:bg-panel content-start h-full ${kid ? 'border-4 min-h-28' : 'border-line'}`}
-                style={kid ? { borderColor: DIFF_COLOR[s.difficulty] } : undefined}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <span className={`font-semibold ${kid ? 'text-xl font-extrabold' : ''}`}>{L(s.title)}</span>
-                  {(b || finished) && <Stars count={b?.stars ?? (finished ? 1 : 0)} size={kid ? 24 : 18} />}
-                </div>
-                {!kid && <span className="text-sm text-muted">{s.composer}</span>}
-                <span className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="rounded-full px-2 py-0.5 font-semibold text-accent-ink" style={{ background: DIFF_COLOR[s.difficulty] }}>
-                    {t(`songs.diff${s.difficulty}`)}
+              {kid ? (
+                <Bar
+                  to={`/songs/${s.id}`}
+                  note={DIFF_NOTE[s.difficulty] ?? 'D'}
+                  icon="note"
+                  iconSize={30}
+                  label={L(s.title)}
+                  data={{ song: s.id }}
+                  className="h-full min-h-32"
+                  sublabel={
+                    <span className="inline-flex items-center gap-2 rounded-full bg-plate px-2.5 py-0.5 text-sm font-semibold text-plate-ink">
+                      {t(`songs.diff${s.difficulty}`)}
+                      {(b || finished) && <Stars count={b?.stars ?? (finished ? 1 : 0)} size={18} />}
+                    </span>
+                  }
+                />
+              ) : (
+                <Link
+                  to={`/songs/${s.id}`}
+                  data-song={s.id}
+                  className={`grid gap-1.5 rounded-[var(--radius)] border bg-bg p-4 hover:bg-panel content-start h-full ${kid ? 'border-4 min-h-28' : 'border-line'}`}
+                  style={kid ? { borderColor: DIFF_COLOR[s.difficulty] } : undefined}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className={`font-semibold ${kid ? 'text-xl font-extrabold' : ''}`}>{L(s.title)}</span>
+                    {(b || finished) && <Stars count={b?.stars ?? (finished ? 1 : 0)} size={kid ? 24 : 18} />}
+                  </div>
+                  {!kid && <span className="text-sm text-muted">{s.composer}</span>}
+                  <span className="flex flex-wrap items-center gap-2 text-xs">
+                    <span className="rounded-full px-2 py-0.5 font-semibold text-accent-ink" style={{ background: DIFF_COLOR[s.difficulty] }}>
+                      {t(`songs.diff${s.difficulty}`)}
+                    </span>
+                    {s.source === 'imported' && <span className="rounded-full bg-panel px-2 py-0.5">{t('songs.imported')}</span>}
+                    {!kid && b && <span className="text-muted tabular">{t('songs.best', { percent: b.percent })}</span>}
                   </span>
-                  {s.source === 'imported' && <span className="rounded-full bg-panel px-2 py-0.5">{t('songs.imported')}</span>}
-                  {!kid && b && <span className="text-muted tabular">{t('songs.best', { percent: b.percent })}</span>}
-                </span>
-                {kid && <span className="text-sm">{tm('common.play')} ▶</span>}
-              </Link>
+                </Link>
+              )}
               {!kid && s.source === 'imported' && (
                 <Button variant="ghost" className="absolute right-2 bottom-2 text-xs min-h-8 px-2" onClick={() => remove(s.id)}>
                   {t('songs.delete')}
