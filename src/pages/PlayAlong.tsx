@@ -156,7 +156,7 @@ function PlayAlongScreen({ song }: { song: Song }) {
           </>
         )}
       </PrimaryButton>
-      <Button onClick={() => setTempo(tempo === 60 ? 80 : 60)} aria-pressed={tempo === 60} className={`text-lg font-extrabold ${tempo === 60 ? 'bg-panel' : ''}`}>
+      <Button onClick={() => setTempo(tempo === 60 ? 80 : 60)} aria-pressed={tempo === 60} className="text-lg font-bold">
         <Icon name="walk" size={22} /> {t('kid.play.slower')}
       </Button>
       <Segmented<Hands>
@@ -169,7 +169,7 @@ function PlayAlongScreen({ song }: { song: Song }) {
           { value: 'LR', label: t('play.both') },
         ]}
       />
-      <Button onClick={() => setMode(mode === 'wait' ? 'perform' : 'wait')} aria-pressed={mode === 'perform'} className={mode === 'perform' ? 'bg-panel font-extrabold' : ''}>
+      <Button onClick={() => setMode(mode === 'wait' ? 'perform' : 'wait')} aria-pressed={mode === 'perform'} className="font-bold">
         <span className="text-nE">
           <Icon name="star" />
         </span>{' '}

@@ -159,6 +159,7 @@ html[data-mode="kid"] {
     border: var(--outline);
     box-shadow: var(--lift);
   }
+  html[data-mode="kid"] .lifted.is-pressed,
   html[data-mode="kid"] .lifted:not(:disabled):active {
     transform: translateY(2px);
     box-shadow: none;

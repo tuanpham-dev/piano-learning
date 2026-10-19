@@ -14,12 +14,16 @@ const styles: Record<Variant, string> = {
 }
 
 /** The one big call-to-action on a screen in kid mode; a regular button in adult mode. */
+/** Toggle buttons (aria-pressed) that are on: filled navy and pushed in, so the state reads at a glance. */
+const PRESSED = 'is-pressed bg-fg text-bg border-fg'
+
 export function Button({ variant = 'secondary', className = '', children, ...rest }: Props) {
+  const pressed = rest['aria-pressed'] === true
   return (
     <button
       type="button"
       {...rest}
-      className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius)] border px-4 min-h-[var(--touch)] disabled:opacity-45 disabled:cursor-not-allowed transition-colors ${styles[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius)] border px-4 min-h-[var(--touch)] disabled:opacity-45 disabled:cursor-not-allowed transition-colors ${pressed ? `lifted ${PRESSED}` : styles[variant]} ${className}`}
     >
       {children}
     </button>
