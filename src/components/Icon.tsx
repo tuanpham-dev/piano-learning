@@ -1,5 +1,16 @@
 import {
   ArrowCounterClockwise,
+  ArrowUUpLeft,
+  ArrowUUpRight,
+  Check,
+  Copy,
+  DotsThree,
+  Export,
+  PencilSimple,
+  Record,
+  Sparkle,
+  Trash,
+  UploadSimple,
   Baby,
   BookOpen,
   ChartBar,
@@ -63,12 +74,23 @@ const ICONS = {
   compass: Compass,
   target: Target,
   graduate: GraduationCap,
+  pencil: PencilSimple,
+  record: Record,
+  sparkle: Sparkle,
+  export: Export,
+  upload: UploadSimple,
+  copy: Copy,
+  trash: Trash,
+  undo: ArrowUUpLeft,
+  redo: ArrowUUpRight,
+  more: DotsThree,
+  check: Check,
 } satisfies Record<string, PhosphorIcon>
 
 export type IconName = keyof typeof ICONS
 
 /** Icons that read best solid whatever the mode. */
-const SOLID: IconName[] = ['star', 'play', 'stop']
+const SOLID: IconName[] = ['star', 'play', 'stop', 'record']
 
 interface Props {
   name: IconName

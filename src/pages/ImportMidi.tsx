@@ -5,11 +5,14 @@ import { useT } from '../app/i18n'
 import { NoNotesError, parseMidiFile, suggestMapping, toSong, type ParsedMidi, type TrackRole } from '../engine/midi-import'
 import { useSession } from '../store/session'
 import { Button } from '../components/PrimaryButton'
+import { readSongFile, SongFileError } from '../engine/song-file'
+import { checkSong } from '../engine/song-check'
 
 export function ImportMidiPage() {
   const { t } = useT()
   const nav = useNavigate()
   const add = useSession((s) => s.addImportedSong)
+  const setPendingReview = useSession((s) => s.setPendingReview)
   const fileRef = useRef<HTMLInputElement>(null)
   const [parsed, setParsed] = useState<{ midi: ParsedMidi; file: string } | null>(null)
   const [mapping, setMapping] = useState<Record<number, TrackRole>>({})
@@ -20,6 +23,18 @@ export function ImportMidiPage() {
   const read = async (f: File | undefined) => {
     if (!f) return
     setError(null)
+    if (/\.json$/i.test(f.name)) {
+      // A song file: check it and show it on the review screen before saving (R3).
+      try {
+        const { song, issues } = readSongFile(await f.text())
+        setPendingReview({ song, warnings: checkSong(song, issues), origin: 'file', fileName: f.name })
+        nav('/songs/review')
+      } catch (e) {
+        setError(t('importer.songFileError', { file: f.name, reason: e instanceof SongFileError ? e.message : String(e) }))
+      }
+      if (fileRef.current) fileRef.current.value = ''
+      return
+    }
     try {
       const midi = parseMidiFile(new Uint8Array(await f.arrayBuffer()))
       setParsed({ midi, file: f.name })
@@ -65,9 +80,16 @@ export function ImportMidiPage() {
           }}
           className={`grid place-items-center gap-3 rounded-[var(--radius)] border-2 border-dashed p-8 text-center ${dragging ? 'border-accent bg-accent/5' : 'border-line'}`}
         >
-          <span>{t('importer.drop')}</span>
+          <span>{t('importer.dropAny')}</span>
           <Button onClick={() => fileRef.current?.click()}>{t('importer.choose')}</Button>
-          <input ref={fileRef} id="import-file" type="file" accept=".mid,.midi,audio/midi,audio/x-midi" hidden onChange={(e) => void read(e.target.files?.[0])} />
+          <input
+            ref={fileRef}
+            id="import-file"
+            type="file"
+            accept=".mid,.midi,audio/midi,audio/x-midi,.json,application/json"
+            hidden
+            onChange={(e) => void read(e.target.files?.[0])}
+          />
         </div>
         {error && (
           <p role="alert" className="text-accent">

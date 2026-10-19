@@ -209,11 +209,24 @@
     "diff1": "Easy",
     "diff2": "Medium",
     "diff3": "Hard",
-    "import": "Import MIDI file",
+    "import": "Import",
     "noImported": "No imported songs yet. Import a .mid file to play along with it.",
     "best": "Best {{percent}}%",
     "delete": "Remove",
-    "notFound": "This song isn't in the library anymore."
+    "notFound": "This song isn't in the library anymore.",
+    "mySongs": "My songs",
+    "learnSongs": "Songs to learn",
+    "menu": "Song options",
+    "edit": "Edit",
+    "exportFile": "Export song file",
+    "duplicate": "Duplicate",
+    "rename": "Rename",
+    "saveName": "Save name",
+    "deleteConfirm": "Delete “{{title}}”? This can't be undone.",
+    "deleteYes": "Delete",
+    "copyOf": "{{title}} (copy)",
+    "newSong": "New song",
+    "noMine": "No songs of your own yet. Import a song file, record one in Free play, or create one."
   },
   "play": {
     "wait": "Wait",
@@ -293,10 +306,10 @@
     "goalPerform": "Goal: {{min}}% or better"
   },
   "importer": {
-    "title": "Import a MIDI file",
+    "title": "Import a song",
     "drop": "Drop a .mid file here, or",
     "choose": "Choose a file",
-    "hint": "Assign tracks to your right and left hand. Imported songs are saved on this device.",
+    "hint": "Song files (.song.json) open for review before saving. For MIDI files, assign tracks to your right and left hand. Songs are saved on this device.",
     "noNotes": "This file has no playable notes: {{file}}",
     "songTitle": "Song title",
     "track": "{{name}} · {{count}} notes",
@@ -305,7 +318,9 @@
     "ignore": "Ignore",
     "add": "Add to library",
     "summary": "{{bpm}} BPM · {{sig}}",
-    "added": "Added “{{title}}” to the library."
+    "added": "Added “{{title}}” to the library.",
+    "dropAny": "Drop a song file (.song.json) or MIDI file (.mid) here, or",
+    "songFileError": "Couldn't read {{file}}: {{reason}}"
   },
   "drills": {
     "clef": "Clef",
@@ -441,5 +456,32 @@
     },
     "days_one": "{{count}} day",
     "days_other": "{{count}} days"
+  },
+  "review": {
+    "title": "Review song",
+    "fromFile": "From {{file}}",
+    "fromRecording": "Your recording",
+    "bars": "{{count}} bars",
+    "check": "Check these bars",
+    "clean": "No problems found.",
+    "save": "Save to My songs",
+    "edit": "Edit first",
+    "cancel": "Discard",
+    "nothing": "There's no song to review. Import a song file or record one in Free play.",
+    "bar": "Bar {{bar}}",
+    "whole": "Whole song"
+  },
+  "warn": {
+    "right": "Right hand",
+    "left": "Left hand",
+    "bar-length": "{{beats}} beats; the time signature needs {{expected}}.",
+    "range": "{{note}} is off the piano (A0 to C8).",
+    "span": "{{lo}} to {{hi}} at once is wider than one hand can reach.",
+    "empty": "The song has no notes.",
+    "tuplet": "A triplet was written as the nearest sixteenths.",
+    "grace": "A grace note was left out.",
+    "token": "“{{token}}” isn't a note, chord or rest.",
+    "parts": "Only the first two of {{parts}} parts were used.",
+    "other": "Check this bar."
   }
 }

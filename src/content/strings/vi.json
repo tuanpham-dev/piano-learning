@@ -209,11 +209,24 @@
     "diff1": "Dễ",
     "diff2": "Vừa",
     "diff3": "Khó",
-    "import": "Nhập tệp MIDI",
+    "import": "Nhập",
     "noImported": "Chưa có bài nào được nhập. Hãy nhập tệp .mid để chơi theo.",
     "best": "Tốt nhất {{percent}}%",
     "delete": "Xóa",
-    "notFound": "Bài này không còn trong thư viện."
+    "notFound": "Bài này không còn trong thư viện.",
+    "mySongs": "Bài của tôi",
+    "learnSongs": "Bài để học",
+    "menu": "Tùy chọn bài",
+    "edit": "Sửa",
+    "exportFile": "Xuất tệp bài hát",
+    "duplicate": "Nhân bản",
+    "rename": "Đổi tên",
+    "saveName": "Lưu tên",
+    "deleteConfirm": "Xóa “{{title}}”? Không thể hoàn tác.",
+    "deleteYes": "Xóa",
+    "copyOf": "{{title}} (bản sao)",
+    "newSong": "Bài mới",
+    "noMine": "Chưa có bài nào của bạn. Hãy nhập tệp bài hát, thu âm trong Chơi tự do, hoặc tạo bài mới."
   },
   "play": {
     "wait": "Chờ",
@@ -293,10 +306,10 @@
     "goalPerform": "Mục tiêu: đạt {{min}}% trở lên"
   },
   "importer": {
-    "title": "Nhập tệp MIDI",
+    "title": "Nhập bài hát",
     "drop": "Thả tệp .mid vào đây, hoặc",
     "choose": "Chọn tệp",
-    "hint": "Gán các track cho tay phải và tay trái. Bài nhập được lưu trên thiết bị này.",
+    "hint": "Tệp bài hát (.song.json) được mở để xem lại trước khi lưu. Với tệp MIDI, hãy gán các track cho tay phải và tay trái. Bài hát được lưu trên thiết bị này.",
     "noNotes": "Tệp này không có nốt chơi được: {{file}}",
     "songTitle": "Tên bài",
     "track": "{{name}} · {{count}} nốt",
@@ -305,7 +318,9 @@
     "ignore": "Bỏ qua",
     "add": "Thêm vào thư viện",
     "summary": "{{bpm}} BPM · {{sig}}",
-    "added": "Đã thêm “{{title}}” vào thư viện."
+    "added": "Đã thêm “{{title}}” vào thư viện.",
+    "dropAny": "Thả tệp bài hát (.song.json) hoặc tệp MIDI (.mid) vào đây, hoặc",
+    "songFileError": "Không đọc được {{file}}: {{reason}}"
   },
   "drills": {
     "clef": "Khóa nhạc",
@@ -441,5 +456,32 @@
     },
     "days_one": "{{count}} ngày",
     "days_other": "{{count}} ngày"
+  },
+  "review": {
+    "title": "Xem lại bài",
+    "fromFile": "Từ {{file}}",
+    "fromRecording": "Bản thu của bạn",
+    "bars": "{{count}} ô nhịp",
+    "check": "Kiểm tra các ô nhịp này",
+    "clean": "Không có vấn đề nào.",
+    "save": "Lưu vào Bài của tôi",
+    "edit": "Sửa trước",
+    "cancel": "Bỏ",
+    "nothing": "Không có bài nào để xem lại. Hãy nhập tệp bài hát hoặc thu âm trong Chơi tự do.",
+    "bar": "Ô nhịp {{bar}}",
+    "whole": "Cả bài"
+  },
+  "warn": {
+    "right": "Tay phải",
+    "left": "Tay trái",
+    "bar-length": "{{beats}} phách; số chỉ nhịp cần {{expected}}.",
+    "range": "{{note}} nằm ngoài phím đàn (A0 đến C8).",
+    "span": "{{lo}} đến {{hi}} cùng lúc rộng hơn một bàn tay với tới.",
+    "empty": "Bài hát chưa có nốt nào.",
+    "tuplet": "Một liên ba đã được ghi thành nốt móc kép gần nhất.",
+    "grace": "Một nốt hoa mỹ đã bị bỏ qua.",
+    "token": "“{{token}}” không phải nốt, hợp âm hay dấu lặng.",
+    "parts": "Chỉ dùng hai bè đầu trong {{parts}} bè.",
+    "other": "Hãy kiểm tra ô nhịp này."
   }
 }

@@ -81,14 +81,14 @@ export function musicXmlToSong(xml: string, opts: { id?: string; title?: string 
   if (!score) throw new MusicXmlError(doc.some((n) => tag(n) === 'score-timewise') ? 'Timewise MusicXML is not supported; export as partwise.' : 'This is not a MusicXML score.')
 
   const warnings: SongWarning[] = []
+  const parts = children(score, 'part')
+  if (!parts.length) throw new MusicXmlError('The score has no parts.')
   const warn = (bar: number, kind: SongWarning['kind'], message: string) => {
-    if (!warnings.some((w) => w.bar === bar && w.message === message)) warnings.push({ bar, kind, message })
+    if (!warnings.some((w) => w.bar === bar && w.message === message)) warnings.push({ bar, kind, message, params: kind === 'parts' ? { parts: parts.length } : undefined })
   }
   const title = opts.title ?? text(find(kids(score), 'work-title')) ?? text(find(kids(score), 'movement-title')) ?? 'Imported score'
   const composer = text(children(child(score, 'identification') ?? { x: [] }, 'creator').find((c) => attr(c, 'type') === 'composer')) ?? ''
 
-  const parts = children(score, 'part')
-  if (!parts.length) throw new MusicXmlError('The score has no parts.')
   let timeSig: [number, number] = [4, 4]
   let keySig = 'C'
   let bpm = 0
@@ -129,7 +129,7 @@ export function musicXmlToSong(xml: string, opts: { id?: string; title?: string 
           maxT = Math.max(maxT, t)
         } else if (name === 'note') {
           if (child(el, 'grace')) {
-            warn(bar, 'other', `Bar ${bar}: a grace note was left out.`)
+            warn(bar, 'grace', `Bar ${bar}: a grace note was left out.`)
             continue
           }
           const d = num(child(el, 'duration')) ?? 0
@@ -168,7 +168,7 @@ export function musicXmlToSong(xml: string, opts: { id?: string; title?: string 
       measureStart += maxT / divisions
     }
   })
-  if (parts.length > 2) warn(0, 'other', `Only the first two parts were used (the score has ${parts.length}).`)
+  if (parts.length > 2) warn(0, 'parts', `Only the first two parts were used (the score has ${parts.length}).`)
   if (!R.length && !L.length) throw new MusicXmlError('The score has no notes.')
   const song: Song = {
     id:

@@ -16,6 +16,8 @@ import { ReferencePage } from '../pages/Reference'
 import { DashboardPage } from '../pages/Dashboard'
 import { StarsPage } from '../pages/Stars'
 import { DevMascotPage } from '../pages/DevMascot'
+import { SongReviewPage } from '../pages/SongReview'
+import { SongEditorPage } from '../pages/SongEditor'
 
 function ProgressRoute() {
   const kid = useProgress((s) => s.mode === 'kid')
@@ -34,6 +36,8 @@ export function AppRoutes() {
       <Route path="/free" element={<FreePlayPage />} />
       <Route path="/songs" element={<LibraryPage />} />
       <Route path="/songs/import" element={<ImportMidiPage />} />
+      <Route path="/songs/review" element={<SongReviewPage />} />
+      <Route path="/songs/edit/:id" element={<SongEditorPage />} />
       <Route path="/songs/:id" element={<PlayAlongPage />} />
       <Route path="/drills" element={<DrillsPage />} />
       <Route path="/ear" element={<EarPage />} />

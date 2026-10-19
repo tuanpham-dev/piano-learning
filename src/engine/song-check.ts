@@ -2,14 +2,16 @@ import { MIDI_A0, MIDI_C8, prettyName } from './notes'
 import { beatsPerBar, type Hand, type Song } from './song'
 import type { HandIssue } from './song-text'
 
-export type WarningKind = 'bar-length' | 'range' | 'span' | 'empty' | 'tuplet' | 'other'
+export type WarningKind = 'bar-length' | 'range' | 'span' | 'empty' | 'tuplet' | 'grace' | 'token' | 'parts' | 'other'
 
 export interface SongWarning {
   /** 1-based bar, or 0 for the whole song. */
   bar: number
   hand?: Hand
   kind: WarningKind
+  /** English text, for AI tools. The app shows a translated version built from `kind` and `params`. */
   message: string
+  params?: Record<string, string | number>
 }
 
 /** The widest one hand can comfortably hold at once: an octave and a half. */
@@ -17,7 +19,12 @@ export const MAX_SPAN = 18
 
 /** Things worth checking before a song is saved (R4). None of them stop it being saved. */
 export function checkSong(song: Song, issues: HandIssue[] = [], extra: SongWarning[] = []): SongWarning[] {
-  const out: SongWarning[] = issues.map((i) => ({ bar: i.bar, hand: i.hand, kind: /beats/.test(i.message) ? ('bar-length' as const) : ('other' as const), message: i.message }))
+  const out: SongWarning[] = issues.map((i): SongWarning => {
+    const beats = /has ([\d.]+) beats, expected ([\d.]+)/.exec(i.message)
+    if (beats) return { bar: i.bar, hand: i.hand, kind: 'bar-length' as const, message: i.message, params: { beats: Number(beats[1]), expected: Number(beats[2]) } }
+    const token = /can't read "(.*)"/.exec(i.message)
+    return token ? { bar: i.bar, hand: i.hand, kind: 'token', message: i.message, params: { token: token[1]! } } : { bar: i.bar, hand: i.hand, kind: 'other', message: i.message }
+  })
   const len = beatsPerBar(song.timeSig)
   const barOf = (beat: number) => Math.floor(beat / len + 1e-9) + 1
   const all = [...song.hands.R.notes, ...song.hands.L.notes]
@@ -25,7 +32,8 @@ export function checkSong(song: Song, issues: HandIssue[] = [], extra: SongWarni
   for (const hand of ['R', 'L'] as const) {
     const notes = song.hands[hand].notes
     for (const n of notes) {
-      if (n.midi < MIDI_A0 || n.midi > MIDI_C8) out.push({ bar: barOf(n.startBeat), hand, kind: 'range', message: `${prettyName(n.midi)} is outside the piano (A0 to C8).` })
+      if (n.midi < MIDI_A0 || n.midi > MIDI_C8)
+        out.push({ bar: barOf(n.startBeat), hand, kind: 'range', message: `${prettyName(n.midi)} is outside the piano (A0 to C8).`, params: { note: prettyName(n.midi) } })
     }
     const reported = new Set<number>()
     for (const n of notes) {
@@ -35,7 +43,13 @@ export function checkSong(song: Song, issues: HandIssue[] = [], extra: SongWarni
       const bar = barOf(n.startBeat)
       if (hi - lo > MAX_SPAN && !reported.has(bar)) {
         reported.add(bar)
-        out.push({ bar, hand, kind: 'span', message: `The ${hand === 'R' ? 'right' : 'left'} hand spans ${prettyName(lo)} to ${prettyName(hi)}, more than one hand can reach.` })
+        out.push({
+          bar,
+          hand,
+          kind: 'span',
+          message: `The ${hand === 'R' ? 'right' : 'left'} hand spans ${prettyName(lo)} to ${prettyName(hi)}, more than one hand can reach.`,
+          params: { lo: prettyName(lo), hi: prettyName(hi) },
+        })
       }
     }
   }

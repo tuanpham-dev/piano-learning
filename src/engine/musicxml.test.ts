@@ -14,7 +14,7 @@ describe('MusicXML import (A11)', () => {
     expect(d.right).toEqual(['G4q1 A4q. B4e~', 'B4q C5e B4e F#4q'])
     expect(d.left).toEqual(['[G2 D3]h.', 'D3h.'])
     expect(warnings.map((w) => [w.bar, w.kind])).toEqual([
-      [2, 'other'],
+      [2, 'grace'],
       [2, 'tuplet'],
     ])
   })
