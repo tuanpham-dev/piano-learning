@@ -6,7 +6,7 @@ import { useEditor, type Length } from '../store/editor'
 import { useSession } from '../store/session'
 import { barBeats, barTokens, draftToSong, evenHands, noteToken, restBar, songToDraft, type Draft } from '../engine/song-text'
 import { beatsPerBar } from '../engine/song'
-import { checkSong } from '../engine/song-check'
+import { checkSong, type SongWarning } from '../engine/song-check'
 import { writeSongFile, splitBars } from '../engine/song-file'
 import { downloadText, songFileName } from '../store/download'
 import { GrandStaff } from '../notation/Staff'
@@ -319,21 +319,21 @@ function Editor() {
         </div>
 
         {/* Bar strip */}
-        <div className="flex flex-wrap gap-1" role="tablist" aria-label="Bars">
+        <div className="flex flex-wrap gap-1" role="group" aria-label={t('editor.bars')}>
           {Array.from({ length: bars }, (_, i) => {
             const warn = warnings.some((w) => w.bar === i + 1)
             return (
               <button
                 key={i}
                 type="button"
-                role="tab"
-                aria-selected={i === cur.bar}
+                aria-current={i === cur.bar ? 'true' : undefined}
+                aria-label={t('editor.bar', { n: i + 1 })}
                 data-bar={i + 1}
                 onClick={() => ed.setCursor({ bar: i, index: barTokens(handBars[i] ?? '').length })}
                 className={`relative min-w-9 min-h-9 rounded-md border px-2 text-sm tabular ${i === cur.bar ? 'bg-accent text-accent-ink border-accent' : 'border-line bg-surface hover:bg-panel'}`}
               >
                 {i + 1}
-                {warn && <span className="absolute -right-1 -top-1 size-2.5 rounded-full bg-warn" aria-label="has a warning" />}
+                {warn && <span className="absolute -right-1 -top-1 size-2.5 rounded-full bg-warn" aria-hidden />}
               </button>
             )
           })}
@@ -411,7 +411,7 @@ function Editor() {
           <strong>{warnings.length ? t('editor.warnings') : t('editor.clean')}</strong>
           {warnings.slice(0, 8).map((w, i) => (
             <button key={i} type="button" className={`text-left ${curWarnings.includes(w) ? 'font-semibold' : ''}`} onClick={() => w.bar && ed.setCursor({ bar: w.bar - 1, index: 0 })}>
-              <span className="rounded bg-warn/15 px-1.5 text-warn tabular">{w.bar ? t('review.bar', { bar: w.bar }) : t('review.whole')}</span> {warningText(w)}
+              <span className="rounded border border-warn/60 bg-warn/10 px-1.5 font-semibold tabular">{w.bar ? t('review.bar', { bar: w.bar }) : t('review.whole')}</span> {warningText(w)}
             </button>
           ))}
         </section>
@@ -469,7 +469,8 @@ function TextView({ draft }: { draft: Draft }) {
   const apply = useEditor((s) => s.apply)
   const fromDraft = (d: Draft) => ({ R: d.right.join(' | ') + ' |', L: d.left.join(' | ') + ' |' })
   const [text, setText] = useState(() => fromDraft(draft))
-  const [errors, setErrors] = useState<{ R: string[]; L: string[] }>({ R: [], L: [] })
+  const [errors, setErrors] = useState<{ R: SongWarning[]; L: SongWarning[] }>({ R: [], L: [] })
+  const warningText = useWarningText()
   const editing = useRef(false)
   // Follow outside changes (undo, AI tools) unless the person is typing.
   useEffect(() => {
@@ -480,8 +481,9 @@ function TextView({ draft }: { draft: Draft }) {
     setText((t0) => ({ ...t0, [hand]: value }))
     const bars = splitBars(value)
     const test = draftToSong({ ...draft, [hand === 'R' ? 'right' : 'left']: bars })
-    const mine = test.issues.filter((i) => i.hand === hand).map((i) => i.message)
-    setErrors((e) => ({ ...e, [hand]: mine }))
+    const mine = test.issues.filter((i) => i.hand === hand)
+    // Issues come first in the check list, as translatable warnings.
+    setErrors((e) => ({ ...e, [hand]: checkSong(test.song, mine).slice(0, mine.length) }))
     if (!mine.length) apply({ ...draft, [hand === 'R' ? 'right' : 'left']: bars })
   }
 
@@ -500,9 +502,9 @@ function TextView({ draft }: { draft: Draft }) {
             onBlur={() => (editing.current = false)}
             onChange={(e) => change(hand, e.target.value)}
           />
-          {errors[hand].map((m, i) => (
+          {errors[hand].map((w, i) => (
             <span key={i} role="alert" className="text-accent">
-              {t('editor.textError', { message: m })}
+              {t('editor.textError', { message: `${t('review.bar', { bar: w.bar })}: ${warningText({ ...w, hand: undefined })}` })}
             </span>
           ))}
         </label>

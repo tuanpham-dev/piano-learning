@@ -545,7 +545,8 @@
       "q": "Quarter note",
       "e": "Eighth note",
       "s": "Sixteenth note"
-    }
+    },
+    "bars": "Bars"
   },
   "record": {
     "title": "Record",

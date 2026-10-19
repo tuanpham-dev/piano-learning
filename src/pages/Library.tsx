@@ -207,7 +207,8 @@ export function LibraryPage() {
           </div>
           <span className="text-sm text-muted">{s.composer || '\u00a0'}</span>
           <span className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="rounded-full px-2 py-0.5 font-semibold text-accent-ink" style={{ background: DIFF_COLOR[s.difficulty] }}>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-2 py-0.5 font-semibold">
+              <span className="size-2.5 rounded-full" style={{ background: DIFF_COLOR[s.difficulty] }} aria-hidden />
               {t(`songs.diff${s.difficulty}`)}
             </span>
             {b && <span className="text-muted tabular">{t('songs.best', { percent: b.percent })}</span>}

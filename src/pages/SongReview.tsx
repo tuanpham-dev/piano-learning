@@ -53,7 +53,7 @@ export function SongReviewPage() {
             <ul className="grid gap-1 text-sm list-none p-0">
               {warnings.map((w, i) => (
                 <li key={i} className="flex gap-2">
-                  <span className="rounded bg-warn/15 px-1.5 text-warn font-semibold tabular whitespace-nowrap">{w.bar ? t('review.bar', { bar: w.bar }) : t('review.whole')}</span>
+                  <span className="rounded border border-warn/60 bg-warn/10 px-1.5 font-semibold tabular whitespace-nowrap">{w.bar ? t('review.bar', { bar: w.bar }) : t('review.whole')}</span>
                   <span>{warningText(w)}</span>
                 </li>
               ))}
