@@ -9,7 +9,7 @@ export default async ({ page, shot, log }) => {
   await page.waitForSelector('.staff-host svg')
   await page.click('#pa-hands >> text=Right')
   // A15 wait: wrong doesn't advance, right does
-  await page.click('text=▶ Start'); await page.waitForTimeout(300)
+  await page.getByRole('button', { name: /^(Start|Restart)$/ }).click(); await page.waitForTimeout(300)
   log('due:', await keyBg(page))
   await page.evaluate(() => window.__dev.emitNote('on', 62, 'virtual')); await page.waitForTimeout(200)
   log('due after wrong D4:', await keyBg(page))
@@ -33,7 +33,7 @@ export default async ({ page, shot, log }) => {
   await page.click('text=Close')
   // Perform with nothing played → 0%
   await page.click('#pa-tempo', { position: { x: 95, y: 5 } })
-  await page.click('text=▶ Start')
+  await page.getByRole('button', { name: /^(Start|Restart)$/ }).click()
   await page.waitForSelector('text=· Perform', { timeout: 100000 })
   log('perform nothing:', (await page.locator('[role=dialog]').innerText()).replace(/\n/g, ' | ').slice(0, 120))
   await page.click('text=Close')

@@ -10,7 +10,7 @@ export default async ({ page, shot, log }) => {
   await page.click('text=Add to library')
   await page.waitForSelector('.staff-host svg')
   log('url after add:', page.url().replace(URL, ''))
-  await page.click('text=▶ Start'); await page.waitForTimeout(400)
+  await page.getByRole('button', { name: /^(Start|Restart)$/ }).click(); await page.waitForTimeout(400)
   log('status:', await page.evaluate(() => window.__pa.status), 'due', await page.evaluate(() => window.__pa.dueMidis()))
   await shot('a16-imported-play')
   await page.reload(); await page.waitForTimeout(800)

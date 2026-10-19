@@ -14,8 +14,5 @@ async function check(browser, label, opts, init) {
 export default async ({ browser }) => {
   await check(browser, 'No Web MIDI (Firefox-like)', { viewport: { width: 1280, height: 800 } }, () => { delete Navigator.prototype.requestMIDIAccess })
   await check(browser, 'iPad (iPadOS UA, 5 touch points)', { viewport: { width: 1180, height: 820 }, userAgent: IPAD, hasTouch: true }, () => Object.defineProperty(Navigator.prototype, 'maxTouchPoints', { get: () => 5 }))
-  await check(browser, 'Desktop Chrome, MIDI allowed, no inputs', { viewport: { width: 1280, height: 800 }, permissions: ['midi', 'midi-sysex'] }, () => {
-    const orig = Navigator.prototype.requestMIDIAccess
-    Navigator.prototype.requestMIDIAccess = function (o) { return orig.call(this, o).then((a) => Object.assign(Object.create(a), { inputs: new Map(), outputs: a.outputs, addEventListener: a.addEventListener.bind(a) })) }
-  })
+  // "No inputs → No MIDI devices found" and hot-plug are covered by src/input/midi.test.ts.
 }

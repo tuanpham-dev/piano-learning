@@ -3,7 +3,7 @@
 A piano tutor for kids and adults that runs in the browser and installs as an app (PWA). It works offline once loaded.
 
 - **Seven modes**: Free play, Play-along (12 songs + your own MIDI files), Note drills, Ear training, Rhythm, an 18-lesson course, and a Chord & scale reference. There's also a progress dashboard.
-- **Kid mode / Adult mode**, switched in Settings. Kid mode adds a mascot, color-coded notes, stars, stickers, and a lesson journey map. Both modes share one progress store on the device.
+- **Kid mode / Adult mode**, switched in Settings. Kid mode is styled like a toy xylophone: every mode is a bar in its note's color, and the mascot, **Do the note**, takes the color of whatever note is being played or asked for. Adult mode keeps the same shapes and icons in a quiet navy-and-cobalt palette. Both modes share one progress store on the device.
 - **English and Vietnamese**.
 - **Ways to play**: the on-screen keyboard (multi-touch), the computer keyboard, a USB/MIDI piano (Chrome/Edge on a computer or Android), or a microphone for single notes on an acoustic piano.
 
@@ -66,7 +66,8 @@ src/engine/     pure logic, unit-tested: notes, song format + parser, scoring, p
                 drills, ear training, rhythm, chords & scales, pitch detection, MIDI import, lessons, badges, streaks
 src/audio/      Web Audio: sampled piano, lookahead scheduler, metronome, chime, iOS unlock
 src/input/      input bus + on-screen / computer keyboard / Web MIDI / microphone / virtual MIDI
-src/notation/   keyboard, grand staff (VexFlow), falling-notes lane
+src/notation/   keyboard, grand staff (VexFlow), falling-notes lane, note colors
+src/components/ Do the note (Mascot), xylophone Bar, stickers, Phosphor icon wrapper
 src/content/    12 songs, 18 lessons, EN/VI strings
 src/store/      progress store (IndexedDB + localStorage mirror), export/import
 src/pages/      one file per screen

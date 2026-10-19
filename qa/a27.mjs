@@ -8,7 +8,7 @@ export default async ({ page, shot, log }) => {
   await page.check('#in-mic')
   log('asks which hand:', await page.waitForSelector('text=Which hand will you play?', { timeout: 3000 }).then(() => 1, () => 0))
   await page.click('[role=dialog] >> text=Right')
-  await page.click('text=▶ Start')
+  await page.getByRole('button', { name: /^(Start|Restart)$/ }).click()
   const t0 = Date.now()
   let hits = 0
   while (Date.now() - t0 < 12000) {
@@ -21,7 +21,7 @@ export default async ({ page, shot, log }) => {
   // Part 2: Minuet left hand opens on a chord → notice
   await page.goto(URL + '/songs/minuet-in-g'); await page.waitForSelector('.staff-host svg')
   await page.click('#pa-hands >> text=Left')
-  await page.click('text=▶ Start'); await page.waitForTimeout(600)
+  await page.getByRole('button', { name: /^(Start|Restart)$/ }).click(); await page.waitForTimeout(600)
   log('chord notice:', await page.locator('text=Use the on-screen keys or a MIDI piano for this part.').count(), '| due', await page.evaluate(() => window.__pa.dueMidis()))
   await shot('a27-minuet-chord')
   await page.click('#pa-mode >> text=Perform')
