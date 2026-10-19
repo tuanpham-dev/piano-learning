@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
+import { NARROW_WRAP as narrowWrap } from '../components/BottomSheet'
 import { NoteStaff } from '../notation/Staff'
 import { Keyboard, type KeyMark } from '../notation/Keyboard'
 import { InputPanel } from '../components/InputPanel'
@@ -137,11 +138,7 @@ export function DrillsPage() {
         label={t('drills.clef')}
         value={clef}
         onChange={setClef}
-        options={[
-          { value: 'treble', label: t('drills.treble') },
-          { value: 'bass', label: t('drills.bass') },
-          ...(kid ? [] : [{ value: 'both' as Clef, label: t('drills.both') }]),
-        ]}
+        options={[{ value: 'treble', label: t('drills.treble') }, { value: 'bass', label: t('drills.bass') }, ...(kid ? [] : [{ value: 'both' as Clef, label: t('drills.both') }])]}
       />
       {!kid && (
         <>
@@ -194,7 +191,7 @@ export function DrillsPage() {
                 </span>
                 <span className="text-sm text-muted tabular">
                   {kid
-                    ? `⭐ ${r.correct} / ${r.count}`
+                    ? `★ ${r.correct} / ${r.count}`
                     : `${t('drills.progress', { n: Math.min(r.count, r.answers.length + 1), total: r.count })} · ${t('drills.correct', { n: r.correct })}${r.avgMs ? ' · ' + t('drills.avg', { s: (r.avgMs / 1000).toFixed(1) }) : ''}`}
                 </span>
               </>
@@ -227,12 +224,17 @@ export function DrillsPage() {
           />
         )}
         <div className="mx-auto w-full max-w-md">
-          <NoteStaff clef={staffClef} items={target !== null && phase === 'running' ? [{ midis: [target], color: noteColor }] : []} kid={kid} label={target !== null ? prettyName(target) : undefined} />
+          <NoteStaff
+            clef={staffClef}
+            items={target !== null && phase === 'running' ? [{ midis: [target], color: noteColor }] : []}
+            kid={kid}
+            label={target !== null ? prettyName(target) : undefined}
+          />
         </div>
         <div className="flex-1" />
         <Keyboard low={kbLow} high={kbHigh} highlight={highlight} kid={kid} showNames={!kid && noteNames} height={kid ? 150 : 130} />
       </div>
-      <div className={kid ? 'py-2' : '-mx-[max(16px,env(safe-area-inset-left,0px))]'}>
+      <div className={kid ? 'py-2' : narrowWrap}>
         <InputPanel micAllowed />
       </div>
     </Page>

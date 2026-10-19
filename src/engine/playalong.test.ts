@@ -3,7 +3,14 @@ import { parseVoice } from './song-dsl'
 import type { Song } from './song'
 
 const song = (right: string, left = 'C3w |', timeSig: [number, number] = [4, 4]): Song => ({
-  id: 't', title: { en: 't', vi: 't' }, composer: '', difficulty: 1, bpm: 60, timeSig, keySig: 'C', source: 'bundled',
+  id: 't',
+  title: { en: 't', vi: 't' },
+  composer: '',
+  difficulty: 1,
+  bpm: 60,
+  timeSig,
+  keySig: 'C',
+  source: 'bundled',
   hands: { R: parseVoice(right, timeSig), L: parseVoice(left, timeSig) },
 })
 

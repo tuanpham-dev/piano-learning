@@ -21,6 +21,7 @@
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.7.0",
+    "axe-core": "4.10",
     "jsdom": "^25.0.1",
     "playwright-core": "1.56",
     "tailwindcss": "^4.3.3",

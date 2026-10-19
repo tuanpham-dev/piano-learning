@@ -24,7 +24,12 @@ describe('rhythm', () => {
   })
   it('scores taps 120 ms late 0% with +120 ms offset (A19)', () => {
     const grid = gridFor([{ beats: 1 }, { beats: 1 }, { beats: 1 }, { beats: 1 }], 80, 10)
-    const s = scoreTaps(grid, grid.map((t) => t + 0.12), 0.08, 0.75)
+    const s = scoreTaps(
+      grid,
+      grid.map((t) => t + 0.12),
+      0.08,
+      0.75,
+    )
     expect(s.hitPercent).toBe(0)
     expect(s.avgOffsetMs).toBe(120)
   })

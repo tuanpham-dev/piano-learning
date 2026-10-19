@@ -52,7 +52,6 @@ export function usePlayAlong(opts: PlayAlongOptions) {
   const barsKey = bars ? `${bars[0]}-${bars[1]}` : 'all'
   const engine = useMemo(
     () => new PlayAlong({ song, hands, mode, tempoPct, bars, loop }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [song, hands, mode, tempoPct, barsKey, loop],
   )
   const engineRef = useRef(engine)
@@ -73,18 +72,21 @@ export function usePlayAlong(opts: PlayAlongOptions) {
     return engineRef.current.cursor
   }, [])
 
-  const publish = useCallback((wrong: number | null = null, force = false) => {
-    const e = engineRef.current
-    const l = listen.current
-    const beat = l ? cursor() : e.cursor
-    const staffBeat = Math.floor(Math.max(beat, e.startBeat) * 2) / 2
-    const due = e.dueIndices().map((i) => e.notes[i]!)
-    const status = l ? 'listening' : e.status
-    const sig = `${status}|${staffBeat}|${due.map((d) => d.midi + '@' + d.startBeat).join(',')}|${e.states.join('')}|${wrong}`
-    if (!force && sig === lastSig.current) return
-    lastSig.current = sig
-    setSnap({ status, staffBeat, due, states: e.states.slice(), wrong })
-  }, [cursor])
+  const publish = useCallback(
+    (wrong: number | null = null, force = false) => {
+      const e = engineRef.current
+      const l = listen.current
+      const beat = l ? cursor() : e.cursor
+      const staffBeat = Math.floor(Math.max(beat, e.startBeat) * 2) / 2
+      const due = e.dueIndices().map((i) => e.notes[i]!)
+      const status = l ? 'listening' : e.status
+      const sig = `${status}|${staffBeat}|${due.map((d) => d.midi + '@' + d.startBeat).join(',')}|${e.states.join('')}|${wrong}`
+      if (!force && sig === lastSig.current) return
+      lastSig.current = sig
+      setSnap({ status, staffBeat, due, states: e.states.slice(), wrong })
+    },
+    [cursor],
+  )
 
   const stop = useCallback(() => {
     scheduler.current.clear()
@@ -148,7 +150,6 @@ export function usePlayAlong(opts: PlayAlongOptions) {
     }
     raf = requestAnimationFrame(loopFn)
     return () => cancelAnimationFrame(raf)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [engine, publish, finish, cursor])
 
   const scheduleAccompaniment = useCallback(() => {

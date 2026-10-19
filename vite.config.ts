@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       injectRegister: false,
       includeAssets: ['icons/*.png', 'silence.wav'],
       manifest: {
@@ -34,6 +34,15 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        // VexFlow (with its music fonts) is most of the bundle; keep it in its own long-lived chunk.
+        manualChunks: { vexflow: ['vexflow'], react: ['react', 'react-dom', 'react-router-dom'] },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

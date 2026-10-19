@@ -24,6 +24,10 @@ function bell(midi: number, t: number, peak: number) {
 /** Short rising arpeggio for a pass or a new sticker. */
 export function playChime(kind: 'success' | 'sticker' = 'success'): void {
   if (!ensureRunning()) return
+  if (import.meta.env.DEV) {
+    const w = window as unknown as { __chimes?: number }
+    w.__chimes = (w.__chimes ?? 0) + 1
+  }
   const t = getAudioContext().currentTime + 0.02
   const notes = kind === 'sticker' ? [84, 88, 91, 96] : [79, 84, 88]
   notes.forEach((m, i) => bell(m, t + i * 0.11, 0.18))

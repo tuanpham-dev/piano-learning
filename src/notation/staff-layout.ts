@@ -82,7 +82,14 @@ export function layoutBar(voice: Voice, bar: number, timeSig: [number, number]):
       let pt = t
       pieces.forEach((p, i) => {
         const order = g.midis.map((m, k) => [m, g.fingers[k]] as const).sort((a, b) => a[0] - b[0])
-        out.push({ start: round(pt), beats: p, midis: order.map((o) => o[0]), fingers: i === 0 ? order.map((o) => o[1]) : [], sourceStart: g.sourceStart, tieNext: i < pieces.length - 1 })
+        out.push({
+          start: round(pt),
+          beats: p,
+          midis: order.map((o) => o[0]),
+          fingers: i === 0 ? order.map((o) => o[1]) : [],
+          sourceStart: g.sourceStart,
+          tieNext: i < pieces.length - 1,
+        })
         pt = round(pt + p)
       })
       t = round(end)

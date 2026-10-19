@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Icon } from '../components/Icon'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
@@ -13,6 +14,8 @@ import { Keyboard, type KeyMark } from '../notation/Keyboard'
 import { snapRange } from '../notation/geometry'
 import { cssVar } from '../notation/note-colors'
 import { InputPanel } from '../components/InputPanel'
+import { BottomSheet } from '../components/BottomSheet'
+import { useNarrow } from '../hooks/useMedia'
 import { Button, PrimaryButton } from '../components/PrimaryButton'
 import { Segmented } from '../components/Segmented'
 import { Stars } from '../components/Stars'
@@ -65,6 +68,7 @@ function PlayAlongScreen({ song }: { song: Song }) {
   const [win, setWin] = useState<[number, number]>(() => keyboardRange(song))
   const range = useMemo(() => keyboardRange(song), [song])
   usePracticeClock('songs')
+  const narrow = useNarrow()
 
   const micMelody = mode === 'wait' && hands !== 'LR'
   const { screen, micOn } = useInputs({ allowMic: micMelody })
@@ -101,7 +105,7 @@ function PlayAlongScreen({ song }: { song: Song }) {
     const accent = cssVar('--color-accent')
     const muted = cssVar('--color-muted')
     const warn = cssVar('--color-warn')
-    const left = cssVar('--color-left')
+    const left = cssVar('--color-lh')
     const map = new Map<string, string>()
     pa.engine.notes.forEach((n, i) => {
       const st = snap.states[i]
@@ -112,6 +116,13 @@ function PlayAlongScreen({ song }: { song: Song }) {
     return (hand, start, midi) => map.get(`${hand}:${start}:${midi}`)
   }, [snap.states, pa.engine, kid, hands])
 
+  // Keep the keys the learner needs in view: due notes, or before starting, the first notes of the selected hands.
+  // On a narrow keyboard both hands may not fit; the right hand wins.
+  const focusNotes = useMemo(() => {
+    const pool = snap.due.length ? snap.due : pa.engine.notes.filter((n) => Math.abs(n.startBeat - (pa.engine.notes[0]?.startBeat ?? 0)) < 1e-6)
+    const right = pool.filter((n) => n.hand === 'R')
+    return (right.length ? right : pool).map((n) => n.midi)
+  }, [snap.due, pa.engine])
   const onWindow = useCallback((lo: number, hi: number) => setWin((w) => (w[0] === lo && w[1] === hi ? w : [lo, hi])), [])
   const stateIndex = useMemo(() => new Map(pa.engine.notes.map((n, i) => [`${n.hand}:${n.startBeat}:${n.midi}`, i])), [pa.engine])
   const getNoteState = useCallback(
@@ -130,36 +141,69 @@ function PlayAlongScreen({ song }: { song: Song }) {
   const controls = kid ? (
     <div className="flex flex-wrap items-center justify-center gap-3">
       <Button onClick={pa.listen} className="text-lg font-extrabold">
-        🔊 {t('play.listen')}
+        <Icon name="speaker" /> {t('play.listen')}
       </Button>
       <PrimaryButton onClick={running ? pa.stop : pa.start} className="text-xl min-w-36">
-        {running ? `■ ${t('play.stop')}` : `▶ ${t('common.play')}`}
+        {running ? (
+          <>
+            <Icon name="stop" /> {t('play.stop')}
+          </>
+        ) : (
+          <>
+            <Icon name="play" /> {t('common.play')}
+          </>
+        )}
       </PrimaryButton>
       <Button onClick={() => setTempo(tempo === 60 ? 80 : 60)} aria-pressed={tempo === 60} className={`text-lg font-extrabold ${tempo === 60 ? 'bg-panel' : ''}`}>
-        🐢 {t('kid.play.slower')}
+        <Icon name="turtle" size={22} /> {t('kid.play.slower')}
       </Button>
       <Segmented<Hands>
         id="kid-hands"
         value={hands}
         onChange={setHands}
         options={[
-          { value: 'L', label: `✋ ${t('play.left')}` },
-          { value: 'R', label: `${t('play.right')} 🤚` },
+          { value: 'L', label: t('play.left') },
+          { value: 'R', label: t('play.right') },
           { value: 'LR', label: t('play.both') },
         ]}
       />
       <Button onClick={() => setMode(mode === 'wait' ? 'perform' : 'wait')} aria-pressed={mode === 'perform'} className={mode === 'perform' ? 'bg-panel font-extrabold' : ''}>
-        ⭐ {t('kid.play.challenge')}
+        <span className="text-nE">
+          <Icon name="star" />
+        </span>{' '}
+        {t('kid.play.challenge')}
       </Button>
     </div>
-  ) : (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-      <div className="min-w-0">
-        <div className="font-semibold text-base">{L(song.title)}</div>
-        <div className="text-muted text-xs">
-          {song.composer} · {t('play.barOf', { bar: curBar, total })}
-        </div>
+  ) : null
+
+  const titleBlock = (
+    <div className="min-w-0">
+      <div className="font-semibold text-base truncate">{L(song.title)}</div>
+      <div className="text-muted text-xs">
+        {song.composer} · {t('play.barOf', { bar: curBar, total })}
       </div>
+    </div>
+  )
+
+  const actions = (
+    <div className="flex gap-2 ml-auto">
+      <Button onClick={pa.listen}>
+        <Icon name="speaker" /> {t('play.listen')}
+      </Button>
+      {running ? (
+        <Button onClick={pa.stop}>
+          <Icon name="stop" /> {t('play.stop')}
+        </Button>
+      ) : (
+        <Button variant="primary" onClick={pa.start}>
+          <Icon name="play" /> {snap.status === 'done' ? t('play.restart') : t('play.start')}
+        </Button>
+      )}
+    </div>
+  )
+
+  const settingsRow = (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
       <Segmented<PlayMode>
         id="pa-mode"
         label={t('play.mode')}
@@ -172,7 +216,16 @@ function PlayAlongScreen({ song }: { song: Song }) {
       />
       <label className="inline-flex items-center gap-2" htmlFor="pa-tempo">
         {t('play.tempo')}
-        <input id="pa-tempo" type="range" min={25} max={150} step={5} value={tempo} onChange={(e) => setTempo(Number(e.target.value))} className="w-24 accent-[var(--color-accent)]" />
+        <input
+          id="pa-tempo"
+          type="range"
+          min={25}
+          max={150}
+          step={5}
+          value={tempo}
+          onChange={(e) => setTempo(Number(e.target.value))}
+          className="w-24 accent-[var(--color-accent)]"
+        />
         <span className="tabular w-10">{tempo}%</span>
       </label>
       <Segmented<Hands>
@@ -191,9 +244,27 @@ function PlayAlongScreen({ song }: { song: Song }) {
           <input id="pa-loop" type="checkbox" className="size-4 accent-[var(--color-accent)]" checked={loopOn} onChange={(e) => setLoopOn(e.target.checked)} />
           {t('play.loop')}
         </label>
-        <input id="pa-loop-from" type="number" min={1} max={total} value={loopFrom} onChange={(e) => setLoopFrom(Math.max(1, Math.min(total, Number(e.target.value))))} className="w-12 rounded border border-line bg-bg px-1" aria-label="Loop from bar" />
+        <input
+          id="pa-loop-from"
+          type="number"
+          min={1}
+          max={total}
+          value={loopFrom}
+          onChange={(e) => setLoopFrom(Math.max(1, Math.min(total, Number(e.target.value))))}
+          className="w-12 rounded border border-line bg-bg px-1"
+          aria-label="Loop from bar"
+        />
         {t('play.to')}
-        <input id="pa-loop-to" type="number" min={1} max={total} value={loopTo} onChange={(e) => setLoopTo(Math.max(1, Math.min(total, Number(e.target.value))))} className="w-12 rounded border border-line bg-bg px-1" aria-label="Loop to bar" />
+        <input
+          id="pa-loop-to"
+          type="number"
+          min={1}
+          max={total}
+          value={loopTo}
+          onChange={(e) => setLoopTo(Math.max(1, Math.min(total, Number(e.target.value))))}
+          className="w-12 rounded border border-line bg-bg px-1"
+          aria-label="Loop to bar"
+        />
       </span>
       <Segmented<NotationView>
         id="pa-view"
@@ -206,24 +277,23 @@ function PlayAlongScreen({ song }: { song: Song }) {
           { value: 'both', label: t('settings.viewBoth') },
         ]}
       />
-      <div className="flex gap-2 ml-auto">
-        <Button onClick={pa.listen}>🔊 {t('play.listen')}</Button>
-        {running ? (
-          <Button onClick={pa.stop}>■ {t('play.stop')}</Button>
-        ) : (
-          <Button variant="primary" onClick={pa.start}>
-            ▶ {snap.status === 'done' ? t('play.restart') : t('play.start')}
-          </Button>
-        )}
-      </div>
     </div>
   )
+  const inputPanel = <InputPanel inline={narrow} micAllowed micDisabledReason={mode === 'wait' ? undefined : t('play.micNeedsWait')} />
 
   return (
     <Page title={L(song.title)} back="/songs" fill>
       <div className="flex flex-col gap-2 py-2 flex-1">
         {lessonRun.lesson && <LessonBanner run={lessonRun} />}
-        {controls}
+        {kid ? (
+          controls
+        ) : (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {titleBlock}
+            {!narrow && settingsRow}
+            {actions}
+          </div>
+        )}
         <p className="text-sm text-muted min-h-5" aria-live="polite">
           {snap.status === 'countIn'
             ? t('play.countIn')
@@ -291,12 +361,29 @@ function PlayAlongScreen({ song }: { song: Song }) {
               activeHands={hands}
             />
           )}
-          <Keyboard low={range[0]} high={range[1]} highlight={highlight} focus={snap.due.map((n) => n.midi)} kid={kid} showNames={settings.noteNames} interactive={screen} onWindow={onWindow} height={kid ? 150 : 130} />
+          <Keyboard
+            low={range[0]}
+            high={range[1]}
+            highlight={highlight}
+            focus={focusNotes}
+            kid={kid}
+            showNames={settings.noteNames}
+            interactive={screen}
+            onWindow={onWindow}
+            height={kid ? 150 : 130}
+          />
         </div>
       </div>
-      <div className={kid ? 'py-2' : '-mx-[max(16px,env(safe-area-inset-left,0px))]'}>
-        <InputPanel micAllowed micDisabledReason={mode === 'wait' ? undefined : t('play.micNeedsWait')} />
-      </div>
+      {kid ? (
+        <div className="py-2">{inputPanel}</div>
+      ) : narrow ? (
+        <BottomSheet label={t('play.settings')} summary={`${mode === 'wait' ? t('play.wait') : t('play.perform')} · ${tempo}% · ${hands === 'LR' ? t('play.both') : hands === 'R' ? t('play.right') : t('play.left')}`}>
+          {settingsRow}
+          <div className="-mx-[max(16px,env(safe-area-inset-left,0px))]">{inputPanel}</div>
+        </BottomSheet>
+      ) : (
+        <div className="-mx-[max(16px,env(safe-area-inset-left,0px))]">{inputPanel}</div>
+      )}
       {result && !(kid && lessonRun.lesson) && (
         <ResultCard
           song={song}
@@ -382,7 +469,9 @@ function ResultCard({
         ) : (
           <>
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-xl font-bold">{result.mode === 'perform' ? t('result.performTitle', { title: L(song.title) }) : t('result.waitTitle', { title: L(song.title) })}</h2>
+              <h2 className="text-xl font-bold">
+                {result.mode === 'perform' ? t('result.performTitle', { title: L(song.title) }) : t('result.waitTitle', { title: L(song.title) })}
+              </h2>
               {result.newBest && <span className="rounded-full bg-ok/15 text-ok px-2 py-0.5 text-sm">{t('result.newBest')}</span>}
             </div>
             {s ? (
@@ -393,10 +482,14 @@ function ResultCard({
                 </div>
                 <p className="text-sm tabular">{t('result.counts', { hit: s.hit, early: s.early, late: s.late, missed: s.missed })}</p>
                 {s.hit + s.early + s.late > 0 && (
-                <p className="text-sm tabular text-muted">
-                  {Math.abs(s.avgOffsetMs) < 10 ? t('result.offsetOn') : s.avgOffsetMs > 0 ? t('result.offsetLate', { ms: s.avgOffsetMs }) : t('result.offsetEarly', { ms: -s.avgOffsetMs })}
-                  {s.perHand.R !== undefined && s.perHand.L !== undefined && ` · ${t('result.perHand', { r: s.perHand.R, l: s.perHand.L })}`}
-                </p>
+                  <p className="text-sm tabular text-muted">
+                    {Math.abs(s.avgOffsetMs) < 10
+                      ? t('result.offsetOn')
+                      : s.avgOffsetMs > 0
+                        ? t('result.offsetLate', { ms: s.avgOffsetMs })
+                        : t('result.offsetEarly', { ms: -s.avgOffsetMs })}
+                    {s.perHand.R !== undefined && s.perHand.L !== undefined && ` · ${t('result.perHand', { r: s.perHand.R, l: s.perHand.L })}`}
+                  </p>
                 )}
                 {result.missedBars.length > 0 && (
                   <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -412,7 +505,11 @@ function ResultCard({
                 {t('result.waitDone')} {result.firstTime && t('result.firstStar')}
               </p>
             )}
-            {result.newBadges.length > 0 && <p className="text-sm">🏅 {result.newBadges.map((b) => t(`badges.${b}`)).join(', ')}</p>}
+            {result.newBadges.length > 0 && (
+              <p className="text-sm inline-flex items-center gap-1">
+                <Icon name="medal" /> {result.newBadges.map((b) => t(`badges.${b}`)).join(', ')}
+              </p>
+            )}
             <div className="flex flex-wrap gap-2">
               <Button variant="primary" onClick={onAgain}>
                 {t('common.playAgain')}

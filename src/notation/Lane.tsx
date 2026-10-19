@@ -54,7 +54,7 @@ export function Lane({ notes, low, high, getCursor, getNoteState, kid = false, h
       bg: cssVar('--color-panel'),
       line: cssVar('--color-line'),
       R: cssVar('--color-accent'),
-      L: cssVar('--color-left'),
+      L: cssVar('--color-lh'),
       ok: cssVar('--color-ok'),
       muted: cssVar('--color-muted'),
       warn: cssVar('--color-warn'),

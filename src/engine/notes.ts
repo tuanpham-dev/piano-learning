@@ -25,7 +25,9 @@ export function midiToName(midi: number, opts: { flats?: boolean; octave?: boole
 
 /** Display name with ♯/♭ glyphs. */
 export function prettyName(midi: number, opts: { flats?: boolean; octave?: boolean } = {}): string {
-  return midiToName(midi, opts).replace('#', '♯').replace(/([A-G])b/, '$1♭')
+  return midiToName(midi, opts)
+    .replace('#', '♯')
+    .replace(/([A-G])b/, '$1♭')
 }
 
 /** Parses names like C4, C#4, Db3, Eb, F#. Without an octave, octave 4 is assumed. */

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
+import { NARROW_WRAP as narrowWrap } from '../components/BottomSheet'
 import { NoteStaff } from '../notation/Staff'
 import { Keyboard, type KeyMark } from '../notation/Keyboard'
 import { Segmented } from '../components/Segmented'
@@ -96,7 +97,7 @@ export function ReferencePage() {
         <div className="flex-1" />
         <Keyboard low={48} high={84} highlight={highlight} kid={kid} interactive={screen} focus={midis} height={kid ? 150 : 130} />
       </div>
-      <div className={kid ? 'py-2' : '-mx-[max(16px,env(safe-area-inset-left,0px))]'}>
+      <div className={kid ? 'py-2' : narrowWrap}>
         <InputPanel />
       </div>
     </Page>

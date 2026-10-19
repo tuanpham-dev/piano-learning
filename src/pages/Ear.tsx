@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Icon } from '../components/Icon'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
+import { NARROW_WRAP as narrowWrap } from '../components/BottomSheet'
 import { Keyboard, type KeyMark } from '../notation/Keyboard'
 import { InputPanel } from '../components/InputPanel'
 import { Segmented } from '../components/Segmented'
@@ -94,7 +96,13 @@ export function EarPage() {
         played.current.push({ midi: e.midi, mic: e.source === 'mic' })
         if (played.current.length < s.q.notes.length) return
         const midis = played.current.map((p) => p.midi)
-        s.answer(checkPlayed(s.q, midis, played.current.some((p) => p.mic)))
+        s.answer(
+          checkPlayed(
+            s.q,
+            midis,
+            played.current.some((p) => p.mic),
+          ),
+        )
       }),
     [],
   )
@@ -142,7 +150,9 @@ export function EarPage() {
                 <span className={kid ? 'text-xl font-extrabold' : 'font-semibold'}>
                   {feedback ? (feedback.ok ? (kid ? t('kid.ear.right') : t('ear.right')) : kid ? t('kid.ear.wrong') : t('ear.wrong', { answer: answerText })) : prompt}
                 </span>
-                <span className="text-sm text-muted tabular">{kid ? `⭐ ${correct} / ${total}` : `${t('ear.progress', { n: Math.min(total, n + 1), total })} · ${t('drills.correct', { n: correct })}`}</span>
+                <span className="text-sm text-muted tabular">
+                  {kid ? `★ ${correct} / ${total}` : `${t('ear.progress', { n: Math.min(total, n + 1), total })} · ${t('drills.correct', { n: correct })}`}
+                </span>
               </>
             )}
             {phase === 'idle' && <span className="text-muted">{t('ear.idle')}</span>}
@@ -150,7 +160,7 @@ export function EarPage() {
           {phase === 'idle' && <PrimaryButton onClick={start}>{kid ? t('kid.ear.start') : t('ear.start')} ▶</PrimaryButton>}
           {phase === 'running' && q && (
             <Button onClick={() => playQuestion(q)} className={kid ? 'text-lg font-extrabold' : ''}>
-              🔊 {t('ear.playAgain')}
+              <Icon name="speaker" /> {t('ear.playAgain')}
             </Button>
           )}
         </div>
@@ -185,7 +195,7 @@ export function EarPage() {
         <div className="flex-1" />
         <Keyboard low={48} high={84} highlight={highlight} kid={kid} height={kid ? 150 : 130} />
       </div>
-      <div className={kid ? 'py-2' : '-mx-[max(16px,env(safe-area-inset-left,0px))]'}>
+      <div className={kid ? 'py-2' : narrowWrap}>
         <InputPanel micAllowed />
       </div>
     </Page>

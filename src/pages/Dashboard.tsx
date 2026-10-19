@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Icon } from '../components/Icon'
 import { Link } from 'react-router-dom'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
@@ -50,7 +51,14 @@ export function WeekChart({ daily, lang }: { daily: Record<string, number>; lang
         const label = new Date(d.date + 'T12:00').toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-US', { weekday: 'short' })
         return (
           <g key={d.date}>
-            <rect x={x} y={y(d.minutes)} width={bw * 0.64} height={Math.max(0, H - pad.b - y(d.minutes))} rx="3" fill={isToday ? 'var(--color-accent)' : 'color-mix(in srgb, var(--color-accent) 55%, var(--color-bg))'} />
+            <rect
+              x={x}
+              y={y(d.minutes)}
+              width={bw * 0.64}
+              height={Math.max(0, H - pad.b - y(d.minutes))}
+              rx="3"
+              fill={isToday ? 'var(--color-accent)' : 'color-mix(in srgb, var(--color-accent) 55%, var(--color-bg))'}
+            />
             {d.minutes > 0 && (
               <text x={x + bw * 0.32} y={y(d.minutes) - 3} textAnchor="middle" fontSize="10" fill="var(--color-fg)">
                 {d.minutes}
@@ -88,7 +96,10 @@ export function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card title={t('dash.streak')}>
           <div className="text-4xl font-bold tabular" data-testid="streak">
-            🔥 {t('dash.days', { count: streak })}
+            <span className="text-nD">
+              <Icon name="fire" size={34} />
+            </span>{' '}
+            {t('dash.days', { count: streak })}
           </div>
           <div className="text-sm text-muted tabular">
             {t('dash.today')}: {t('dash.minutes', { count: todayMin })}

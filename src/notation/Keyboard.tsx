@@ -26,7 +26,7 @@ export interface KeyboardProps {
 
 const MARK_STYLE: Record<KeyMark, { white: string; black: string }> = {
   due: { white: 'color-mix(in srgb, var(--color-accent) 30%, var(--color-key-white))', black: 'color-mix(in srgb, var(--color-accent) 70%, var(--color-key-black))' },
-  dueL: { white: 'color-mix(in srgb, var(--color-left) 30%, var(--color-key-white))', black: 'color-mix(in srgb, var(--color-left) 70%, var(--color-key-black))' },
+  dueL: { white: 'color-mix(in srgb, var(--color-lh) 30%, var(--color-key-white))', black: 'color-mix(in srgb, var(--color-lh) 70%, var(--color-key-black))' },
   hit: { white: 'color-mix(in srgb, var(--color-ok) 45%, var(--color-key-white))', black: 'var(--color-ok)' },
   wrong: { white: 'color-mix(in srgb, var(--color-accent) 55%, var(--color-key-white))', black: 'var(--color-accent)' },
   show: { white: 'color-mix(in srgb, var(--color-accent) 22%, var(--color-key-white))', black: 'color-mix(in srgb, var(--color-accent) 60%, var(--color-key-black))' },
@@ -38,19 +38,7 @@ function useHeldNotes(): Set<number> {
   return held
 }
 
-export function Keyboard({
-  low,
-  high,
-  highlight,
-  focus,
-  showNames,
-  kid,
-  labels,
-  onWindow,
-  height,
-  interactive = true,
-  className = '',
-}: KeyboardProps) {
+export function Keyboard({ low, high, highlight, focus, showNames, kid, labels, onWindow, height, interactive = true, className = '' }: KeyboardProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
   const [start, setStart] = useState<number | undefined>(undefined)
@@ -69,7 +57,8 @@ export function Keyboard({
   }, [])
 
   const coarse = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches
-  const minKey = kid ? 52 : coarse ? 40 : 22
+  // Kid mode always gets 56px keys (R3a); touch screens get 56px from tablet width up (R30), 44px on phones.
+  const minKey = kid ? 56 : coarse ? (width >= 700 ? 56 : 44) : 22
   const [wLow, wHigh] = useMemo(() => (width ? visibleWindow(low, high, width, minKey, start) : snapRange(low, high)), [low, high, width, minKey, start])
   const scrollable = whiteCount(...snapRange(low, high)) > whiteCount(wLow, wHigh)
 
@@ -112,10 +101,22 @@ export function Keyboard({
     <div className={`select-none ${className}`}>
       {scrollable && (
         <div className="flex justify-between text-sm mb-1">
-          <button type="button" className="px-3 min-h-9 rounded-md bg-panel disabled:opacity-40" onClick={() => shift(-1)} disabled={wLow <= snapRange(low, high)[0]} aria-label="Lower octave">
+          <button
+            type="button"
+            className="px-3 min-h-[var(--seg-h)] min-w-[var(--seg-h)] rounded-md bg-panel disabled:opacity-40"
+            onClick={() => shift(-1)}
+            disabled={wLow <= snapRange(low, high)[0]}
+            aria-label="Lower octave"
+          >
             ◀ {prettyName(wLow)}
           </button>
-          <button type="button" className="px-3 min-h-9 rounded-md bg-panel disabled:opacity-40" onClick={() => shift(1)} disabled={wHigh >= snapRange(low, high)[1]} aria-label="Higher octave">
+          <button
+            type="button"
+            className="px-3 min-h-[var(--seg-h)] min-w-[var(--seg-h)] rounded-md bg-panel disabled:opacity-40"
+            onClick={() => shift(1)}
+            disabled={wHigh >= snapRange(low, high)[1]}
+            aria-label="Higher octave"
+          >
             {prettyName(wHigh)} ▶
           </button>
         </div>
@@ -158,13 +159,26 @@ export function Keyboard({
         {keys.map((k) => {
           const mark = highlight?.get(k.midi)
           const isHeld = held.has(k.midi)
-          const color = isHeld ? (mark === 'wrong' ? MARK_STYLE.wrong : mark === 'due' || mark === 'dueL' || mark === 'hit' ? MARK_STYLE.hit : null) : mark ? MARK_STYLE[mark] : null
-          const pressedFill = isHeld && !color ? (k.black ? 'color-mix(in srgb, var(--color-key-black) 70%, var(--color-muted))' : 'color-mix(in srgb, var(--color-key-white) 80%, var(--color-muted))') : undefined
+          const color = isHeld
+            ? mark === 'wrong'
+              ? MARK_STYLE.wrong
+              : mark === 'due' || mark === 'dueL' || mark === 'hit'
+                ? MARK_STYLE.hit
+                : null
+            : mark
+              ? MARK_STYLE[mark]
+              : null
+          const pressedFill =
+            isHeld && !color
+              ? k.black
+                ? 'color-mix(in srgb, var(--color-key-black) 70%, var(--color-muted))'
+                : 'color-mix(in srgb, var(--color-key-white) 80%, var(--color-muted))'
+              : undefined
           const style: CSSProperties = {
             left: k.x,
             width: k.w,
             height: k.black ? '62%' : '100%',
-            background: color ? (k.black ? color.black : color.white) : pressedFill ?? (k.black ? 'var(--color-key-black)' : 'var(--color-key-white)'),
+            background: color ? (k.black ? color.black : color.white) : (pressedFill ?? (k.black ? 'var(--color-key-black)' : 'var(--color-key-white)')),
             zIndex: k.black ? 2 : 1,
             transform: isHeld ? 'translateY(1px)' : undefined,
           }
@@ -176,25 +190,31 @@ export function Keyboard({
             <div
               key={k.midi}
               data-midi={k.midi}
+              role="button"
               aria-label={prettyName(k.midi)}
+              aria-pressed={isHeld}
               className={`absolute top-0 flex flex-col items-center justify-end gap-1 pb-1.5 ${k.black ? 'rounded-b-md shadow-md' : 'border border-line rounded-b-md'} ${mark === 'wrong' && isHeld ? 'anim-wobble' : ''}`}
               style={style}
             >
-              {label && (
-                <span className={`text-[10px] font-mono leading-none ${k.black ? 'text-key-white/80' : 'text-muted'}`}>{label}</span>
-              )}
+              {label && <span className="text-[10px] font-mono leading-none" style={{ color: k.black ? 'var(--color-key-white)' : 'var(--color-key-ink-muted)' }}>
+                  {label}
+                </span>}
               {showKidDot && (
                 <span
                   className="grid place-items-center rounded-full font-extrabold leading-none"
-                  style={{ width: Math.min(30, k.w * 0.7), height: Math.min(30, k.w * 0.7), background: colorForMidi(k.midi), color: inkForMidi(k.midi), fontSize: Math.min(15, k.w * 0.38) }}
+                  style={{
+                    width: Math.min(30, k.w * 0.7),
+                    height: Math.min(30, k.w * 0.7),
+                    background: colorForMidi(k.midi),
+                    color: inkForMidi(k.midi),
+                    fontSize: Math.min(15, k.w * 0.38),
+                  }}
                 >
                   {letter}
                 </span>
               )}
               {showAdultName && (
-                <span className={`text-[10px] leading-none ${letter === 'C' ? 'font-semibold text-fg' : 'text-muted'}`}>
-                  {letter === 'C' ? prettyName(k.midi) : letter}
-                </span>
+                <span className={`text-[10px] leading-none ${letter === 'C' ? 'font-semibold' : ''}`} style={{ color: letter === 'C' ? 'var(--color-key-ink)' : 'var(--color-key-ink-muted)' }}>{letter === 'C' ? prettyName(k.midi) : letter}</span>
               )}
               {k.midi === focusKey && hasFocus && <span className="absolute inset-x-1 top-1 h-1.5 rounded bg-accent" />}
             </div>

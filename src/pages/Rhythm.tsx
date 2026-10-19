@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Icon } from '../components/Icon'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
+import { NARROW_WRAP as narrowWrap } from '../components/BottomSheet'
 import { RhythmStaff, type RhythmItem } from '../notation/Staff'
 import { InputPanel } from '../components/InputPanel'
 import { Segmented } from '../components/Segmented'
@@ -160,11 +162,22 @@ export function RhythmPage() {
         {!kid && <h1 className="text-2xl font-bold">{t('modes.rhythm')}</h1>}
         {!lessonEx && (phase === 'idle' || phase === 'done') && (
           <div className="flex flex-wrap items-center gap-3">
-            <label className="inline-flex items-center gap-2 text-sm" htmlFor="rh-bpm">
-              {t('rhythm.tempo')}
-              <input id="rh-bpm" type="range" min={50} max={140} step={5} value={bpm} onChange={(e) => setBpm(Number(e.target.value))} className="w-28 accent-[var(--color-accent)]" />
-              <span className="tabular w-16">{bpm} BPM</span>
-            </label>
+            {!kid && (
+              <label className="inline-flex items-center gap-2 text-sm" htmlFor="rh-bpm">
+                {t('rhythm.tempo')}
+                <input
+                  id="rh-bpm"
+                  type="range"
+                  min={50}
+                  max={140}
+                  step={5}
+                  value={bpm}
+                  onChange={(e) => setBpm(Number(e.target.value))}
+                  className="w-28 accent-[var(--color-accent)]"
+                />
+                <span className="tabular w-16">{bpm} BPM</span>
+              </label>
+            )}
             <Segmented<'1' | '2' | '3'>
               id="rh-level"
               value={String(level) as '1' | '2' | '3'}
@@ -187,7 +200,9 @@ export function RhythmPage() {
           </div>
           {phase === 'idle' && (
             <>
-              <Button onClick={hear}>🔊 {t('rhythm.listen')}</Button>
+              <Button onClick={hear}>
+                <Icon name="speaker" /> {t('rhythm.listen')}
+              </Button>
               <PrimaryButton onClick={() => start()}>{kid ? t('kid.rhythm.start') : t('rhythm.start')} ▶</PrimaryButton>
             </>
           )}
@@ -228,10 +243,16 @@ export function RhythmPage() {
           className={`grid place-items-center rounded-[var(--radius)] border-4 border-dashed select-none font-extrabold active:scale-[.98] transition-transform ${kid ? 'h-44 text-2xl border-nC bg-panel' : 'h-32 text-lg border-line bg-panel/60'}`}
           style={{ touchAction: 'none' }}
         >
-          {kid ? `🥁 ${t('kid.rhythm.tapPad')}` : t('rhythm.tapPad')}
+          {kid ? (
+            <span className="grid justify-items-center gap-2">
+              <Icon name="drum" size={56} /> {t('kid.rhythm.tapPad')}
+            </span>
+          ) : (
+            t('rhythm.tapPad')
+          )}
         </button>
       </div>
-      <div className={kid ? 'py-2' : '-mx-[max(16px,env(safe-area-inset-left,0px))]'}>
+      <div className={kid ? 'py-2' : narrowWrap}>
         <InputPanel tapOnSpace />
       </div>
     </Page>

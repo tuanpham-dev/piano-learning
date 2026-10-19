@@ -114,7 +114,25 @@ export type ProgressStore = ProgressData & Actions
 const persist = debouncedSaver(PROGRESS_KEY)
 
 function dataOf(s: ProgressStore): ProgressData {
-  const { loaded: _l, hydrate: _h, setProfile: _sp, setMode: _sm, setLang: _sl, setName: _sn, addMinutes: _am, addStars: _as, recordSongResult: _rs, recordWaitCompletion: _rw, recordDrill: _rd, completeLesson: _cl, awardBadges: _ab, markModeTried: _mt, updateSettings: _us, replaceAll: _ra, ...data } = s
+  const {
+    loaded: _l,
+    hydrate: _h,
+    setProfile: _sp,
+    setMode: _sm,
+    setLang: _sl,
+    setName: _sn,
+    addMinutes: _am,
+    addStars: _as,
+    recordSongResult: _rs,
+    recordWaitCompletion: _rw,
+    recordDrill: _rd,
+    completeLesson: _cl,
+    awardBadges: _ab,
+    markModeTried: _mt,
+    updateSettings: _us,
+    replaceAll: _ra,
+    ...data
+  } = s
   return data
 }
 

@@ -18,8 +18,16 @@ const ART: Record<BadgeId, { bg: string; draw: ReactNode }> = {
     bg: '#f4811f',
     draw: (
       <g>
-        <path d="M32 12 C40 24 46 30 44 40 C42 50 22 52 20 40 C19 33 24 30 26 24 C28 30 30 31 32 32 C34 25 32 18 32 12 Z" fill="#f6c90e" stroke={INK} strokeWidth="2.5" strokeLinejoin="round" />
-        <text x="32" y="45" textAnchor="middle" fontSize="13" fontWeight="800" fill={INK} fontFamily="system-ui">7</text>
+        <path
+          d="M32 12 C40 24 46 30 44 40 C42 50 22 52 20 40 C19 33 24 30 26 24 C28 30 30 31 32 32 C34 25 32 18 32 12 Z"
+          fill="#f6c90e"
+          stroke={INK}
+          strokeWidth="2.5"
+          strokeLinejoin="round"
+        />
+        <text x="32" y="45" textAnchor="middle" fontSize="13" fontWeight="800" fill={INK} fontFamily="system-ui">
+          7
+        </text>
       </g>
     ),
   },
@@ -33,7 +41,9 @@ const ART: Record<BadgeId, { bg: string; draw: ReactNode }> = {
           ))}
         </g>
         <ellipse cx="32" cy="31" rx="6" ry="4.5" fill={INK} transform="rotate(-20 32 31)" />
-        <text x="32" y="58" textAnchor="middle" fontSize="11" fontWeight="800" fill="#fff" fontFamily="system-ui">100</text>
+        <text x="32" y="58" textAnchor="middle" fontSize="11" fontWeight="800" fill="#fff" fontFamily="system-ui">
+          100
+        </text>
       </g>
     ),
   },
@@ -67,7 +77,9 @@ const ART: Record<BadgeId, { bg: string; draw: ReactNode }> = {
         <path d="M19 18 L44 14 L44 19 L19 23 Z" />
         <ellipse cx="16" cy="40" rx="6" ry="4.5" transform="rotate(-20 16 40)" />
         <ellipse cx="38" cy="36" rx="6" ry="4.5" transform="rotate(-20 38 36)" />
-        <text x="32" y="58" textAnchor="middle" fontSize="11" fontWeight="800" fontFamily="system-ui">10</text>
+        <text x="32" y="58" textAnchor="middle" fontSize="11" fontWeight="800" fontFamily="system-ui">
+          10
+        </text>
       </g>
     ),
   },
@@ -78,7 +90,9 @@ const ART: Record<BadgeId, { bg: string; draw: ReactNode }> = {
         <circle cx="32" cy="30" r="15" fill="#fff" stroke={INK} strokeWidth="2.5" />
         <circle cx="32" cy="30" r="9" fill="#e63946" stroke={INK} strokeWidth="2" />
         <circle cx="32" cy="30" r="3.5" fill="#fff" stroke={INK} strokeWidth="1.5" />
-        <text x="32" y="58" textAnchor="middle" fontSize="11" fontWeight="800" fill={INK} fontFamily="system-ui">50</text>
+        <text x="32" y="58" textAnchor="middle" fontSize="11" fontWeight="800" fill={INK} fontFamily="system-ui">
+          50
+        </text>
       </g>
     ),
   },
@@ -99,14 +113,7 @@ const ART: Record<BadgeId, { bg: string; draw: ReactNode }> = {
 export function Sticker({ id, earned, size = 64, label }: { id: BadgeId; earned: boolean; size?: number; label?: string }) {
   const art = ART[id]
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      role="img"
-      aria-label={label ?? id}
-      style={{ filter: earned ? undefined : 'grayscale(1)', opacity: earned ? 1 : 0.35 }}
-    >
+    <svg width={size} height={size} viewBox="0 0 64 64" role="img" aria-label={label ?? id} style={{ filter: earned ? undefined : 'grayscale(1)', opacity: earned ? 1 : 0.35 }}>
       <circle cx="32" cy="32" r="30" fill={art.bg} stroke="#fff" strokeWidth="3" />
       <circle cx="32" cy="32" r="30" fill="none" stroke={INK} strokeOpacity=".15" strokeWidth="1" />
       {art.draw}

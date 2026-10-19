@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { Icon } from '../components/Icon'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
 import { lessons } from '../content/lessons'
@@ -39,15 +40,24 @@ function LessonList() {
                   data-lesson={l.id}
                   className={`flex items-center gap-3 rounded-[var(--radius)] border px-4 py-3 hover:bg-panel ${current ? 'border-accent' : 'border-line'}`}
                 >
-                  <span className={`grid size-7 place-items-center rounded-full text-sm font-semibold tabular ${done ? 'bg-ok text-accent-ink' : current ? 'bg-accent text-accent-ink' : 'bg-panel'}`}>{done ? '✓' : l.order}</span>
+                  <span
+                    className={`grid size-7 place-items-center rounded-full text-sm font-semibold tabular ${done ? 'bg-ok text-accent-ink' : current ? 'bg-accent text-accent-ink' : 'bg-panel'}`}
+                  >
+                    {done ? '✓' : l.order}
+                  </span>
                   <span className="flex-1 min-w-0">{L(l.title)}</span>
                   {done && <span className="text-xs text-ok">{t('lessons.completed')}</span>}
                   {current && <span className="text-xs text-accent">▶</span>}
                 </Link>
               ) : (
-                <div data-lesson={l.id} aria-disabled="true" className="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-3 text-muted" title={t('lessons.locked', { n: l.order - 1 })}>
-                  <span className="grid size-7 place-items-center rounded-full bg-panel text-sm" aria-label="locked">
-                    🔒
+                <div
+                  data-lesson={l.id}
+                  aria-disabled="true"
+                  className="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-3 text-muted"
+                  title={t('lessons.locked', { n: l.order - 1 })}
+                >
+                  <span className="grid size-7 place-items-center rounded-full bg-panel">
+                    <Icon name="lock" size={15} label="locked" />
                   </span>
                   <span className="flex-1 min-w-0">
                     {l.order} · {L(l.title)}
@@ -90,11 +100,11 @@ function JourneyMap() {
                   data-island={l.order}
                   data-state={done ? 'done' : current ? 'current' : open ? 'open' : 'locked'}
                   onClick={() => nav(`/lessons/${l.id}`)}
-                  aria-label={`${l.order}. ${L(l.title)}${done ? ' ✓' : open ? '' : ' 🔒'}`}
+                  aria-label={`${l.order}. ${L(l.title)}${done ? ' ✓' : open ? '' : ' (locked)'}`}
                   className={`relative grid size-16 place-items-center rounded-full text-2xl font-extrabold transition-transform ${current ? 'scale-110 ring-4 ring-nE ring-offset-4 ring-offset-bg' : ''} ${open ? 'text-white shadow-md active:scale-95' : 'bg-line text-muted opacity-60'}`}
                   style={open ? { background: color } : undefined}
                 >
-                  {open ? l.order : '🔒'}
+                  {open ? l.order : <Icon name="lock" size={24} />}
                   {done && (
                     <span className="absolute -top-3 -right-2">
                       <StarIcon size={26} />

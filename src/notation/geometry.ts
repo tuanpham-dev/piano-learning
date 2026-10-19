@@ -37,7 +37,7 @@ export function keyGeometry(low: number, high: number, width: number): KeyRect[]
  */
 export function visibleWindow(low: number, high: number, width: number, minKeyWidth: number, start?: number): [number, number] {
   const [lo, hi] = snapRange(low, high)
-  const fit = Math.max(8, Math.floor(width / minKeyWidth))
+  const fit = Math.max(5, Math.floor(width / minKeyWidth))
   if (whiteCount(lo, hi) <= fit) return [lo, hi]
   // Count whites forward from `start` (or `lo`) until the window is full.
   let s = snapRange(Math.max(lo, Math.min(start ?? lo, hi)), hi)[0]

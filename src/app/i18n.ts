@@ -29,8 +29,7 @@ export function useT() {
   const lang = useProgress((s) => s.lang)
   const kid = mode === 'kid'
   /** Kid copy when in kid mode and the key exists under `kid.`, otherwise the shared key. */
-  const tm = (key: string, opts?: Record<string, unknown>): string =>
-    kid && i18n.exists(`kid.${key}`) ? t(`kid.${key}`, opts) : t(key, opts)
+  const tm = (key: string, opts?: Record<string, unknown>): string => (kid && i18n.exists(`kid.${key}`) ? t(`kid.${key}`, opts) : t(key, opts))
   const L = (s: Localized): string => s[lang] || s.en
   return { t, tm, L, kid, mode: mode as Mode, lang }
 }

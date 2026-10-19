@@ -24,7 +24,12 @@ export function ImportMidiPage() {
       const midi = parseMidiFile(new Uint8Array(await f.arrayBuffer()))
       setParsed({ midi, file: f.name })
       setMapping(suggestMapping(midi))
-      setTitle(f.name.replace(/\.midi?$/i, '').replace(/[_-]+/g, ' ').trim())
+      setTitle(
+        f.name
+          .replace(/\.midi?$/i, '')
+          .replace(/[_-]+/g, ' ')
+          .trim(),
+      )
     } catch (e) {
       setParsed(null)
       setError(e instanceof NoNotesError ? t('importer.noNotes', { file: f.name }) : String(e))

@@ -7,8 +7,13 @@ describe('song DSL', () => {
   it('parses Twinkle’s first line with fingering', () => {
     const v = parseVoice('C4q1 C4q1 G4q5 G4q5 | A4q5 A4q5 G4h5 |', FOUR)
     expect(v.notes.map((n) => [n.midi, n.startBeat, n.beats, n.finger])).toEqual([
-      [60, 0, 1, 1], [60, 1, 1, 1], [67, 2, 1, 5], [67, 3, 1, 5],
-      [69, 4, 1, 5], [69, 5, 1, 5], [67, 6, 2, 5],
+      [60, 0, 1, 1],
+      [60, 1, 1, 1],
+      [67, 2, 1, 5],
+      [67, 3, 1, 5],
+      [69, 4, 1, 5],
+      [69, 5, 1, 5],
+      [67, 6, 2, 5],
     ])
   })
   it('parses chords, dotted notes, accidentals and rests', () => {

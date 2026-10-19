@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useProgress } from '../store/progress'
 import { setLanguage } from './i18n'
 import { AppRoutes } from './routes'
+import { UpdateToast } from '../components/UpdateToast'
 
 export function App() {
   const { i18n } = useTranslation()
@@ -21,6 +22,7 @@ export function App() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AppRoutes />
+      <UpdateToast />
     </BrowserRouter>
   )
 }

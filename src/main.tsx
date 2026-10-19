@@ -7,8 +7,10 @@ import { useProgress } from './store/progress'
 import { useSession } from './store/session'
 import { installAudioUnlock } from './audio/unlock'
 import { loadSamples } from './audio/sampler'
+import { installPwa } from './app/pwa'
 
 installAudioUnlock()
+if (import.meta.env.PROD) installPwa()
 if (import.meta.env.DEV) void import('./app/dev').then((m) => m.installDevHandles())
 void loadSamples()
 void Promise.all([useProgress.getState().hydrate(), useSession.getState().hydrateSongs()])

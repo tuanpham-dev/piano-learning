@@ -240,7 +240,8 @@
     "micNeedsWait": "Melody (mic) works in Wait mode with one hand.",
     "melodyMic": "Melody (mic)",
     "barOf": "Bar {{bar}} of {{total}}",
-    "micOff": "Turn off the mic"
+    "micOff": "Turn off the mic",
+    "settings": "Settings"
   },
   "result": {
     "performTitle": "{{title}} · Perform",

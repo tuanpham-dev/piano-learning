@@ -3,12 +3,18 @@ import { judge, scorePerformance, starsFor } from './scoring'
 describe('scoring', () => {
   const expected = [0, 0.5, 1, 1.5].map((t, i) => ({ midi: 60 + i, time: t, hand: 'R' as const }))
   it('scores an exact performance 100%', () => {
-    const s = scorePerformance(expected, expected.map((e) => ({ midi: e.midi, time: e.time })))
+    const s = scorePerformance(
+      expected,
+      expected.map((e) => ({ midi: e.midi, time: e.time })),
+    )
     expect(s).toMatchObject({ percent: 100, hit: 4, missed: 0, avgOffsetMs: 0 })
     expect(s.perHand.R).toBe(100)
   })
   it('counts 120 ms late notes as late but within tolerance', () => {
-    const s = scorePerformance(expected, expected.map((e) => ({ midi: e.midi, time: e.time + 0.12 })))
+    const s = scorePerformance(
+      expected,
+      expected.map((e) => ({ midi: e.midi, time: e.time + 0.12 })),
+    )
     expect(s).toMatchObject({ percent: 100, late: 4, avgOffsetMs: 120 })
   })
   it('misses notes beyond ±150 ms and wrong pitches', () => {

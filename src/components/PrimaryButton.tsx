@@ -27,5 +27,5 @@ export function Button({ variant = 'secondary', className = '', children, ...res
 }
 
 export function PrimaryButton(props: Omit<Props, 'variant'>) {
-  return <Button {...props} variant="primary" className={`text-lg px-6 ${props.className ?? ''}`} />
+  return <Button {...props} data-primary="" variant="primary" className={`text-lg px-6 ${props.className ?? ''}`} />
 }

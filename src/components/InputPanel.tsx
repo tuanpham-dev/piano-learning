@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from './Icon'
 import { useT } from '../app/i18n'
 import { useProgress } from '../store/progress'
 import { useMidi, type MidiState } from '../input/midi'
@@ -6,6 +7,8 @@ import { useMic } from '../input/mic'
 import { useQwerty } from '../input/qwerty'
 import { prettyName } from '../engine/notes'
 import { VirtualMidiPanel } from './VirtualMidiPanel'
+import { BottomSheet } from './BottomSheet'
+import { useNarrow } from '../hooks/useMedia'
 
 interface Props {
   /** The microphone is offered on this screen. */
@@ -14,6 +17,8 @@ interface Props {
   micDisabledReason?: string
   tapOnSpace?: boolean
   compact?: boolean
+  /** Always render inline (when already inside a sheet). */
+  inline?: boolean
 }
 
 function Pill({ tone = 'neutral', children }: { tone?: 'ok' | 'err' | 'neutral'; children: React.ReactNode }) {
@@ -91,7 +96,7 @@ function PanelBody({ micAllowed, micDisabledReason, tapOnSpace }: Props) {
       {micAllowed && (
         <span className="inline-flex items-center gap-2 flex-wrap">
           <Check id="in-mic" checked={inputs.mic && !micDisabledReason} disabled={!!micDisabledReason} onChange={(v) => set('mic', v)}>
-            🎙 {t('inputs.mic')}
+            <Icon name="mic" size={18} /> {t('inputs.mic')}
           </Check>
           {micDisabledReason ? (
             <Pill>{micDisabledReason}</Pill>
@@ -101,7 +106,13 @@ function PanelBody({ micAllowed, micDisabledReason, tapOnSpace }: Props) {
             <Pill tone="err">{t('inputs.micUnsupported')}</Pill>
           ) : mic.state === 'on' ? (
             <>
-              <Pill tone="ok">{mic.heard !== null ? (kid ? t('kid.inputs.micHeard', { note: prettyName(mic.heard, { octave: false }) }) : t('inputs.micHeard', { note: prettyName(mic.heard) })) : t('inputs.micListening')}</Pill>
+              <Pill tone="ok">
+                {mic.heard !== null
+                  ? kid
+                    ? t('kid.inputs.micHeard', { note: prettyName(mic.heard, { octave: false }) })
+                    : t('inputs.micHeard', { note: prettyName(mic.heard) })
+                  : t('inputs.micListening')}
+              </Pill>
               <span className="h-2 w-16 rounded bg-line overflow-hidden" aria-hidden>
                 <span className="block h-full bg-ok" style={{ width: `${Math.min(100, mic.level * 400)}%` }} />
               </span>
@@ -134,6 +145,17 @@ function PanelBody({ micAllowed, micDisabledReason, tapOnSpace }: Props) {
 export function InputPanel(props: Props) {
   const { t, tm, kid } = useT()
   const [open, setOpen] = useState(false)
+  const narrow = useNarrow()
+  const inputs = useProgress((s) => s.settings.inputs)
+  if (!kid && narrow && !props.inline) {
+    const on = [inputs.screen && t('inputs.screen'), inputs.qwerty && t('inputs.qwerty'), inputs.midi && t('inputs.midi'), props.micAllowed && inputs.mic && t('inputs.mic')].filter(Boolean)
+    return (
+      <BottomSheet label={t('inputs.title')} summary={on.join(' · ')}>
+        <PanelBody {...props} />
+        <VirtualMidiPanel />
+      </BottomSheet>
+    )
+  }
   if (!kid) {
     return (
       <div className={`border-t border-line bg-panel/60 px-3 py-2 ${props.compact ? '' : ''}`} aria-label={t('inputs.title')}>
@@ -146,8 +168,8 @@ export function InputPanel(props: Props) {
   }
   return (
     <div className="relative">
-      <button type="button" className="rounded-full bg-panel px-4 min-h-11 font-extrabold" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        🎹 {tm('inputs.piano')}
+      <button type="button" className="inline-flex items-center gap-2 rounded-full bg-panel px-5 min-h-[var(--touch)] font-extrabold" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <Icon name="piano" /> {tm('inputs.piano')}
       </button>
       {open && (
         <div className="absolute bottom-full left-0 mb-2 z-30 w-[min(92vw,560px)] rounded-[var(--radius)] border-2 border-line bg-bg p-4 shadow-xl grid gap-2">

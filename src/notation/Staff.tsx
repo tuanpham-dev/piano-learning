@@ -177,12 +177,17 @@ export function GrandStaff({ song, cursorBeat, color = () => undefined, kid = fa
         built.forEach((bb) => bb.stave.setNoteStartX(noteStart))
         fmt.format(voices, Math.max(40, x + w - noteStart - 14))
         built.forEach((bb, i) => {
-          const beams = Beam.generateBeams(bb.notes.filter((n) => !n.isRest()), { groups: Beam.getDefaultBeamGroups(timeSigString(song.timeSig)) })
+          const beams = Beam.generateBeams(
+            bb.notes.filter((n) => !n.isRest()),
+            { groups: Beam.getDefaultBeamGroups(timeSigString(song.timeSig)) },
+          )
           voices[i]!.draw(ctx, bb.stave)
           beams.forEach((bm) => bm.setStyle({ fillStyle: th.fg, strokeStyle: th.fg }).setContext(ctx).draw())
           bb.events.forEach((ev, k) => {
             if (ev.tieNext && bb.notes[k + 1]) {
-              new StaveTie({ first_note: bb.notes[k], last_note: bb.notes[k + 1], first_indices: ev.midis.map((_, j) => j), last_indices: ev.midis.map((_, j) => j) }).setContext(ctx).draw()
+              new StaveTie({ first_note: bb.notes[k], last_note: bb.notes[k + 1], first_indices: ev.midis.map((_, j) => j), last_indices: ev.midis.map((_, j) => j) })
+                .setContext(ctx)
+                .draw()
             }
             cursorPts.push({ beat: ev.start, x: bb.notes[k]!.getAbsoluteX() })
           })
@@ -282,7 +287,7 @@ export function NoteStaff({ clef, items, keySig = 'C', kid = false, height, clas
     }
   }, [clef, key, keySig, kid, width, height])
   return (
-    <div ref={ref} className={`w-full ${className}`} role="img" aria-label={label}>
+    <div ref={ref} className={`w-full ${className}`} role={label ? 'img' : undefined} aria-label={label}>
       <div ref={host} />
     </div>
   )
@@ -336,7 +341,10 @@ export function RhythmStaff({ items, timeSig, kid = false, className = '' }: { i
       const voice = new Voice({ num_beats: total * (timeSig[1] / 4), beat_value: timeSig[1] }).setMode(Voice.Mode.SOFT)
       voice.addTickables(tickables)
       new Formatter().joinVoices([voice]).format([voice], Math.max(40, W - stave.getNoteStartX() - 16))
-      const beams = Beam.generateBeams(notes.filter((n) => !n.isRest()), { groups: Beam.getDefaultBeamGroups(timeSigString(timeSig)), stem_direction: 1 })
+      const beams = Beam.generateBeams(
+        notes.filter((n) => !n.isRest()),
+        { groups: Beam.getDefaultBeamGroups(timeSigString(timeSig)), stem_direction: 1 },
+      )
       voice.draw(ctx, stave)
       beams.forEach((b) => b.setStyle({ fillStyle: th.fg, strokeStyle: th.fg }).setContext(ctx).draw())
     } catch (e) {

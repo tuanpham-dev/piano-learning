@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Icon } from './Icon'
 import { useT } from '../app/i18n'
 import { Celebration } from './Celebration'
 import { Mascot } from './Mascot'
@@ -44,7 +45,11 @@ export function RoundSummary({ stars, kidTitle, adultLines, newBadges = [], onAg
         <Stars count={stars} size={26} />
         <div className="grid gap-0.5 tabular">{adultLines}</div>
       </div>
-      {newBadges.length > 0 && <p className="text-sm">🏅 {newBadges.map((b) => t(`badges.${b}`)).join(', ')}</p>}
+      {newBadges.length > 0 && (
+        <p className="text-sm inline-flex items-center gap-1">
+          <Icon name="medal" /> {newBadges.map((b) => t(`badges.${b}`)).join(', ')}
+        </p>
+      )}
       <div>
         <PrimaryButton onClick={onAgain}>{againLabel}</PrimaryButton>
       </div>

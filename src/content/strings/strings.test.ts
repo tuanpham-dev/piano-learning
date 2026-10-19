@@ -17,7 +17,10 @@ const fen = flatten(en as Tree)
 const fvi = flatten(vi as Tree)
 
 function words(s: string): number {
-  return s.replace(/\{\{[^}]+\}\}/g, 'X').split(/\s+/).filter(Boolean).length
+  return s
+    .replace(/\{\{[^}]+\}\}/g, 'X')
+    .split(/\s+/)
+    .filter(Boolean).length
 }
 
 describe('string tables', () => {

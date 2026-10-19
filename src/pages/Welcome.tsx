@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Icon } from '../components/Icon'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useProgress, type Lang, type Mode } from '../store/progress'
-import { setLanguage } from '../app/i18n'
 import { Mascot } from '../components/Mascot'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { Segmented } from '../components/Segmented'
@@ -13,12 +13,13 @@ export function WelcomePage() {
   const setProfile = useProgress((s) => s.setProfile)
   const [name, setName] = useState('')
   const [mode, setMode] = useState<Mode | null>(null)
-  const [lang, setLang] = useState<Lang>(navigator.language.startsWith('vi') ? 'vi' : 'en')
+  // Language lives in the store: switching it re-renders the app, so local state would be lost.
+  const lang = useProgress((s) => s.lang)
+  useEffect(() => {
+    if (navigator.language.startsWith('vi')) useProgress.getState().setLang('vi')
+  }, [])
 
-  const pickLang = (l: Lang) => {
-    setLang(l)
-    setLanguage(l)
-  }
+  const pickLang = (l: Lang) => useProgress.getState().setLang(l)
   const pickMode = (m: Mode) => {
     setMode(m)
     document.documentElement.dataset.mode = m
@@ -46,8 +47,8 @@ export function WelcomePage() {
               aria-pressed={mode === m}
               className={`rounded-[var(--radius)] border-2 py-5 text-lg font-semibold ${mode === m ? 'border-accent bg-accent/10' : 'border-line bg-bg'}`}
             >
-              <span className="block text-3xl" aria-hidden>
-                {m === 'kid' ? '🧒' : '🙂'}
+              <span className="flex justify-center text-accent mb-1">
+                <Icon name={m === 'kid' ? 'child' : 'adult'} size={36} />
               </span>
               {t(`welcome.${m}`)}
             </button>

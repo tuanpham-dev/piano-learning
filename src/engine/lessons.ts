@@ -11,7 +11,22 @@ export type Exercise =
   | { kind: 'ear'; type: EarType; count: number; minCorrect: number; chordTypes?: ('maj' | 'min' | 'dim' | 'aug')[] }
   | { kind: 'none' }
 
-export type Diagram = 'posture' | 'keyboard' | 'middleC' | 'cPosition' | 'cPositionLeft' | 'cScale' | 'durations' | 'treble' | 'bass' | 'grand' | 'gPosition' | 'dynamics' | 'intervals' | 'triads' | 'timeSigs'
+export type Diagram =
+  | 'posture'
+  | 'keyboard'
+  | 'middleC'
+  | 'cPosition'
+  | 'cPositionLeft'
+  | 'cScale'
+  | 'durations'
+  | 'treble'
+  | 'bass'
+  | 'grand'
+  | 'gPosition'
+  | 'dynamics'
+  | 'intervals'
+  | 'triads'
+  | 'timeSigs'
 
 export interface Lesson {
   id: string

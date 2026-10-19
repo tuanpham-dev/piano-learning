@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
+import { NARROW_WRAP as narrowWrap } from '../components/BottomSheet'
 import { Keyboard } from '../notation/Keyboard'
 import { InputPanel } from '../components/InputPanel'
 import { MetronomeControls } from '../components/MetronomeControls'
@@ -55,17 +56,23 @@ export function FreePlayPage() {
             {t('free.sustain')}
           </button>
           <span className="inline-flex items-center gap-1">
-            <button type="button" className="rounded-md border border-line bg-bg px-3 min-h-[var(--touch)]" onClick={() => shift(-1)} aria-label="Octave down">
+            <button type="button" className="rounded-md border border-line bg-bg px-3 min-h-[var(--touch)] min-w-[var(--touch)]" onClick={() => shift(-1)} aria-label="Octave down">
               −
             </button>
             <span className="tabular px-1 text-sm">{t('inputs.octave', { n: qOct })}</span>
-            <button type="button" className="rounded-md border border-line bg-bg px-3 min-h-[var(--touch)]" onClick={() => shift(1)} aria-label="Octave up">
+            <button type="button" className="rounded-md border border-line bg-bg px-3 min-h-[var(--touch)] min-w-[var(--touch)]" onClick={() => shift(1)} aria-label="Octave up">
               +
             </button>
           </span>
           {!kid && (
             <label className="inline-flex items-center gap-2 text-sm" htmlFor="free-names">
-              <input id="free-names" type="checkbox" className="size-5 accent-[var(--color-accent)]" checked={settings.noteNames} onChange={(e) => update({ noteNames: e.target.checked })} />
+              <input
+                id="free-names"
+                type="checkbox"
+                className="size-5 accent-[var(--color-accent)]"
+                checked={settings.noteNames}
+                onChange={(e) => update({ noteNames: e.target.checked })}
+              />
               {t('free.noteNames')}
             </label>
           )}
@@ -94,7 +101,7 @@ export function FreePlayPage() {
           focus={[(qOct + 1) * 12, (qOct + 1) * 12 + 16]}
         />
       </div>
-      <div className="-mx-[max(16px,env(safe-area-inset-left,0px))]">
+      <div className={narrowWrap}>
         {kid ? (
           <div className="px-4 py-2">
             <InputPanel />

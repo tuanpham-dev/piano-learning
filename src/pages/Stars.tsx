@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from '../components/Icon'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
 import { useProgress } from '../store/progress'
@@ -29,7 +30,10 @@ export function StarsPage() {
         <p className="text-xl font-extrabold">
           {streak > 0 ? (
             <>
-              🔥 {t('kid.stars.streak', { count: streak })} {t('kid.stars.keep')}
+              <span className="text-nD">
+                <Icon name="fire" size={26} />
+              </span>{' '}
+              {t('kid.stars.streak', { count: streak })} {t('kid.stars.keep')}
             </>
           ) : (
             t('kid.stars.start')

@@ -83,11 +83,15 @@ export function Mascot({ mood = 'idle', size = 72, className = '', label }: Prop
         <g fill="#ffffff" stroke={ink} strokeWidth="2">
           <circle cx="86" cy="24" r="3" />
           <circle cx="92" cy="12" r="5" />
-          <text x="92" y="16" fontSize="9" textAnchor="middle" fill={ink} stroke="none" fontWeight="700">?</text>
+          <text x="92" y="16" fontSize="9" textAnchor="middle" fill={ink} stroke="none" fontWeight="700">
+            ?
+          </text>
         </g>
       )}
       {mood === 'sleeping' && (
-        <text x="84" y="22" fontSize="16" fontWeight="800" fill={ink}>z</text>
+        <text x="84" y="22" fontSize="16" fontWeight="800" fill={ink}>
+          z
+        </text>
       )}
     </svg>
   )

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from './Icon'
 import { useT } from '../app/i18n'
 import { useProgress } from '../store/progress'
 import { inject, injectSustain, playScript, stopScript, useScripts, type ScriptNote } from '../input/virtual-midi'
@@ -29,7 +30,9 @@ export function VirtualMidiPanel() {
 
   return (
     <details className="rounded-md border border-dashed border-line bg-panel/50 p-3 text-sm" data-testid="virtual-midi">
-      <summary className="cursor-pointer font-semibold">🛠 {t('vmidi.title')}</summary>
+      <summary className="cursor-pointer font-semibold">
+        <Icon name="wrench" size={16} /> {t('vmidi.title')}
+      </summary>
       <div className="grid gap-3 pt-2">
         <p className="text-muted">{t('vmidi.hint')}</p>
         <div className="flex flex-wrap gap-1.5">

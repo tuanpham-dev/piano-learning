@@ -54,7 +54,17 @@ function DynamicsArt() {
         ['mf', 150, 34],
         ['f', 270, 44],
       ].map(([txt, x, size]) => (
-        <text key={txt} x={x as number} y="56" textAnchor="middle" fontSize={size as number} fontStyle="italic" fontWeight="700" fontFamily="Georgia, 'Times New Roman', serif" fill="var(--color-fg)">
+        <text
+          key={txt}
+          x={x as number}
+          y="56"
+          textAnchor="middle"
+          fontSize={size as number}
+          fontStyle="italic"
+          fontWeight="700"
+          fontFamily="Georgia, 'Times New Roman', serif"
+          fill="var(--color-fg)"
+        >
           {txt}
         </text>
       ))}
@@ -88,15 +98,66 @@ export function LessonDiagram({ kind, lit = [] }: { kind: Diagram; lit?: number[
         </Frame>
       )
     case 'cPosition':
-      return <Frame>{kb({ highlight: marks([60, 62, 64, 65, 67], 'due'), labels: labels([[60, '1'], [62, '2'], [64, '3'], [65, '4'], [67, '5']]) })}</Frame>
+      return (
+        <Frame>
+          {kb({
+            highlight: marks([60, 62, 64, 65, 67], 'due'),
+            labels: labels([
+              [60, '1'],
+              [62, '2'],
+              [64, '3'],
+              [65, '4'],
+              [67, '5'],
+            ]),
+          })}
+        </Frame>
+      )
     case 'cPositionLeft':
-      return <Frame>{kb({ highlight: marks([48, 50, 52, 53, 55], 'dueL'), labels: labels([[48, '5'], [50, '4'], [52, '3'], [53, '2'], [55, '1']]) })}</Frame>
+      return (
+        <Frame>
+          {kb({
+            highlight: marks([48, 50, 52, 53, 55], 'dueL'),
+            labels: labels([
+              [48, '5'],
+              [50, '4'],
+              [52, '3'],
+              [53, '2'],
+              [55, '1'],
+            ]),
+          })}
+        </Frame>
+      )
     case 'gPosition':
-      return <Frame>{kb({ highlight: marks([67, 69, 71, 72, 74], 'due'), labels: labels([[67, '1'], [69, '2'], [71, '3'], [72, '4'], [74, '5']]) })}</Frame>
+      return (
+        <Frame>
+          {kb({
+            highlight: marks([67, 69, 71, 72, 74], 'due'),
+            labels: labels([
+              [67, '1'],
+              [69, '2'],
+              [71, '3'],
+              [72, '4'],
+              [74, '5'],
+            ]),
+          })}
+        </Frame>
+      )
     case 'cScale':
       return (
         <Frame>
-          {kb({ highlight: marks([60, 62, 64, 65, 67, 69, 71, 72], 'due'), labels: labels([[60, '1'], [62, '2'], [64, '3'], [65, '1'], [67, '2'], [69, '3'], [71, '4'], [72, '5']]) })}
+          {kb({
+            highlight: marks([60, 62, 64, 65, 67, 69, 71, 72], 'due'),
+            labels: labels([
+              [60, '1'],
+              [62, '2'],
+              [64, '3'],
+              [65, '1'],
+              [67, '2'],
+              [69, '3'],
+              [71, '4'],
+              [72, '5'],
+            ]),
+          })}
           <NoteStaff clef="treble" items={[60, 62, 64, 65, 67, 69, 71, 72].map((m) => ({ midis: [m] }))} kid={kid} label="C major scale" />
         </Frame>
       )
@@ -136,13 +197,32 @@ export function LessonDiagram({ kind, lit = [] }: { kind: Diagram; lit?: number[
     case 'intervals':
       return (
         <Frame>
-          <NoteStaff clef="treble" items={[[60, 62], [60, 64], [60, 67], [60, 72]].map((m) => ({ midis: m }))} kid={kid} label="2nd, 3rd, 5th and octave from C" />
+          <NoteStaff
+            clef="treble"
+            items={[
+              [60, 62],
+              [60, 64],
+              [60, 67],
+              [60, 72],
+            ].map((m) => ({ midis: m }))}
+            kid={kid}
+            label="2nd, 3rd, 5th and octave from C"
+          />
         </Frame>
       )
     case 'triads':
       return (
         <Frame>
-          <NoteStaff clef="treble" items={[[60, 64, 67], [60, 63, 67], [57, 60, 64]].map((m) => ({ midis: m }))} kid={kid} label="C major, C minor, A minor" />
+          <NoteStaff
+            clef="treble"
+            items={[
+              [60, 64, 67],
+              [60, 63, 67],
+              [57, 60, 64],
+            ].map((m) => ({ midis: m }))}
+            kid={kid}
+            label="C major, C minor, A minor"
+          />
         </Frame>
       )
     case 'timeSigs':

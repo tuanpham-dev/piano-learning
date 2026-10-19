@@ -3,7 +3,7 @@ import { BPM_MAX, BPM_MIN, TIME_SIGS, clicksPerBar, useMetronome, type TimeSigNa
 
 /** Metronome toggle, tempo, time signature and a beat flash (R14). */
 export function MetronomeControls({ compact = false }: { compact?: boolean }) {
-  const { t } = useT()
+  const { t, kid } = useT()
   const { bpm, sig, running, beat, setBpm, setSig, toggle } = useMetronome()
   return (
     <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -11,7 +11,7 @@ export function MetronomeControls({ compact = false }: { compact?: boolean }) {
         type="button"
         onClick={toggle}
         aria-pressed={running}
-        className={`inline-flex items-center gap-2 rounded-[var(--radius)] border px-3 min-h-9 ${running ? 'bg-accent text-accent-ink border-accent' : 'border-line bg-bg'}`}
+        className={`inline-flex items-center gap-2 rounded-[var(--radius)] border px-3 min-h-[var(--seg-h)] ${running ? 'bg-accent text-accent-ink border-accent' : 'border-line bg-bg'}`}
       >
         <span aria-hidden>{running ? '●' : '○'}</span>
         {!compact && t('free.metronome')}
@@ -28,24 +28,34 @@ export function MetronomeControls({ compact = false }: { compact?: boolean }) {
           />
         ))}
       </span>
-      <label className="inline-flex items-center gap-1.5" htmlFor="met-bpm">
-        <input
-          id="met-bpm"
-          type="range"
-          min={BPM_MIN}
-          max={BPM_MAX}
-          value={bpm}
-          onChange={(e) => setBpm(Number(e.target.value))}
-          className="w-24 accent-[var(--color-accent)]"
-          aria-label="Tempo"
-        />
-        <span className="tabular w-16">{t('free.bpm', { bpm })}</span>
-      </label>
-      <select id="met-sig" value={sig} onChange={(e) => setSig(e.target.value as TimeSigName)} className="rounded border border-line bg-bg px-2 py-1" aria-label="Time signature">
-        {TIME_SIGS.map((s) => (
-          <option key={s}>{s}</option>
-        ))}
-      </select>
+      {!kid && (
+        <>
+          <label className="inline-flex items-center gap-1.5" htmlFor="met-bpm">
+            <input
+              id="met-bpm"
+              type="range"
+              min={BPM_MIN}
+              max={BPM_MAX}
+              value={bpm}
+              onChange={(e) => setBpm(Number(e.target.value))}
+              className="w-24 accent-[var(--color-accent)]"
+              aria-label="Tempo"
+            />
+            <span className="tabular w-16">{t('free.bpm', { bpm })}</span>
+          </label>
+          <select
+            id="met-sig"
+            value={sig}
+            onChange={(e) => setSig(e.target.value as TimeSigName)}
+            className="rounded border border-line bg-bg px-2 py-1"
+            aria-label="Time signature"
+          >
+            {TIME_SIGS.map((s) => (
+              <option key={s}>{s}</option>
+            ))}
+          </select>
+        </>
+      )}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useRef, useState, type ReactNode } from 'react'
+import { Icon } from '../components/Icon'
 import { Page } from '../app/Layout'
 import { useT } from '../app/i18n'
 import { useProgress, type NotationView } from '../store/progress'
@@ -53,17 +54,32 @@ export function SettingsPage() {
             value={p.mode}
             onChange={p.setMode}
             options={[
-              { value: 'kid', label: `🧒 ${t('settings.kidMode')}` },
-              { value: 'adult', label: `🙂 ${t('settings.adultMode')}` },
+              {
+                value: 'kid',
+                label: (
+                  <>
+                    <Icon name="child" size={18} /> {t('settings.kidMode')}
+                  </>
+                ),
+              },
+              {
+                value: 'adult',
+                label: (
+                  <>
+                    <Icon name="adult" size={18} /> {t('settings.adultMode')}
+                  </>
+                ),
+              },
             ]}
           />
         </Row>
         <Row label={t('settings.name')}>
           <input
             id="set-name"
+            aria-label={t('settings.name')}
             value={p.name}
             onChange={(e) => p.setName(e.target.value.slice(0, 24))}
-            className="rounded-[var(--radius)] border border-line bg-bg px-3 min-h-[var(--touch)]"
+            className="w-full max-w-xs min-w-0 rounded-[var(--radius)] border border-line bg-bg px-3 min-h-[var(--touch)]"
           />
         </Row>
         <Row label={t('settings.language')}>
@@ -90,11 +106,11 @@ export function SettingsPage() {
           />
         </Row>
         <Row label={t('settings.noteNames')}>
-          <Toggle id="set-names" checked={p.settings.noteNames} onChange={(noteNames) => p.updateSettings({ noteNames })} />
+          <Toggle id="set-names" label={t('settings.noteNames')} checked={p.settings.noteNames} onChange={(noteNames) => p.updateSettings({ noteNames })} />
         </Row>
         {p.mode === 'adult' && (
           <Row label={t('settings.skipAhead')}>
-            <Toggle id="set-skip" checked={p.settings.skipAhead} onChange={(skipAhead) => p.updateSettings({ skipAhead })} />
+            <Toggle id="set-skip" label={t('settings.skipAhead')} checked={p.settings.skipAhead} onChange={(skipAhead) => p.updateSettings({ skipAhead })} />
           </Row>
         )}
         <Row label={t('settings.data')}>
@@ -167,7 +183,7 @@ export function SettingsPage() {
           </button>
           {p.settings.virtualMidi && (
             <Row label={t('settings.virtualMidi')}>
-              <Toggle id="set-vmidi" checked={p.settings.virtualMidi} onChange={(virtualMidi) => p.updateSettings({ virtualMidi })} />
+              <Toggle id="set-vmidi" label={t('settings.virtualMidi')} checked={p.settings.virtualMidi} onChange={(virtualMidi) => p.updateSettings({ virtualMidi })} />
             </Row>
           )}
           {p.settings.virtualMidi && <VirtualMidiPanel />}

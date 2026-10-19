@@ -94,16 +94,20 @@ export function hasChords(v: Voice): boolean {
 export function chordBeats(v: Voice): number[] {
   const counts = new Map<number, number>()
   for (const n of v.notes) counts.set(round(n.startBeat), (counts.get(round(n.startBeat)) ?? 0) + 1)
-  return [...counts].filter(([, c]) => c > 1).map(([b]) => b).sort((a, b) => a - b)
+  return [...counts]
+    .filter(([, c]) => c > 1)
+    .map(([b]) => b)
+    .sort((a, b) => a - b)
 }
 
 export function noteRange(song: Song): [number, number] {
   let lo = 127
   let hi = 0
-  for (const v of [song.hands.R, song.hands.L]) for (const n of v.notes) {
-    lo = Math.min(lo, n.midi)
-    hi = Math.max(hi, n.midi)
-  }
+  for (const v of [song.hands.R, song.hands.L])
+    for (const n of v.notes) {
+      lo = Math.min(lo, n.midi)
+      hi = Math.max(hi, n.midi)
+    }
   return lo > hi ? [60, 72] : [lo, hi]
 }
 

@@ -8,7 +8,7 @@ function tone(hz: number, amp = 0.4, phase = 0): Float32Array {
   const f = new Float32Array(N)
   for (let i = 0; i < N; i++) {
     const t = (i + phase) / SR
-    f[i] = amp * (Math.sin(2 * Math.PI * hz * t) + 0.5 * Math.sin(4 * Math.PI * hz * t) + 0.25 * Math.sin(6 * Math.PI * hz * t)) / 1.75
+    f[i] = (amp * (Math.sin(2 * Math.PI * hz * t) + 0.5 * Math.sin(4 * Math.PI * hz * t) + 0.25 * Math.sin(6 * Math.PI * hz * t))) / 1.75
   }
   return f
 }
@@ -32,7 +32,7 @@ function run(tracker: NoteTracker, frames: Float32Array[]): TrackerEvent[] {
   return out
 }
 
-const repeat = <T,>(n: number, f: (i: number) => T) => Array.from({ length: n }, (_, i) => f(i))
+const repeat = <T>(n: number, f: (i: number) => T) => Array.from({ length: n }, (_, i) => f(i))
 
 describe('pitch detection', () => {
   it('detects A4 at 440 Hz', () => {
@@ -65,13 +65,23 @@ describe('NoteTracker', () => {
 
   it('ignores noise', () => {
     const tr = new NoteTracker()
-    expect(run(tr, repeat(10, (i) => noise(0.3, i + 1)))).toEqual([])
+    expect(
+      run(
+        tr,
+        repeat(10, (i) => noise(0.3, i + 1)),
+      ),
+    ).toEqual([])
   })
 
   it('rejects pitches more than 30 cents off', () => {
     const tr = new NoteTracker()
     // 440 * 2^(45/1200) ≈ 451.6 Hz is 45 cents sharp of A4
-    expect(run(tr, repeat(8, () => tone(451.6)))).toEqual([])
+    expect(
+      run(
+        tr,
+        repeat(8, () => tone(451.6)),
+      ),
+    ).toEqual([])
   })
 
   it('does not emit during a glide, then catches the settled note', () => {

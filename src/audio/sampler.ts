@@ -172,6 +172,6 @@ function devLog(midi: number, t: number, ctx: AudioContext) {
     midi,
     at: t,
     wall: performance.now(),
-    latencyMs: ((t - ctx.currentTime) + ctx.baseLatency + (ctx.outputLatency || 0)) * 1000,
+    latencyMs: (t - ctx.currentTime + ctx.baseLatency + (ctx.outputLatency || 0)) * 1000,
   })
 }

@@ -51,7 +51,7 @@ function maxMap(a: Record<string, number>, b: Record<string, number>): Record<st
   return out
 }
 
-const union = <T,>(a: T[], b: T[]): T[] => [...new Set([...a, ...b])]
+const union = <T>(a: T[], b: T[]): T[] => [...new Set([...a, ...b])]
 
 /** Merge keeps the better of each value: max minutes per day, best score per song, union of lessons, badges, songs. */
 export function mergeProgress(cur: ProgressData, inc: ProgressData): ProgressData {

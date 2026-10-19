@@ -87,7 +87,12 @@ export function toSong(p: ParsedMidi, mapping: Record<number, TrackRole>, title:
   const right = voiceOf(p.tracks.filter((t) => mapping[t.index] === 'R'))
   const left = voiceOf(p.tracks.filter((t) => mapping[t.index] === 'L'))
   if (!right.notes.length && !left.notes.length) throw new NoNotesError('no mapped notes')
-  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'song'
+  const slug =
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 30) || 'song'
   return {
     id: `imp-${slug}-${Date.now().toString(36)}`,
     title: { en: title, vi: title },

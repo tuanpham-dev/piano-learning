@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { Icon } from '../components/Icon'
 import { Page, MODE_ROUTES } from '../app/Layout'
 import { useT } from '../app/i18n'
 import { useProgress } from '../store/progress'
@@ -13,10 +14,7 @@ function useHomeData() {
   const streak = computeStreak(p.dailyMinutes)
   const next = nextLesson(lessons, p)
   const threeStar = Object.values(p.songBest).filter((b) => Object.values(b).some((r) => r.stars === 3)).length
-  const drillAll = (['treble', 'bass'] as const).reduce(
-    (acc, k) => ({ a: acc.a + p.drills[k].attempts, c: acc.c + p.drills[k].correct }),
-    { a: 0, c: 0 },
-  )
+  const drillAll = (['treble', 'bass'] as const).reduce((acc, k) => ({ a: acc.a + p.drills[k].attempts, c: acc.c + p.drills[k].correct }), { a: 0, c: 0 })
   return { p, streak, next, threeStar, drillPct: drillAll.a ? Math.round((100 * drillAll.c) / drillAll.a) : null }
 }
 
@@ -40,13 +38,9 @@ function AdultHome() {
       <div className="grid gap-5">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {MODE_ROUTES.map((r) => (
-            <Link
-              key={r.key}
-              to={r.to}
-              className="rounded-[var(--radius)] border border-line bg-bg hover:bg-panel p-4 grid gap-1 content-start min-h-28"
-            >
-              <span className="text-2xl" aria-hidden>
-                {r.icon}
+            <Link key={r.key} to={r.to} className="rounded-[var(--radius)] border border-line bg-bg hover:bg-panel p-4 grid gap-1 content-start min-h-28">
+              <span className="text-accent">
+                <Icon name={r.icon} size={28} />
               </span>
               <span className="font-semibold">{t(`modes.${r.key}`)}</span>
               {pills[r.key] && <span className="text-xs text-muted tabular">{pills[r.key]}</span>}
@@ -79,9 +73,7 @@ function KidHome() {
       <div className="grid gap-5 pb-4">
         <div className="flex items-center gap-4">
           <Mascot mood="idle" size={88} />
-          <div className="flex-1 min-w-0 text-xl font-extrabold">
-            {next ? t('kid.next', { title: L(next.title) }) : t('kid.allDone')}
-          </div>
+          <div className="flex-1 min-w-0 text-xl font-extrabold">{next ? t('kid.next', { title: L(next.title) }) : t('kid.allDone')}</div>
         </div>
         {next && (
           <PrimaryButton onClick={() => nav(`/lessons/${next.id}`)} className="w-full text-2xl min-h-16">
@@ -96,14 +88,14 @@ function KidHome() {
               className="rounded-[var(--radius)] border-4 bg-bg p-4 grid justify-items-center gap-1 text-center font-extrabold text-lg min-h-32 content-center active:scale-95 transition-transform"
               style={{ borderColor: KID_TILE_COLORS[i] }}
             >
-              <span className="text-4xl" aria-hidden>
-                {r.icon === '📊' ? '🏆' : r.icon === '📖' ? '🗺️' : r.icon}
+              <span style={{ color: KID_TILE_COLORS[i] }}>
+                <Icon name={r.kidIcon} size={44} />
               </span>
               {tm(`modes.${r.key}`)}
             </Link>
           ))}
         </div>
-        <Link to="/settings" className="justify-self-center text-sm text-muted underline underline-offset-4 py-2">
+        <Link to="/settings" className="justify-self-center inline-flex items-center min-h-[var(--touch)] px-4 text-sm text-muted underline underline-offset-4">
           {t('kid.grownUps')}
         </Link>
       </div>

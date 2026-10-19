@@ -54,7 +54,6 @@ export function beatScript(count: number, bpm: number, opts: { midi?: number; of
   }))
 }
 
-
 interface ScriptProvider {
   id: string
   label: string

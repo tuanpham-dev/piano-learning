@@ -2,9 +2,7 @@ import { accentFor, clampBpm, clicksPerBar } from './metronome'
 
 describe('metronome accents', () => {
   it('accents beat 1 of every 4/4 bar', () => {
-    expect([0, 1, 2, 3, 4, 5, 6, 7].map((i) => accentFor('4/4', i))).toEqual([
-      'strong', 'weak', 'weak', 'weak', 'strong', 'weak', 'weak', 'weak',
-    ])
+    expect([0, 1, 2, 3, 4, 5, 6, 7].map((i) => accentFor('4/4', i))).toEqual(['strong', 'weak', 'weak', 'weak', 'strong', 'weak', 'weak', 'weak'])
   })
   it('feels 6/8 in two', () => {
     expect([0, 1, 2, 3, 4, 5].map((i) => accentFor('6/8', i))).toEqual(['strong', 'weak', 'weak', 'medium', 'weak', 'weak'])

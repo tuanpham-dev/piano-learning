@@ -1,6 +1,8 @@
+import type React from 'react'
+
 interface Option<T extends string> {
   value: T
-  label: string
+  label: React.ReactNode
 }
 
 interface Props<T extends string> {
@@ -23,7 +25,7 @@ export function Segmented<T extends string>({ id, label, value, options, onChang
           role="radio"
           aria-checked={o.value === value}
           onClick={() => onChange(o.value)}
-          className={`px-3 min-h-[calc(var(--touch)-8px)] text-sm ${o.value === value ? 'bg-accent text-accent-ink font-semibold' : 'bg-bg hover:bg-panel'}`}
+          className={`inline-flex items-center gap-1.5 px-3 min-h-[var(--seg-h)] min-w-[var(--seg-h)] justify-center text-sm ${o.value === value ? 'bg-accent text-accent-ink font-semibold' : 'bg-bg hover:bg-panel'}`}
         >
           {o.label}
         </button>

@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { audioNow, bus, emitNote } from './bus'
+import { isIOS } from '../audio/unlock'
 
 export type MidiState = 'unsupported' | 'asking' | 'none' | 'connected' | 'disconnected' | 'denied'
 
@@ -12,15 +13,16 @@ interface MidiStore {
 }
 
 export const useMidi = create<MidiStore>()((set) => ({
-  state: typeof navigator !== 'undefined' && 'requestMIDIAccess' in navigator ? 'none' : 'unsupported',
+  state: midiSupported() ? 'none' : 'unsupported',
   deviceName: null,
   devices: [],
   selectedId: null,
   select: (id) => set({ selectedId: id }),
 }))
 
+/** iOS and iPadOS browsers (all WebKit) have no Web MIDI, whatever they report. */
 export function midiSupported(): boolean {
-  return typeof navigator !== 'undefined' && 'requestMIDIAccess' in navigator
+  return typeof navigator !== 'undefined' && 'requestMIDIAccess' in navigator && !isIOS()
 }
 
 /** Parses one MIDI message into note/sustain actions. Exported for tests. */
@@ -80,8 +82,10 @@ export async function startMidi(): Promise<() => void> {
       useMidi.setState({ state: 'none' })
     }
     refresh()
-  } catch {
-    useMidi.setState({ state: 'denied' })
+  } catch (e) {
+    // NotAllowed/Security = the user or browser blocked it; anything else = no usable MIDI here.
+    const name = (e as { name?: string }).name
+    useMidi.setState({ state: name === 'NotAllowedError' || name === 'SecurityError' ? 'denied' : 'unsupported' })
   }
   const unsubSelect = useMidi.subscribe((s, prev) => {
     if (s.selectedId !== prev.selectedId && s.selectedId !== attached?.id) refresh()

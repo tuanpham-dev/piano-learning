@@ -5,8 +5,18 @@ import { MIDI_A0, MIDI_C8 } from '../../engine/notes'
 describe('bundled songs', () => {
   it('has the 12 songs from the spec', () => {
     expect(bundledSongs.map((s) => s.id)).toEqual([
-      'twinkle', 'mary-lamb', 'au-clair', 'kia-con-buom-vang', 'jingle-bells', 'happy-birthday',
-      'ode-to-joy', 'amazing-grace', 'greensleeves', 'minuet-in-g', 'fur-elise', 'canon-in-d',
+      'twinkle',
+      'mary-lamb',
+      'au-clair',
+      'kia-con-buom-vang',
+      'jingle-bells',
+      'happy-birthday',
+      'ode-to-joy',
+      'amazing-grace',
+      'greensleeves',
+      'minuet-in-g',
+      'fur-elise',
+      'canon-in-d',
     ])
   })
   for (const song of bundledSongs) {
@@ -16,10 +26,11 @@ describe('bundled songs', () => {
         expect(songDuration(song)).toBeGreaterThan(0)
       })
       it('stays on the piano', () => {
-        for (const v of [song.hands.R, song.hands.L]) for (const n of v.notes) {
-          expect(n.midi).toBeGreaterThanOrEqual(MIDI_A0)
-          expect(n.midi).toBeLessThanOrEqual(MIDI_C8)
-        }
+        for (const v of [song.hands.R, song.hands.L])
+          for (const n of v.notes) {
+            expect(n.midi).toBeGreaterThanOrEqual(MIDI_A0)
+            expect(n.midi).toBeLessThanOrEqual(MIDI_C8)
+          }
       })
       it('has right-hand fingering', () => {
         expect(song.hands.R.notes.some((n) => n.finger)).toBe(true)

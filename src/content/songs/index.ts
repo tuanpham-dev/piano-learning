@@ -13,11 +13,7 @@ import furElise from './fur-elise'
 import canonInD from './canon-in-d'
 
 /** In difficulty order. */
-export const bundledSongs: Song[] = [
-  twinkle, maryLamb, auClair, kiaConBuomVang, jingleBells, happyBirthday,
-  odeToJoy, amazingGrace, greensleeves, minuetInG,
-  furElise, canonInD,
-]
+export const bundledSongs: Song[] = [twinkle, maryLamb, auClair, kiaConBuomVang, jingleBells, happyBirthday, odeToJoy, amazingGrace, greensleeves, minuetInG, furElise, canonInD]
 
 export function bundledSongById(id: string): Song | undefined {
   return bundledSongs.find((s) => s.id === id)

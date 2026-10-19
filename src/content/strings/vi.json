@@ -240,7 +240,8 @@
     "micNeedsWait": "Giai điệu (micrô) chỉ dùng ở chế độ Chờ với một tay.",
     "melodyMic": "Giai điệu (micrô)",
     "barOf": "Ô nhịp {{bar}} / {{total}}",
-    "micOff": "Tắt micrô"
+    "micOff": "Tắt micrô",
+    "settings": "Tùy chọn"
   },
   "result": {
     "performTitle": "{{title}} · Biểu diễn",
