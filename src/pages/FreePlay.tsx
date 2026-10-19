@@ -16,6 +16,7 @@ import { Segmented } from '../components/Segmented'
 import { identifyChord } from '../engine/chords-scales'
 import { prettyName } from '../engine/notes'
 import { colorForMidi, inkForMidi } from '../notation/note-colors'
+import { KidRecord, RecordPanel } from '../components/RecordPanel'
 
 const RANGES = { full: [21, 108], mid: [36, 96], small: [48, 84] } as const
 type RangeKey = keyof typeof RANGES
@@ -88,7 +89,9 @@ export function FreePlayPage() {
             ]}
           />
           <MetronomeControls />
+          {!kid && <RecordPanel />}
         </div>
+        {kid && <KidRecord />}
         <HeldDisplay kid={kid} />
         <Keyboard
           low={lo}

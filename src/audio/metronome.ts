@@ -47,6 +47,7 @@ interface MetronomeState {
   beat: number
   setBpm: (bpm: number) => void
   setSig: (sig: TimeSigName) => void
+  /** Starts clicking; returns the audio time of the first click. */
   start: (at?: number) => number
   stop: () => void
   toggle: () => void
@@ -96,10 +97,11 @@ export const useMetronome = create<MetronomeState>()((set, get) => {
       if (timer) clearInterval(timer)
       nextTime = Math.max(at ?? ctx.currentTime + 0.05, ctx.currentTime)
       clickIndex = 0
+      const first = nextTime
       set({ running: true, beat: -1 })
       schedule()
       timer = setInterval(schedule, 25)
-      return nextTime
+      return first
     },
     stop: () => {
       if (timer) clearInterval(timer)

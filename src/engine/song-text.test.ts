@@ -56,3 +56,14 @@ describe('song text', () => {
     expect(restBar([6, 8])).toBe('rh.')
   })
 })
+
+describe('editor helpers', () => {
+  it('tokenizes bars and counts beats', async () => {
+    const { barTokens, barBeats, tokenBeats, noteToken } = await import('./song-text')
+    expect(barTokens('[C4 E4 G4]h. rq')).toEqual(['[C4 E4 G4]h.', 'rq'])
+    expect(barBeats('C4q3 D4e. E4s rh')).toBe(4)
+    expect(tokenBeats('E4h~')).toBe(2)
+    expect(noteToken([64, 60, 67], 'q', false, 3)).toBe('[C4 E4 G4]q')
+    expect(noteToken([70], 'e', true, 2, 'F')).toBe('Bb4e.2')
+  })
+})

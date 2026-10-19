@@ -1,0 +1,36 @@
+// A4: play-to-enter with fingers and a chord, text view, undo. A5: text view errors, sync, leave guard.
+const URL = 'http://127.0.0.1:5317'
+const press = (page, ms) => page.evaluate((xs) => xs.forEach((x) => { window.__dev.emitNote('on', x, 'virtual'); window.__dev.emitNote('off', x, 'virtual') }), ms)
+export default async ({ page, log, shot }) => {
+  await page.goto(URL); await page.click("text=I'm an adult"); await page.click("text=Let's play")
+  await page.goto(URL + '/songs'); await page.click('text=New song')
+  await page.waitForURL(/edit\/draft/)
+  await page.locator('#ed-title').fill('Editor test')
+  await page.click('[data-bar="1"]')
+  await page.getByRole('radio', { name: 'Quarter note' }).click()
+  await page.locator('#ed-finger').getByText('3', { exact: true }).click()
+  await page.locator('main').click({ position: { x: 5, y: 5 } })
+  for (const m of [60, 62, 64, 65]) { await press(page, [m]); await page.waitForTimeout(120) }
+  await page.locator('#ed-finger').getByText('None').click().catch(() => {})
+  await press(page, [60, 64, 67]); await page.waitForTimeout(150)
+  await shot('a4-editor-play')
+  await page.click('text=Text')
+  const r = await page.locator('#ed-text-R').inputValue()
+  log('A4 text R:', r)
+  await page.getByRole('button', { name: 'Undo' }).click(); await page.waitForTimeout(300)
+  log('A4 after undo:', await page.locator('#ed-text-R').inputValue())
+  // A5
+  await page.locator('#ed-text-R').fill('C4q D4q E4q F4q G4q | C4w |')
+  await page.waitForTimeout(200)
+  log('A5 error:', await page.locator('[role=alert]').allInnerTexts(), '| staff notes:', await page.locator('.vf-stavenote').count())
+  await shot('a5-text-error')
+  await page.locator('#ed-text-R').fill('C4q D4q E4q F4q | G4w |')
+  await page.waitForTimeout(200)
+  log('A5 fixed, alerts:', await page.locator('[role=alert]').count(), '| staff notes:', await page.locator('.vf-stavenote').count())
+  await page.locator('main').click({ position: { x: 5, y: 5 } })
+  await page.click('text=Play to enter')
+  log('A5 bar 2 tokens after switch:', await (async () => { await page.click('[data-bar="2"]'); return page.locator('[data-testid=ed-bar-tokens]').innerText() })())
+  await page.click('a[href="/songs"]').catch(async () => page.locator('a[href="/"]').first().click())
+  await page.waitForSelector('[role=dialog]', { timeout: 3000 }).then(async () => log('A5 leave dialog:', (await page.locator('[role=dialog]').innerText()).replace(/\n/g, ' | '))).catch(() => log('A5 leave dialog: MISSING'))
+  await shot('a5-leave')
+}

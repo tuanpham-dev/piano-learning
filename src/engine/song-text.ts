@@ -184,3 +184,31 @@ export function notesKey(notes: NoteSpec[]): string {
     .map((n) => `${n.midi}@${round(n.startBeat)}+${round(n.beats)}${n.finger ? 'f' + n.finger : ''}`)
     .join(' ')
 }
+
+const TOKENS = /\[[^\]]*\][whqes]\.?~?|\S+/g
+const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25 }
+
+/** Splits one bar of note text into tokens. */
+export function barTokens(bar: string): string[] {
+  return bar.match(TOKENS) ?? []
+}
+
+/** Beats a token lasts (0 for anything unreadable). */
+export function tokenBeats(token: string): number {
+  const m = /([whqes])(\.?)\d?~?$/.exec(token.replace(/^\[[^\]]*\]/, 'X'))
+  return m ? LEN[m[1]!]! * (m[2] ? 1.5 : 1) : 0
+}
+
+/** Beats written in one bar. */
+export function barBeats(bar: string): number {
+  return round(barTokens(bar).reduce((s, t) => s + tokenBeats(t), 0))
+}
+
+/** Note text for a note or chord typed in the editor. */
+export function noteToken(midis: number[], length: string, dot: boolean, finger: number | null, keySig = 'C'): string {
+  const flats = FLAT_KEYS.has(keySig)
+  const d = `${length}${dot ? '.' : ''}`
+  const sorted = [...new Set(midis)].sort((a, b) => a - b)
+  if (sorted.length === 1) return `${noteName(sorted[0]!, flats)}${d}${finger ?? ''}`
+  return `[${sorted.map((m) => noteName(m, flats)).join(' ')}]${d}`
+}
