@@ -1,0 +1,142 @@
+{
+  "common": {
+    "appName": "Piano Learning",
+    "home": "Home",
+    "back": "Back",
+    "start": "Start",
+    "play": "Play",
+    "next": "Next",
+    "resume": "Resume",
+    "playAgain": "Play again",
+    "settings": "Settings",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "loading": "Loading…",
+    "on": "On",
+    "off": "Off",
+    "storageBanner": "Progress won't be saved in this window.",
+    "updateReady": "A new version is ready.",
+    "reload": "Reload",
+    "soundGate": "Tap to enable sound",
+    "samplesLoading": "Loading piano sounds…",
+    "synthFallback": "Piano samples unavailable, using a simple tone."
+  },
+  "modes": {
+    "free": "Free play",
+    "songs": "Play-along",
+    "drills": "Note drills",
+    "ear": "Ear training",
+    "rhythm": "Rhythm",
+    "lessons": "Lessons",
+    "reference": "Chords & scales",
+    "progress": "Dashboard"
+  },
+  "welcome": {
+    "title": "Welcome! What should we call you?",
+    "namePlaceholder": "Your name (optional)",
+    "kid": "I'm a kid",
+    "adult": "I'm an adult",
+    "language": "Language",
+    "go": "Let's play"
+  },
+  "home": {
+    "streak": "{{count}}-day streak",
+    "continue": "Continue: {{title}}",
+    "lessonsPill": "{{done}} / {{total}}",
+    "songsPill": "{{count}} songs",
+    "allLessonsDone": "All lessons done. Pick any mode."
+  },
+  "settings": {
+    "title": "Settings",
+    "mode": "Mode",
+    "kidMode": "Kid",
+    "adultMode": "Adult",
+    "name": "Name",
+    "language": "Language",
+    "notation": "Notation",
+    "viewStaff": "Staff",
+    "viewLane": "Falling notes",
+    "viewBoth": "Both",
+    "noteNames": "Note names on keys",
+    "skipAhead": "Unlock all lessons (skip ahead)",
+    "data": "Your progress",
+    "export": "Export progress",
+    "import": "Import progress",
+    "reset": "Reset progress",
+    "resetConfirm": "Erase all stars, scores, streaks and lessons on this device?",
+    "resetDone": "Progress erased.",
+    "importMerge": "Merge with current",
+    "importReplace": "Replace current",
+    "importAsk": "Import “{{file}}”. Merge it with this device's progress or replace it?",
+    "importDone": "Progress imported.",
+    "importBad": "“{{file}}” isn't a Piano Learning progress file.",
+    "version": "Version {{v}}",
+    "virtualMidi": "Virtual MIDI panel",
+    "devUnlocked": "Developer tools unlocked."
+  },
+  "kid": {
+    "modes": {
+      "free": "Play freely",
+      "songs": "Play a song",
+      "drills": "Name that note",
+      "ear": "Listen & find",
+      "rhythm": "Clap the beat",
+      "lessons": "My journey",
+      "reference": "Chords & scales",
+      "progress": "My stars"
+    },
+    "hi": "Hi {{name}}!",
+    "hiNoName": "Hi there!",
+    "next": "Next: {{title}}",
+    "grownUps": "Grown-ups",
+    "allDone": "You finished every island!",
+    "inputs": {
+      "piano": "Piano",
+      "title": "How will you play?",
+      "micHeard": "I hear {{note}}!"
+    },
+    "free": {
+      "title": "Play anything you like!"
+    }
+  },
+  "inputs": {
+    "title": "Inputs",
+    "screen": "On-screen keyboard",
+    "qwerty": "Computer keyboard",
+    "qwertyHint": "A–; keys · Z/X octave · space sustain",
+    "qwertyHintTap": "A–; keys · space taps",
+    "midi": "MIDI keyboard",
+    "midiUnsupported": "MIDI keyboards work in Chrome or Edge on a computer or Android device.",
+    "midiNone": "No MIDI devices found",
+    "midiConnected": "{{name}} (connected)",
+    "midiDisconnected": "Disconnected",
+    "midiDenied": "MIDI access was blocked. Allow it in the browser settings.",
+    "midiAsking": "Asking for MIDI access…",
+    "mic": "Microphone",
+    "micHint": "One note at a time",
+    "micBlocked": "Microphone blocked, check browser settings",
+    "micUnsupported": "This browser can't use the microphone.",
+    "micHeard": "Hearing {{note}}",
+    "micListening": "Listening…",
+    "micSensitivity": "Mic sensitivity",
+    "micNotHere": "Not available in this mode",
+    "octave": "Octave {{n}}"
+  },
+  "free": {
+    "sustain": "Sustain",
+    "metronome": "Metronome",
+    "bpm": "{{bpm}} BPM",
+    "noteNames": "Note names",
+    "range": "Range"
+  },
+  "vmidi": {
+    "title": "Virtual MIDI",
+    "hint": "Sends events exactly like a MIDI keyboard. For testing without hardware.",
+    "script": "Script (JSON: [{\"t\":0,\"midi\":60,\"dur\":0.4}])",
+    "playScript": "Play script",
+    "stop": "Stop",
+    "sustain": "Pedal",
+    "ready": "Ready-made scripts"
+  }
+}

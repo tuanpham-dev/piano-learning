@@ -1,0 +1,142 @@
+{
+  "common": {
+    "appName": "Học Piano",
+    "home": "Trang chủ",
+    "back": "Quay lại",
+    "start": "Bắt đầu",
+    "play": "Chơi",
+    "next": "Tiếp",
+    "resume": "Tiếp tục",
+    "playAgain": "Chơi lại",
+    "settings": "Cài đặt",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "close": "Đóng",
+    "loading": "Đang tải…",
+    "on": "Bật",
+    "off": "Tắt",
+    "storageBanner": "Tiến độ sẽ không được lưu trong cửa sổ này.",
+    "updateReady": "Đã có phiên bản mới.",
+    "reload": "Tải lại",
+    "soundGate": "Chạm để bật âm thanh",
+    "samplesLoading": "Đang tải âm thanh piano…",
+    "synthFallback": "Không tải được âm piano, đang dùng âm đơn giản."
+  },
+  "modes": {
+    "free": "Chơi tự do",
+    "songs": "Chơi theo bài",
+    "drills": "Luyện đọc nốt",
+    "ear": "Luyện tai",
+    "rhythm": "Tiết tấu",
+    "lessons": "Bài học",
+    "reference": "Hợp âm & gam",
+    "progress": "Thống kê"
+  },
+  "welcome": {
+    "title": "Chào mừng! Bạn tên là gì?",
+    "namePlaceholder": "Tên của bạn (không bắt buộc)",
+    "kid": "Mình là trẻ em",
+    "adult": "Tôi là người lớn",
+    "language": "Ngôn ngữ",
+    "go": "Bắt đầu chơi"
+  },
+  "home": {
+    "streak": "Chuỗi {{count}} ngày",
+    "continue": "Tiếp tục: {{title}}",
+    "lessonsPill": "{{done}} / {{total}}",
+    "songsPill": "{{count}} bài",
+    "allLessonsDone": "Đã học xong mọi bài. Chọn chế độ bất kỳ."
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "mode": "Chế độ",
+    "kidMode": "Trẻ em",
+    "adultMode": "Người lớn",
+    "name": "Tên",
+    "language": "Ngôn ngữ",
+    "notation": "Cách hiển thị nốt",
+    "viewStaff": "Khuông nhạc",
+    "viewLane": "Nốt rơi",
+    "viewBoth": "Cả hai",
+    "noteNames": "Hiện tên nốt trên phím",
+    "skipAhead": "Mở khóa mọi bài học (học vượt)",
+    "data": "Tiến độ của bạn",
+    "export": "Xuất tiến độ",
+    "import": "Nhập tiến độ",
+    "reset": "Xóa tiến độ",
+    "resetConfirm": "Xóa mọi sao, điểm, chuỗi ngày và bài học trên thiết bị này?",
+    "resetDone": "Đã xóa tiến độ.",
+    "importMerge": "Gộp với hiện tại",
+    "importReplace": "Thay thế hiện tại",
+    "importAsk": "Nhập “{{file}}”. Gộp với tiến độ trên máy này hay thay thế?",
+    "importDone": "Đã nhập tiến độ.",
+    "importBad": "“{{file}}” không phải tệp tiến độ của Học Piano.",
+    "version": "Phiên bản {{v}}",
+    "virtualMidi": "Bảng MIDI ảo",
+    "devUnlocked": "Đã mở công cụ nhà phát triển."
+  },
+  "kid": {
+    "modes": {
+      "free": "Chơi thoải mái",
+      "songs": "Chơi một bài",
+      "drills": "Đoán tên nốt",
+      "ear": "Nghe và tìm",
+      "rhythm": "Vỗ theo nhịp",
+      "lessons": "Hành trình của em",
+      "reference": "Hợp âm & gam",
+      "progress": "Sao của em"
+    },
+    "hi": "Chào {{name}}!",
+    "hiNoName": "Chào bạn nhỏ!",
+    "next": "Tiếp theo: {{title}}",
+    "grownUps": "Dành cho người lớn",
+    "allDone": "Em đã đi hết các đảo rồi!",
+    "inputs": {
+      "piano": "Đàn",
+      "title": "Em sẽ chơi bằng gì?",
+      "micHeard": "Mình nghe thấy {{note}}!"
+    },
+    "free": {
+      "title": "Chơi bất cứ gì em thích!"
+    }
+  },
+  "inputs": {
+    "title": "Cách nhập nốt",
+    "screen": "Bàn phím trên màn hình",
+    "qwerty": "Bàn phím máy tính",
+    "qwertyHint": "Phím A–; · Z/X đổi quãng tám · phím cách giữ âm",
+    "qwertyHintTap": "Phím A–; · phím cách để gõ nhịp",
+    "midi": "Đàn MIDI",
+    "midiUnsupported": "Đàn MIDI dùng được trên Chrome hoặc Edge ở máy tính hoặc thiết bị Android.",
+    "midiNone": "Không tìm thấy thiết bị MIDI",
+    "midiConnected": "{{name}} (đã kết nối)",
+    "midiDisconnected": "Đã ngắt kết nối",
+    "midiDenied": "Quyền truy cập MIDI bị chặn. Hãy cho phép trong cài đặt trình duyệt.",
+    "midiAsking": "Đang xin quyền MIDI…",
+    "mic": "Micrô",
+    "micHint": "Mỗi lần một nốt",
+    "micBlocked": "Micrô bị chặn, hãy kiểm tra cài đặt trình duyệt",
+    "micUnsupported": "Trình duyệt này không dùng được micrô.",
+    "micHeard": "Nghe thấy {{note}}",
+    "micListening": "Đang nghe…",
+    "micSensitivity": "Độ nhạy micrô",
+    "micNotHere": "Không dùng được ở chế độ này",
+    "octave": "Quãng tám {{n}}"
+  },
+  "free": {
+    "sustain": "Giữ âm",
+    "metronome": "Máy đếm nhịp",
+    "bpm": "{{bpm}} BPM",
+    "noteNames": "Tên nốt",
+    "range": "Âm vực"
+  },
+  "vmidi": {
+    "title": "MIDI ảo",
+    "hint": "Gửi sự kiện giống hệt đàn MIDI. Dùng để thử khi không có đàn.",
+    "script": "Kịch bản (JSON: [{\"t\":0,\"midi\":60,\"dur\":0.4}])",
+    "playScript": "Chạy kịch bản",
+    "stop": "Dừng",
+    "sustain": "Pedal",
+    "ready": "Kịch bản có sẵn"
+  }
+}
