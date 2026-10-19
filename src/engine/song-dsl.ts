@@ -23,7 +23,21 @@ function dur(letter: string, dot: string): number {
   return DUR[letter]! * (dot ? 1.5 : 1)
 }
 
-export function parseVoice(text: string, timeSig: [number, number]): Voice {
+export interface ParseIssue {
+  /** 1-based bar number. */
+  bar: number
+  message: string
+}
+
+/**
+ * Parses note text. Strict by default (throws on the first problem). With `issues`, it is lenient:
+ * problems are recorded per bar and parsing continues, so a song with one bad bar can still be reviewed.
+ */
+export function parseVoice(text: string, timeSig: [number, number], issues?: ParseIssue[]): Voice {
+  const fail = (bar: number, message: string) => {
+    if (!issues) throw new SongSyntaxError(message)
+    if (!issues.some((i) => i.bar === bar && i.message === message)) issues.push({ bar, message })
+  }
   const barLen = beatsPerBar(timeSig)
   const notes: NoteSpec[] = []
   const rests: RestSpec[] = []
@@ -53,30 +67,41 @@ export function parseVoice(text: string, timeSig: [number, number]): Voice {
   for (const tok of text.match(TOKEN_RE) ?? []) {
     if (tok === '|') {
       if (Math.abs(pos - barStart - barLen) > 1e-6) {
-        throw new SongSyntaxError(`Bar ${bar} has ${round(pos - barStart)} beats, expected ${barLen}`)
+        fail(bar, `Bar ${bar} has ${round(pos - barStart)} beats, expected ${barLen}`)
+        // Lenient: pad a short bar so later bars keep the bar numbers shown in the text.
+        if (pos < barStart + barLen) {
+          rests.push({ startBeat: round(pos), beats: round(barStart + barLen - pos) })
+          pos = round(barStart + barLen)
+          tieFrom = []
+        }
       }
       barStart = pos
       bar++
       continue
     }
     let m: RegExpExecArray | null
-    if ((m = NOTE_RE.exec(tok))) {
-      addNotes([nameToMidi(m[1]!)], dur(m[2]!, m[3]!), m[4] ? (Number(m[4]) as Finger) : undefined, !!m[5])
-    } else if ((m = CHORD_RE.exec(tok))) {
-      const midis = m[1]!.trim().split(/\s+/).map(nameToMidi)
-      addNotes(midis, dur(m[2]!, m[3]!), undefined, !!m[4])
-    } else if ((m = REST_RE.exec(tok))) {
-      const beats = dur(m[1]!, m[2]!)
-      rests.push({ startBeat: round(pos), beats })
-      tieFrom = []
-      pos = round(pos + beats)
-    } else {
-      throw new SongSyntaxError(`Bar ${bar}: can't read "${tok}"`)
+    try {
+      if ((m = NOTE_RE.exec(tok))) {
+        addNotes([nameToMidi(m[1]!)], dur(m[2]!, m[3]!), m[4] ? (Number(m[4]) as Finger) : undefined, !!m[5])
+      } else if ((m = CHORD_RE.exec(tok))) {
+        const midis = m[1]!.trim().split(/\s+/).map(nameToMidi)
+        addNotes(midis, dur(m[2]!, m[3]!), undefined, !!m[4])
+      } else if ((m = REST_RE.exec(tok))) {
+        const beats = dur(m[1]!, m[2]!)
+        rests.push({ startBeat: round(pos), beats })
+        tieFrom = []
+        pos = round(pos + beats)
+      } else {
+        fail(bar, `Bar ${bar}: can't read "${tok}"`)
+      }
+    } catch (e) {
+      if (!(e instanceof SongSyntaxError) && issues) fail(bar, `Bar ${bar}: can't read "${tok}"`)
+      else throw e
     }
-    if (pos - barStart > barLen + 1e-6) throw new SongSyntaxError(`Bar ${bar} is longer than ${barLen} beats`)
+    if (pos - barStart > barLen + 1e-6 && !issues) throw new SongSyntaxError(`Bar ${bar} is longer than ${barLen} beats`)
   }
   if (pos > barStart + 1e-6 && Math.abs(pos - barStart - barLen) > 1e-6) {
-    throw new SongSyntaxError(`Last bar (${bar}) has ${round(pos - barStart)} beats, expected ${barLen}`)
+    fail(bar, issues ? `Bar ${bar} has ${round(pos - barStart)} beats, expected ${barLen}` : `Last bar (${bar}) has ${round(pos - barStart)} beats, expected ${barLen}`)
   }
   return { notes, rests }
 }
