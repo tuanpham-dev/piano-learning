@@ -1,0 +1,25 @@
+const URL = 'http://127.0.0.1:5317'
+export default async ({ page, shot, log }) => {
+  await page.goto(URL)
+  await page.click("text=I'm an adult"); await page.click("text=Let's play")
+  await page.goto(URL + '/settings')
+  for (let i = 0; i < 5; i++) await page.click('text=Version 1.0.0')
+  await page.goto(URL + '/songs')
+  await page.waitForSelector('[data-song]')
+  log('A14 songs:', (await page.locator('[data-song]').count()))
+  await shot('p3-library')
+  await page.click('[data-song="ode-to-joy"]')
+  await page.waitForSelector('.staff-host svg', { timeout: 8000 })
+  await page.waitForTimeout(500)
+  await shot('p3-ode-idle')
+  log('fingering annotations present:', await page.evaluate(() => [...document.querySelectorAll('.staff-host svg text')].filter((t) => /^[1-5]$/.test(t.textContent)).length))
+  // Wait mode: wrong key doesn't advance; right one does
+  await page.click('text=▶ Start')
+  await page.waitForTimeout(400)
+  const dueBefore = await page.evaluate(() => [...document.querySelectorAll('[data-midi]')].filter((k) => k.style.background.includes('accent') || k.style.background.includes('left')).map((k) => k.dataset.midi))
+  log('due keys at start:', dueBefore)
+  await page.evaluate(() => { window.__dev.emitNote('on', 61, 'virtual'); window.__dev.emitNote('off', 61, 'virtual') })
+  await page.waitForTimeout(300)
+  log('bar text after wrong:', await page.locator('text=/Bar \\d+ of/').textContent())
+  await shot('p3-ode-wait')
+}

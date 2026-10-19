@@ -100,7 +100,7 @@ export function Page({ title, children, back, actions, fill }: PageProps) {
       {storageBad && <div className="bg-warn/20 text-center text-sm py-1 px-4">{t('common.storageBanner')}</div>}
       <SoundGate />
       <main
-        className={`flex-1 min-h-0 w-full mx-auto ${fill ? 'flex flex-col' : 'max-w-6xl py-5'} px-[max(16px,env(safe-area-inset-left,0px))]`}
+        className={`flex-1 min-h-0 w-full mx-auto ${fill ? 'flex flex-col overflow-y-auto' : 'max-w-6xl py-5'} px-[max(16px,env(safe-area-inset-left,0px))]`}
         style={{ paddingBottom: fill ? 'env(safe-area-inset-bottom, 0px)' : undefined }}
       >
         {!kid && !fill && <h1 className="text-2xl font-bold mb-4">{title}</h1>}

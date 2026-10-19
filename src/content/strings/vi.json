@@ -98,6 +98,26 @@
     },
     "free": {
       "title": "Chơi bất cứ gì em thích!"
+    },
+    "songs": {
+      "pick": "Chọn một bài nhé!"
+    },
+    "play": {
+      "slower": "Chậm hơn",
+      "challenge": "Thử thách",
+      "waitHint": "Phím sáng chờ đến khi em bấm"
+    },
+    "result": {
+      "great": "Tuyệt vời, {{name}}!",
+      "greatNoName": "Tuyệt vời!",
+      "good": "Em chơi hay lắm!",
+      "again": "Cố lên! Mình chơi lại nhé.",
+      "nextSong": "Bài tiếp theo",
+      "newSticker": "Hình dán mới: {{name}}!"
+    },
+    "lessonRun": {
+      "passed": "Em làm được rồi! Mở khóa đảo mới!",
+      "failed": "Gần được rồi! Mình thử lại nhé."
     }
   },
   "inputs": {
@@ -138,5 +158,110 @@
     "stop": "Dừng",
     "sustain": "Pedal",
     "ready": "Kịch bản có sẵn"
+  },
+  "songs": {
+    "library": "Thư viện bài",
+    "all": "Tất cả",
+    "bundled": "Có sẵn",
+    "imported": "Đã nhập",
+    "diff1": "Dễ",
+    "diff2": "Vừa",
+    "diff3": "Khó",
+    "import": "Nhập tệp MIDI",
+    "noImported": "Chưa có bài nào được nhập. Hãy nhập tệp .mid để chơi theo.",
+    "best": "Tốt nhất {{percent}}%",
+    "delete": "Xóa",
+    "notFound": "Bài này không còn trong thư viện."
+  },
+  "play": {
+    "wait": "Chờ",
+    "perform": "Biểu diễn",
+    "mode": "Chế độ",
+    "tempo": "Nhịp độ",
+    "hands": "Tay",
+    "right": "Phải",
+    "left": "Trái",
+    "both": "Cả hai",
+    "loop": "Lặp ô nhịp",
+    "to": "đến",
+    "listen": "Nghe",
+    "start": "Bắt đầu",
+    "restart": "Chơi lại",
+    "stop": "Dừng",
+    "view": "Hiển thị",
+    "countIn": "Chuẩn bị…",
+    "waitHint": "Bấm các phím sáng. Nhạc sẽ chờ bạn.",
+    "performHint": "Chơi đúng nhịp. Mỗi nốt đều được chấm điểm.",
+    "micChord": "Bấm các phím này trên màn hình rồi chơi tiếp.",
+    "micPart": "Hãy dùng bàn phím trên màn hình hoặc đàn MIDI cho đoạn này.",
+    "whichHand": "Bạn sẽ chơi tay nào?",
+    "micNeedsWait": "Giai điệu (micrô) chỉ dùng ở chế độ Chờ với một tay.",
+    "melodyMic": "Giai điệu (micrô)",
+    "barOf": "Ô nhịp {{bar}} / {{total}}",
+    "micOff": "Tắt micrô"
+  },
+  "result": {
+    "performTitle": "{{title}} · Biểu diễn",
+    "waitTitle": "{{title}} · Hoàn thành",
+    "newBest": "Kỷ lục mới",
+    "counts": "Đúng {{hit}} · Sớm {{early}} · Muộn {{late}} · Trượt {{missed}}",
+    "offsetLate": "muộn trung bình {{ms}} ms",
+    "offsetEarly": "sớm trung bình {{ms}} ms",
+    "offsetOn": "đúng phách",
+    "perHand": "Tay phải {{r}}% · Tay trái {{l}}%",
+    "missedBars": "Ô nhịp có nốt trượt: {{bars}}",
+    "loopMissed": "Lặp ô nhịp {{from}}–{{to}}",
+    "tryFull": "Thử nhịp độ 100%",
+    "tryPerform": "Thử chế độ Biểu diễn",
+    "library": "Thư viện",
+    "waitDone": "Bạn đã chơi hết bài.",
+    "firstStar": "+1 sao vì lần đầu hoàn thành bài."
+  },
+  "badges": {
+    "title": "Huy hiệu",
+    "first-song": "Bài đầu tiên",
+    "first-songHint": "Hoàn thành một bài bất kỳ.",
+    "streak-7": "Chuỗi 7 ngày",
+    "streak-7Hint": "Luyện 5 phút mỗi ngày, 7 ngày liên tiếp.",
+    "drill-100": "Đọc 100 nốt",
+    "drill-100Hint": "Trả lời 100 nốt trong Luyện đọc nốt.",
+    "three-star": "Bài 3 sao",
+    "three-starHint": "Đạt từ 95% trở lên ở chế độ Biểu diễn.",
+    "all-modes": "Nhà thám hiểm",
+    "all-modesHint": "Thử mọi chế độ một lần.",
+    "ten-songs": "10 bài",
+    "ten-songsHint": "Hoàn thành 10 bài khác nhau.",
+    "fifty-drills": "50 lượt",
+    "fifty-drillsHint": "Hoàn thành 50 lượt luyện nốt hoặc luyện tai.",
+    "all-lessons": "Tốt nghiệp",
+    "all-lessonsHint": "Học xong cả 18 bài."
+  },
+  "lessonRun": {
+    "banner": "Bài {{n}}: {{title}}",
+    "passed": "Đã qua bài!",
+    "failed": "Chưa đạt. Hãy thử lại hoặc đọc lại bài học.",
+    "nextLesson": "Bài tiếp theo",
+    "backToLesson": "Quay lại bài học",
+    "tryAgain": "Thử lại",
+    "goalDrill": "Mục tiêu: đúng {{min}} / {{of}}",
+    "goalEar": "Mục tiêu: đúng {{min}} / {{of}}",
+    "goalRhythm": "Mục tiêu: {{min}}% đúng phách",
+    "goalWait": "Mục tiêu: chơi đến hết bài",
+    "goalPerform": "Mục tiêu: đạt {{min}}% trở lên"
+  },
+  "importer": {
+    "title": "Nhập tệp MIDI",
+    "drop": "Thả tệp .mid vào đây, hoặc",
+    "choose": "Chọn tệp",
+    "hint": "Gán các track cho tay phải và tay trái. Bài nhập được lưu trên thiết bị này.",
+    "noNotes": "Tệp này không có nốt chơi được: {{file}}",
+    "songTitle": "Tên bài",
+    "track": "{{name}} · {{count}} nốt",
+    "right": "Tay phải",
+    "left": "Tay trái",
+    "ignore": "Bỏ qua",
+    "add": "Thêm vào thư viện",
+    "summary": "{{bpm}} BPM · {{sig}}",
+    "added": "Đã thêm “{{title}}” vào thư viện."
   }
 }

@@ -6,7 +6,7 @@ mkdirSync(OUT, { recursive: true })
 const mod = await import(new URL(process.argv[2], `file://${process.cwd()}/`).href)
 const browser = await chromium.launch({
   executablePath: '/usr/bin/google-chrome',
-  args: [...(process.env.QA_STRICT_AUDIO ? [] : ['--autoplay-policy=no-user-gesture-required']), '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'],
+  args: [...(process.env.QA_STRICT_AUDIO ? [] : ['--autoplay-policy=no-user-gesture-required']), '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', ...(process.env.QA_MIC_FILE ? [`--use-file-for-fake-audio-capture=${process.env.QA_MIC_FILE}`] : [])],
 })
 const opts = mod.context ?? { viewport: { width: 1280, height: 800 } }
 const context = await browser.newContext(opts)

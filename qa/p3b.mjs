@@ -1,0 +1,43 @@
+const URL = 'http://127.0.0.1:5317'
+const keyBg = (page) => page.evaluate(() => [...document.querySelectorAll('[data-midi]')].filter((k) => /accent|left/.test(k.style.background)).map((k) => +k.dataset.midi))
+export default async ({ page, shot, log }) => {
+  await page.goto(URL)
+  await page.click("text=I'm an adult"); await page.click("text=Let's play")
+  await page.goto(URL + '/settings')
+  for (let i = 0; i < 5; i++) await page.click('text=Version 1.0.0')
+  await page.goto(URL + '/songs/twinkle')
+  await page.waitForSelector('.staff-host svg')
+  await page.click('#pa-hands >> text=Right')
+  // A15 wait: wrong doesn't advance, right does
+  await page.click('text=▶ Start'); await page.waitForTimeout(300)
+  log('due:', await keyBg(page))
+  await page.evaluate(() => window.__dev.emitNote('on', 62, 'virtual')); await page.waitForTimeout(200)
+  log('due after wrong D4:', await keyBg(page))
+  await page.evaluate(() => window.__dev.emitNote('on', 60, 'virtual')); await page.waitForTimeout(900)
+  log('due after C4:', await keyBg(page))
+  await shot('p3-twinkle-wait')
+  // play the rest perfectly via the ready-made script
+  await page.evaluate(() => window.__dev.emitNote('off', 60, 'virtual'))
+  await page.click('text=Virtual MIDI')
+  await page.click('[data-script="song-perfect"]')
+  await page.waitForSelector('text=Finished', { timeout: 100000 })
+  log('wait result:', (await page.locator('[role=dialog]').innerText()).replace(/\n/g, ' | '))
+  await shot('p3-twinkle-wait-result')
+  await page.click('text=Close')
+  // A15 perform: perfect script → ≥95% and 3 stars
+  await page.click('#pa-mode >> text=Perform')
+  await page.click('[data-script="song-perfect"]')
+  await page.waitForSelector('text=· Perform', { timeout: 100000 })
+  log('perform perfect:', (await page.locator('[role=dialog]').innerText()).replace(/\n/g, ' | '))
+  await shot('p3-twinkle-perform-result')
+  await page.click('text=Close')
+  // Perform with nothing played → 0%
+  await page.click('#pa-tempo', { position: { x: 95, y: 5 } })
+  await page.click('text=▶ Start')
+  await page.waitForSelector('text=· Perform', { timeout: 100000 })
+  log('perform nothing:', (await page.locator('[role=dialog]').innerText()).replace(/\n/g, ' | ').slice(0, 120))
+  await page.click('text=Close')
+  await page.goto(URL + '/songs')
+  await page.waitForTimeout(300)
+  log('library twinkle card:', (await page.locator('[data-song="twinkle"]').innerText()).replace(/\n/g, ' | '))
+}

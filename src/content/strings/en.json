@@ -98,6 +98,26 @@
     },
     "free": {
       "title": "Play anything you like!"
+    },
+    "songs": {
+      "pick": "Pick a song!"
+    },
+    "play": {
+      "slower": "Slower",
+      "challenge": "Challenge",
+      "waitHint": "Keys stay lit until you press them"
+    },
+    "result": {
+      "great": "Wonderful, {{name}}!",
+      "greatNoName": "Wonderful!",
+      "good": "Nice playing!",
+      "again": "Good try! Let's play again.",
+      "nextSong": "Next song",
+      "newSticker": "New sticker: {{name}}!"
+    },
+    "lessonRun": {
+      "passed": "You did it! New island unlocked!",
+      "failed": "Almost! Let's try again."
     }
   },
   "inputs": {
@@ -138,5 +158,110 @@
     "stop": "Stop",
     "sustain": "Pedal",
     "ready": "Ready-made scripts"
+  },
+  "songs": {
+    "library": "Song library",
+    "all": "All",
+    "bundled": "Bundled",
+    "imported": "Imported",
+    "diff1": "Easy",
+    "diff2": "Medium",
+    "diff3": "Hard",
+    "import": "Import MIDI file",
+    "noImported": "No imported songs yet. Import a .mid file to play along with it.",
+    "best": "Best {{percent}}%",
+    "delete": "Remove",
+    "notFound": "This song isn't in the library anymore."
+  },
+  "play": {
+    "wait": "Wait",
+    "perform": "Perform",
+    "mode": "Mode",
+    "tempo": "Tempo",
+    "hands": "Hands",
+    "right": "Right",
+    "left": "Left",
+    "both": "Both",
+    "loop": "Loop bars",
+    "to": "to",
+    "listen": "Listen",
+    "start": "Start",
+    "restart": "Restart",
+    "stop": "Stop",
+    "view": "View",
+    "countIn": "Get ready…",
+    "waitHint": "Play the lit keys. The music waits for you.",
+    "performHint": "Play along in time. Each note is scored.",
+    "micChord": "Press these on the screen, then keep playing.",
+    "micPart": "Use the on-screen keys or a MIDI piano for this part.",
+    "whichHand": "Which hand will you play?",
+    "micNeedsWait": "Melody (mic) works in Wait mode with one hand.",
+    "melodyMic": "Melody (mic)",
+    "barOf": "Bar {{bar}} of {{total}}",
+    "micOff": "Turn off the mic"
+  },
+  "result": {
+    "performTitle": "{{title}} · Perform",
+    "waitTitle": "{{title}} · Finished",
+    "newBest": "New best",
+    "counts": "Hit {{hit}} · Early {{early}} · Late {{late}} · Missed {{missed}}",
+    "offsetLate": "average {{ms}} ms late",
+    "offsetEarly": "average {{ms}} ms early",
+    "offsetOn": "right on the beat",
+    "perHand": "Right hand {{r}}% · Left hand {{l}}%",
+    "missedBars": "Bars with misses: {{bars}}",
+    "loopMissed": "Loop bars {{from}}–{{to}}",
+    "tryFull": "Try 100% tempo",
+    "tryPerform": "Try Perform mode",
+    "library": "Library",
+    "waitDone": "You played it all the way through.",
+    "firstStar": "+1 star for finishing it the first time."
+  },
+  "badges": {
+    "title": "Badges",
+    "first-song": "First song",
+    "first-songHint": "Finish any song.",
+    "streak-7": "7-day streak",
+    "streak-7Hint": "Practice 5 minutes a day for 7 days in a row.",
+    "drill-100": "100 notes read",
+    "drill-100Hint": "Answer 100 notes in Note drills.",
+    "three-star": "3-star song",
+    "three-starHint": "Get 95% or more on a song in Perform mode.",
+    "all-modes": "Explorer",
+    "all-modesHint": "Try every mode once.",
+    "ten-songs": "10 songs",
+    "ten-songsHint": "Finish 10 different songs.",
+    "fifty-drills": "50 rounds",
+    "fifty-drillsHint": "Finish 50 rounds of drills or ear training.",
+    "all-lessons": "Graduate",
+    "all-lessonsHint": "Finish all 18 lessons."
+  },
+  "lessonRun": {
+    "banner": "Lesson {{n}}: {{title}}",
+    "passed": "Lesson passed!",
+    "failed": "Not quite yet. Try again, or read the lesson once more.",
+    "nextLesson": "Next lesson",
+    "backToLesson": "Back to lesson",
+    "tryAgain": "Try again",
+    "goalDrill": "Goal: {{min}} of {{of}} correct",
+    "goalEar": "Goal: {{min}} of {{of}} correct",
+    "goalRhythm": "Goal: {{min}}% on the beat",
+    "goalWait": "Goal: play it to the end",
+    "goalPerform": "Goal: {{min}}% or better"
+  },
+  "importer": {
+    "title": "Import a MIDI file",
+    "drop": "Drop a .mid file here, or",
+    "choose": "Choose a file",
+    "hint": "Assign tracks to your right and left hand. Imported songs are saved on this device.",
+    "noNotes": "This file has no playable notes: {{file}}",
+    "songTitle": "Song title",
+    "track": "{{name}} · {{count}} notes",
+    "right": "Right hand",
+    "left": "Left hand",
+    "ignore": "Ignore",
+    "add": "Add to library",
+    "summary": "{{bpm}} BPM · {{sig}}",
+    "added": "Added “{{title}}” to the library."
   }
 }
