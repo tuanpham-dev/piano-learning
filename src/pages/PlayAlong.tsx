@@ -25,6 +25,7 @@ import { barCount, chordBeats, noteRange, type Song, type TimedNote } from '../e
 import type { PlayMode } from '../engine/playalong'
 import { usePracticeClock } from '../hooks/usePracticeClock'
 import { useLessonRun, LessonBanner } from '../hooks/useLessonRun'
+import { useHeldDoNote } from '../store/doNote'
 
 export function PlayAlongPage() {
   const { id } = useParams()
@@ -123,6 +124,7 @@ function PlayAlongScreen({ song }: { song: Song }) {
     const right = pool.filter((n) => n.hand === 'R')
     return (right.length ? right : pool).map((n) => n.midi)
   }, [snap.due, pa.engine])
+  useHeldDoNote((snap.due.find((n) => n.hand === 'R') ?? snap.due[0])?.midi)
   const onWindow = useCallback((lo: number, hi: number) => setWin((w) => (w[0] === lo && w[1] === hi ? w : [lo, hi])), [])
   const stateIndex = useMemo(() => new Map(pa.engine.notes.map((n, i) => [`${n.hand}:${n.startBeat}:${n.midi}`, i])), [pa.engine])
   const getNoteState = useCallback(

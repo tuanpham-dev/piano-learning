@@ -15,6 +15,7 @@ import { LessonPage } from '../pages/Lesson'
 import { ReferencePage } from '../pages/Reference'
 import { DashboardPage } from '../pages/Dashboard'
 import { StarsPage } from '../pages/Stars'
+import { DevMascotPage } from '../pages/DevMascot'
 
 function ProgressRoute() {
   const kid = useProgress((s) => s.mode === 'kid')
@@ -24,6 +25,7 @@ function ProgressRoute() {
 export function AppRoutes() {
   const createdAt = useProgress((s) => s.createdAt)
   const loc = useLocation()
+  if (import.meta.env.DEV && loc.pathname === '/dev/mascot') return <DevMascotPage />
   if (!createdAt && loc.pathname !== '/welcome') return <Navigate to="/welcome" replace />
   return (
     <Routes>

@@ -20,6 +20,7 @@ import { awardNewBadges } from '../store/badges'
 import { usePracticeClock } from '../hooks/usePracticeClock'
 import { useLessonRun, LessonBanner } from '../hooks/useLessonRun'
 import { cssVar } from '../notation/note-colors'
+import { useHeldDoNote } from '../store/doNote'
 
 type Phase = 'idle' | 'running' | 'done'
 interface Feedback {
@@ -125,6 +126,7 @@ export function DrillsPage() {
   }, [feedback, target])
 
   const r = round.current
+  useHeldDoNote(phase === 'running' ? target : null)
   const mood: MascotMood = feedback ? (feedback.ok ? 'cheering' : 'thinking') : 'idle'
   const staffClef = target !== null ? clefOf(cfg, target) : cfg.clef === 'bass' ? 'bass' : 'treble'
   const noteColor = feedback ? (feedback.ok ? cssVar('--color-ok') : cssVar('--color-accent')) : undefined

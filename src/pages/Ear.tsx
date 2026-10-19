@@ -20,6 +20,7 @@ import { useProgress } from '../store/progress'
 import { awardNewBadges } from '../store/badges'
 import { usePracticeClock } from '../hooks/usePracticeClock'
 import { useLessonRun, LessonBanner } from '../hooks/useLessonRun'
+import { useHeldDoNote } from '../store/doNote'
 
 type Phase = 'idle' | 'running' | 'done'
 const BTN_COLORS = ['var(--color-nC)', 'var(--color-nA)', 'var(--color-nF)', 'var(--color-nB)', 'var(--color-nD)', 'var(--color-nG)']
@@ -107,6 +108,7 @@ export function EarPage() {
     [],
   )
 
+  useHeldDoNote(phase === 'running' ? q?.notes[0] : null)
   const highlight = useMemo(() => {
     const m = new Map<number, KeyMark>()
     if (!q) return m
