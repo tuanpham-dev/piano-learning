@@ -28,6 +28,11 @@ describe('note drills', () => {
     expect(clefOf(cfg, 55)).toBe('bass')
     expect(clefOf(cfg, 64)).toBe('treble')
   })
+  it('draws only from a fixed pool when given', () => {
+    const rng = seeded(1)
+    const cfg = { clef: 'both' as const, low: 0, high: 127, accidentals: false, pool: [48, 60, 72] }
+    for (let i = 0; i < 50; i++) expect([48, 60, 72]).toContain(nextNote(cfg, rng))
+  })
   it('accepts octave errors only from the mic', () => {
     expect(isCorrectAnswer(69, 81, false)).toBe(false)
     expect(isCorrectAnswer(69, 81, true)).toBe(true)

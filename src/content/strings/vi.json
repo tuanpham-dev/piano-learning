@@ -145,6 +145,19 @@
       "start": "Bắt đầu",
       "done": "Nhịp rất hay!",
       "idle": "Nghe 1-2-3-4, rồi gõ theo!"
+    },
+    "lessons": {
+      "title": "Hành trình của em",
+      "island": "Đảo {{n}}: {{title}}",
+      "done": "Em đã đến mọi hòn đảo!"
+    },
+    "stars": {
+      "title": "Sao của em",
+      "keep": "Luyện hôm nay để giữ chuỗi nhé.",
+      "start": "Chơi hôm nay để bắt đầu chuỗi!",
+      "tap": "Chạm vào hình dán để xem cách nhận",
+      "streak_one": "{{count}} ngày liên tiếp!",
+      "streak_other": "{{count}} ngày liên tiếp!"
     }
   },
   "inputs": {
@@ -391,5 +404,41 @@
       "pentatonicMinor": "Ngũ cung thứ",
       "blues": "Blues"
     }
+  },
+  "lessons": {
+    "title": "Bài học",
+    "doneCount": "Đã học {{done}} / {{total}}",
+    "skip": "Học vượt: {{state}}",
+    "locked": "Đang khóa. Hãy học xong bài {{n}} trước.",
+    "showMe": "Xem mẫu",
+    "tryIt": "Thử ngay",
+    "finish": "Hoàn thành khóa học",
+    "completed": "Đã xong",
+    "step": "Bài {{n}} / {{total}}",
+    "notFound": "Bài học này không tồn tại."
+  },
+  "dash": {
+    "title": "Thống kê",
+    "streak": "Chuỗi ngày",
+    "today": "Hôm nay",
+    "minutes": "{{count}} phút",
+    "week": "Số phút luyện tập, 7 ngày qua",
+    "lessons": "Bài học",
+    "accuracy": "Độ chính xác theo bài tập",
+    "notYet": "chưa thử",
+    "best": "Điểm cao nhất của các bài",
+    "noSongs": "Chưa hoàn thành bài nào.",
+    "badges": "Huy hiệu",
+    "data": "Sao lưu hoặc chuyển tiến độ",
+    "k": {
+      "treble": "Nốt khóa Sol",
+      "bass": "Nốt khóa Fa",
+      "interval": "Quãng",
+      "chord": "Tính chất hợp âm",
+      "melody": "Nhắc lại giai điệu",
+      "rhythm": "Tiết tấu"
+    },
+    "days_one": "{{count}} ngày",
+    "days_other": "{{count}} ngày"
   }
 }

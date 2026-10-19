@@ -1,0 +1,20 @@
+const URL = 'http://127.0.0.1:5317'
+const unlocked = (page) => page.waitForSelector('[data-lesson]').then(() => page.evaluate(() => [...document.querySelectorAll('a[data-lesson]')].map((a) => a.dataset.lesson)))
+export default async ({ page, shot, log }) => {
+  await page.goto(URL)
+  await page.click("text=I'm an adult"); await page.click("text=Let's play")
+  await page.goto(URL + '/lessons')
+  log('fresh:', await unlocked(page))
+  await page.evaluate(() => window.__dev.useProgress.getState().completeLesson('l01-posture'))
+  await page.goto(URL + '/lessons')
+  log('after lesson 1:', await unlocked(page))
+  await page.goto(URL + '/settings'); await page.click('#set-mode >> text=Kid')
+  await page.goto(URL + '/lessons'); await page.waitForSelector('[data-island]')
+  log('journey:', await page.evaluate(() => [...document.querySelectorAll('[data-island]')].slice(0, 4).map((b) => `${b.dataset.island}:${b.dataset.state}`).join(' ')))
+  await shot('p5-journey')
+  await page.click('[data-island="2"]'); await page.waitForSelector('[data-testid=lesson-body]')
+  await shot('p5-kid-lesson2')
+  await page.goto(URL + '/progress'); await page.waitForSelector('[data-testid=stickers]')
+  await shot('p5-kid-stars')
+  log('kid stars page:', (await page.locator('main').innerText()).replace(/\n/g, ' | ').slice(0, 200))
+}

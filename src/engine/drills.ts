@@ -28,12 +28,14 @@ export interface DrillConfig {
   low: number
   high: number
   accidentals: boolean
+  /** Only these notes (overrides the range filter). */
+  pool?: number[]
 }
 
 /** Next drill note: in range, white keys unless accidentals are on, never the same as the last one. */
 export function nextNote(cfg: DrillConfig, rng: Rng, prev?: number): number {
-  const pool: number[] = []
-  for (let m = cfg.low; m <= cfg.high; m++) {
+  const pool: number[] = cfg.pool ? [...cfg.pool] : []
+  for (let m = cfg.low; m <= cfg.high && !cfg.pool; m++) {
     if (!cfg.accidentals && isBlackKey(m)) continue
     if (cfg.clef === 'treble' && m < MIDDLE_C - 3) continue
     if (cfg.clef === 'bass' && m > MIDDLE_C + 3) continue

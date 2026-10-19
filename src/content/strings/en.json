@@ -145,6 +145,19 @@
       "start": "Start",
       "done": "Great beat!",
       "idle": "Listen to 1-2-3-4, then tap!"
+    },
+    "lessons": {
+      "title": "My journey",
+      "island": "Island {{n}}: {{title}}",
+      "done": "You visited every island!"
+    },
+    "stars": {
+      "title": "My stars",
+      "keep": "Practice today to keep it.",
+      "start": "Play today to start a streak!",
+      "tap": "Tap a sticker to see how to earn it",
+      "streak_one": "{{count}} day in a row!",
+      "streak_other": "{{count}} days in a row!"
     }
   },
   "inputs": {
@@ -391,5 +404,41 @@
       "pentatonicMinor": "Minor pentatonic",
       "blues": "Blues"
     }
+  },
+  "lessons": {
+    "title": "Lessons",
+    "doneCount": "{{done}} / {{total}} done",
+    "skip": "Skip ahead: {{state}}",
+    "locked": "Locked. Finish lesson {{n}} first.",
+    "showMe": "Show me",
+    "tryIt": "Try it",
+    "finish": "Finish the course",
+    "completed": "Completed",
+    "step": "Lesson {{n}} of {{total}}",
+    "notFound": "This lesson doesn't exist."
+  },
+  "dash": {
+    "title": "Dashboard",
+    "streak": "Streak",
+    "today": "Today",
+    "minutes": "{{count}} min",
+    "week": "Practice minutes, last 7 days",
+    "lessons": "Lessons",
+    "accuracy": "Accuracy by exercise",
+    "notYet": "not tried yet",
+    "best": "Best song scores",
+    "noSongs": "No songs finished yet.",
+    "badges": "Badges",
+    "data": "Back up or move your progress",
+    "k": {
+      "treble": "Treble notes",
+      "bass": "Bass notes",
+      "interval": "Intervals",
+      "chord": "Chord quality",
+      "melody": "Melody playback",
+      "rhythm": "Rhythm"
+    },
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days"
   }
 }

@@ -5,13 +5,13 @@ export type Clef = 'treble' | 'bass' | 'both'
 export type EarType = 'interval' | 'chord' | 'melody'
 
 export type Exercise =
-  | { kind: 'drill'; clef: Clef; low: number; high: number; accidentals: boolean; count: number; minCorrect: number }
+  | { kind: 'drill'; clef: Clef; low: number; high: number; accidentals: boolean; count: number; minCorrect: number; pool?: number[] }
   | { kind: 'song'; songId: string; hands: Hands; play: 'wait' | 'perform'; minPercent?: number }
   | { kind: 'rhythm'; level: 1 | 2 | 3; bpm: number; minPercent: number }
   | { kind: 'ear'; type: EarType; count: number; minCorrect: number; chordTypes?: ('maj' | 'min' | 'dim' | 'aug')[] }
   | { kind: 'none' }
 
-export type Diagram = 'posture' | 'keyboard' | 'middleC' | 'cPosition' | 'durations' | 'treble' | 'bass' | 'grand' | 'gPosition' | 'dynamics' | 'intervals' | 'triads' | 'timeSigs'
+export type Diagram = 'posture' | 'keyboard' | 'middleC' | 'cPosition' | 'cPositionLeft' | 'cScale' | 'durations' | 'treble' | 'bass' | 'grand' | 'gPosition' | 'dynamics' | 'intervals' | 'triads' | 'timeSigs'
 
 export interface Lesson {
   id: string

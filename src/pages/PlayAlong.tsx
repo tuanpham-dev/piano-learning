@@ -297,7 +297,7 @@ function PlayAlongScreen({ song }: { song: Song }) {
       <div className={kid ? 'py-2' : '-mx-[max(16px,env(safe-area-inset-left,0px))]'}>
         <InputPanel micAllowed micDisabledReason={mode === 'wait' ? undefined : t('play.micNeedsWait')} />
       </div>
-      {result && (
+      {result && !(kid && lessonRun.lesson) && (
         <ResultCard
           song={song}
           result={result}

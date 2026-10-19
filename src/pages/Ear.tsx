@@ -172,7 +172,7 @@ export function EarPage() {
             ))}
           </div>
         )}
-        {phase === 'done' && (
+        {phase === 'done' && !(kid && lessonRun.lesson) && (
           <RoundSummary
             stars={starsForAccuracy(Math.round((100 * correct) / total))}
             kidTitle={t('kid.ear.done')}

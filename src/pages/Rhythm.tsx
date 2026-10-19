@@ -207,7 +207,7 @@ export function RhythmPage() {
         <div className="mx-auto w-full max-w-2xl">
           <RhythmStaff items={items} timeSig={[4, 4]} kid={kid} />
         </div>
-        {phase === 'done' && score && (
+        {phase === 'done' && score && !(kid && lessonRun.lesson) && (
           <RoundSummary
             stars={stars}
             kidTitle={t('kid.rhythm.done')}

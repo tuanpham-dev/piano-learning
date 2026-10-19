@@ -39,7 +39,7 @@ export function DrillsPage() {
   const [accidentals, setAccidentals] = useState(false)
   const [count, setCount] = useState(kid ? 10 : 20)
   const cfg: DrillConfig = useMemo(() => {
-    if (lessonEx) return { clef: lessonEx.clef, low: lessonEx.low, high: lessonEx.high, accidentals: lessonEx.accidentals }
+    if (lessonEx) return { clef: lessonEx.clef, low: lessonEx.low, high: lessonEx.high, accidentals: lessonEx.accidentals, pool: lessonEx.pool }
     const [low, high] = rangeFor(clef, octaves)
     return { clef, low, high, accidentals }
   }, [lessonEx, clef, octaves, accidentals])
@@ -204,7 +204,7 @@ export function DrillsPage() {
           {phase === 'idle' && <PrimaryButton onClick={start}>{kid ? t('kid.drills.start') : t('drills.start')} ▶</PrimaryButton>}
           {phase === 'running' && !kid && <Button onClick={() => setPhase('idle')}>{t('drills.stop')}</Button>}
         </div>
-        {phase === 'done' && (
+        {phase === 'done' && !(kid && lessonRun.lesson) && (
           <RoundSummary
             stars={starsForAccuracy(r.accuracy)}
             kidTitle={t('kid.drills.done', { n: r.correct })}
