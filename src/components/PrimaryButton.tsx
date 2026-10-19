@@ -8,8 +8,8 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const styles: Record<Variant, string> = {
-  primary: 'bg-accent text-accent-ink border-accent font-semibold',
-  secondary: 'bg-bg text-fg border-fg/70',
+  primary: 'lifted bg-accent text-accent-ink border-accent font-semibold',
+  secondary: 'lifted bg-surface text-fg border-line font-medium',
   ghost: 'bg-transparent text-fg border-transparent hover:bg-panel',
 }
 

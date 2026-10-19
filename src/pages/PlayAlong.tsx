@@ -155,7 +155,7 @@ function PlayAlongScreen({ song }: { song: Song }) {
         )}
       </PrimaryButton>
       <Button onClick={() => setTempo(tempo === 60 ? 80 : 60)} aria-pressed={tempo === 60} className={`text-lg font-extrabold ${tempo === 60 ? 'bg-panel' : ''}`}>
-        <Icon name="turtle" size={22} /> {t('kid.play.slower')}
+        <Icon name="walk" size={22} /> {t('kid.play.slower')}
       </Button>
       <Segmented<Hands>
         id="kid-hands"

@@ -70,7 +70,7 @@ function KidBar({ title, back, actions }: { title: string; back?: string; action
   const isHome = useLocation().pathname === '/'
   const stars = useProgress((s) => s.stars)
   return (
-    <header className="sticky top-0 z-20 bg-panel" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+    <header className="sticky top-0 z-20 bg-panel border-b-[3px] border-[var(--outline-ink)]" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
       <div className="flex items-center gap-3 px-[max(16px,env(safe-area-inset-left,0px))] py-2">
         {isHome ? (
           <span className="w-2" />
