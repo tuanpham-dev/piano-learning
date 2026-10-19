@@ -18,6 +18,7 @@ import {
 import { beatsPerBar, barCount, type Hand, type Song, type Voice as SongVoice } from '../engine/song'
 import { layoutBar, vexDuration, vexKey, type StaffEvent } from './staff-layout'
 import { cssVar, hexForMidi } from './note-colors'
+import { prefersReducedMotion } from '../hooks/useReducedMotion'
 
 /** Color for a note at (hand, start beat, midi); undefined = default ink. */
 export type NoteColorFn = (hand: Hand, start: number, midi: number) => string | undefined
@@ -94,8 +95,10 @@ function buildBar(voice: SongVoice, bar: number, song: Song, clef: 'treble' | 'b
 
 export interface GrandStaffProps {
   song: Song
-  /** Beat the cursor is at; the window pages so it stays visible. */
+  /** Beat used to pick which page of bars is shown (changes rarely). */
   cursorBeat: number
+  /** Live beat for the cursor band, read every frame; falls back to `cursorBeat`. */
+  getCursor?: () => number
   color?: NoteColorFn
   kid?: boolean
   showFingers?: boolean
@@ -106,7 +109,7 @@ export interface GrandStaffProps {
 }
 
 /** Grand staff for a song, showing a page of bars around the cursor (R15, R16). */
-export function GrandStaff({ song, cursorBeat, color = () => undefined, kid = false, showFingers = true, hands = 'LR', barsPerLine, className = '' }: GrandStaffProps) {
+export function GrandStaff({ song, cursorBeat, getCursor, color = () => undefined, kid = false, showFingers = true, hands = 'LR', barsPerLine, className = '' }: GrandStaffProps) {
   const [ref, width] = useWidth()
   const host = useRef<HTMLDivElement>(null)
   const [error, setError] = useState<string | null>(null)
@@ -117,6 +120,11 @@ export function GrandStaff({ song, cursorBeat, color = () => undefined, kid = fa
   const first = Math.floor(curBar / perLine) * perLine
   const last = Math.min(totalBars - 1, first + perLine - 1)
   const scale = kid ? 1.15 : 1
+  const band = useRef<HTMLDivElement>(null)
+  // Notehead centers per beat on the current page, in SVG units (the viewBox maps them to CSS px × scale).
+  const points = useRef<{ beat: number; x: number }[]>([])
+  const live = useRef({ getCursor, cursorBeat })
+  live.current = { getCursor, cursorBeat }
 
   useEffect(() => {
     const el = host.current
@@ -189,42 +197,68 @@ export function GrandStaff({ song, cursorBeat, color = () => undefined, kid = fa
                 .setContext(ctx)
                 .draw()
             }
-            cursorPts.push({ beat: ev.start, x: bb.notes[k]!.getAbsoluteX() })
+            const n = bb.notes[k]!
+            // Center on the notehead itself (getAbsoluteX is the note's left edge).
+            const cx = n.isRest() ? n.getAbsoluteX() + n.getGlyphWidth() / 2 : (n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2
+            cursorPts.push({ beat: ev.start, x: cx })
           })
         })
-        cursorPts.push({ beat: (b + 1) * bpb, x: x + w - 6 })
+        // Only the page's last bar gets an end point; elsewhere the cursor flows straight to the next bar's first note.
+        if (b === last) cursorPts.push({ beat: (b + 1) * bpb, x: x + w - 6 })
       }
-      // Cursor band behind the notes at the current beat.
+      // Keep one point per beat (both staves share x positions), sorted.
       cursorPts.sort((a, b) => a.beat - b.beat || a.x - b.x)
-      const at = (beat: number) => {
-        const i = cursorPts.findIndex((p) => p.beat > beat + 1e-6)
-        if (i <= 0) return cursorPts[0]?.x ?? 0
-        const a = cursorPts[i - 1]!
-        const z = cursorPts[i]!
-        return a.x + ((z.x - a.x) * (beat - a.beat)) / (z.beat - a.beat || 1)
-      }
-      const svg = el.querySelector('svg')
-      if (svg && cursorBeat >= first * bpb && cursorBeat <= (last + 1) * bpb) {
-        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-        rect.setAttribute('x', String((at(cursorBeat) - 4) * scale))
-        rect.setAttribute('y', '4')
-        rect.setAttribute('width', String((kid ? 22 : 16) * scale))
-        rect.setAttribute('height', String(height - 8))
-        rect.setAttribute('rx', '4')
-        rect.setAttribute('fill', th.accent)
-        rect.setAttribute('opacity', '0.13')
-        svg.insertBefore(rect, svg.firstChild)
-      }
+      points.current = cursorPts.filter((p, i, arr) => i === 0 || Math.abs(p.beat - arr[i - 1]!.beat) > 1e-6)
+      if (band.current) band.current.style.height = `${height - 8}px`
       setError(null)
     } catch (e) {
       console.error('[staff]', e)
       setError(String(e))
     }
-  }, [song, first, last, cursorBeat, color, kid, showFingers, hands, width, scale, bpb])
+  }, [song, first, last, color, kid, showFingers, hands, width, scale, bpb])
+
+  // Cursor band: moved every frame from the live beat, so it tracks the music smoothly instead of redrawing the SVG.
+  useEffect(() => {
+    let raf = 0
+    const reduced = prefersReducedMotion()
+    const tick = () => {
+      const el = band.current
+      const pts = points.current
+      if (el && pts.length) {
+        let beat = live.current.getCursor ? live.current.getCursor() : live.current.cursorBeat
+        if (reduced) beat = Math.floor(beat + 1e-6)
+        const inPage = beat >= first * bpb - 1e-6 && beat <= (last + 1) * bpb + 1e-6
+        el.style.opacity = inPage ? '1' : '0'
+        if (inPage) {
+          const i = pts.findIndex((p) => p.beat > beat + 1e-6)
+          let x: number
+          if (i <= 0) x = pts[i === 0 ? 0 : pts.length - 1]!.x
+          else {
+            const a = pts[i - 1]!
+            const z = pts[i]!
+            x = a.x + ((z.x - a.x) * (beat - a.beat)) / (z.beat - a.beat || 1)
+          }
+          el.style.transform = `translateX(${x * scale - el.offsetWidth / 2}px)`
+        }
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [first, last, bpb, scale])
 
   return (
     <div ref={ref} className={`w-full ${className}`} aria-label={`${song.title.en}, bars ${first + 1} to ${last + 1}`} role="img">
-      <div ref={host} className="staff-host" />
+      <div className="relative">
+        <div
+          ref={band}
+          aria-hidden="true"
+          data-testid="staff-cursor"
+          className="pointer-events-none absolute left-0 top-1 rounded-md bg-accent/15"
+          style={{ width: (kid ? 24 : 18) * scale, opacity: 0 }}
+        />
+        <div ref={host} className="staff-host relative" />
+      </div>
       {error && <p className="text-sm text-muted">Sheet music can't be drawn for this part.</p>}
     </div>
   )

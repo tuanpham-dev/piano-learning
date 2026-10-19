@@ -347,7 +347,7 @@ function PlayAlongScreen({ song }: { song: Song }) {
         <div className="flex-1 flex flex-col justify-end gap-1">
           {view !== 'lane' && (
             <div>
-              <GrandStaff song={song} cursorBeat={snap.staffBeat} color={colorFn} kid={kid} hands="LR" />
+              <GrandStaff song={song} cursorBeat={snap.staffBeat} getCursor={pa.cursor} color={colorFn} kid={kid} hands="LR" />
             </div>
           )}
           {view !== 'staff' && (
