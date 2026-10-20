@@ -21,7 +21,7 @@ export function App() {
   // Hold the tree until i18next matches the stored language, so nothing renders in the wrong one.
   if (!loaded || i18n.language !== lang) return <div className="grid h-full place-items-center text-muted">…</div>
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <BrowserRouter basename={import.meta.env.BASE_URL} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AppRoutes />
       <AiNavigator />
       <UpdateToast />

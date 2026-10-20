@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // GitHub Pages serves the app from /<repo>/; the deploy workflow sets BASE_PATH.
+  base: process.env.BASE_PATH ?? '/',
   plugins: [
     react(),
     tailwindcss(),
@@ -18,19 +20,20 @@ export default defineConfig({
         description: 'Learn piano: songs, note reading, ear training, rhythm, and lessons.',
         display: 'standalone',
         orientation: 'any',
-        start_url: '/',
+        start_url: '.',
+        scope: '.',
         background_color: '#dcf4e8',
         theme_color: '#14213d',
         icons: [
-          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/icons/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icons/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,mp3,wav,woff,woff2,json,svg,png}'],
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
-        navigateFallback: '/index.html',
+        navigateFallback: 'index.html',
       },
     }),
   ],

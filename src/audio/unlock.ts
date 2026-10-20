@@ -12,7 +12,7 @@ let silentEl: HTMLAudioElement | null = null
  * so the side switch would mute the piano. A looping silent media element moves
  * Web Audio onto the media channel (R32).
  */
-export function startSilentMediaElement(src = '/silence.wav'): HTMLAudioElement {
+export function startSilentMediaElement(src = `${import.meta.env.BASE_URL}silence.wav`): HTMLAudioElement {
   if (silentEl) return silentEl
   const el = document.createElement('audio')
   el.src = src

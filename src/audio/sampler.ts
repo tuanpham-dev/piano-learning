@@ -23,7 +23,7 @@ let sustain = false
 
 const RELEASE = 0.18
 
-export function loadSamples(base = '/samples/'): Promise<void> {
+export function loadSamples(base = `${import.meta.env.BASE_URL}samples/`): Promise<void> {
   if (loading) return loading
   const ctx = getAudioContext()
   let done = 0
